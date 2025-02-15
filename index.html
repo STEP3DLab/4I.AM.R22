@@ -4,32 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Научная симуляция броуновского движения</title>
-  <!-- Подключаем шрифт Montserrat -->
+  <!-- Подключение шрифта Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-color: #f7f7f8;
-      --panel-bg: #ffffff;
+      --bg-color-dark: #1a1a1a;
+      --panel-bg-dark: #262626;
+      --text-color-dark: #f0f0f0;
       --accent-color: #FF5722;
-      --text-color: #333;
-      --shadow-color: rgba(0, 0, 0, 0.1);
+      --shadow-color: rgba(0, 0, 0, 0.2);
+
+      --bg-color-light: #f7f7f8;
+      --panel-bg-light: #ffffff;
+      --text-color-light: #333;
     }
+
+    /* По умолчанию темная тема */
+    body.dark-theme {
+      background: var(--bg-color-dark);
+      color: var(--text-color-dark);
+    }
+    body.light-theme {
+      background: var(--bg-color-light);
+      color: var(--text-color-light);
+    }
+
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
     }
+
     .container {
       max-width: 1200px;
       margin: 20px auto;
       padding: 20px;
     }
+
     h1, h2, h3 {
       text-align: center;
+      margin: 10px 0;
     }
+
     .simulation-box {
       position: relative;
       background: #000;
@@ -38,13 +56,16 @@
       overflow: hidden;
       margin-bottom: 20px;
     }
+
     canvas {
       width: 100%;
       height: 70vh;
       display: block;
     }
+
     .controls {
-      background: var(--panel-bg);
+      background: currentColor;
+      background-color: /* подставим в зависимости от темы через класс */ inherit;
       padding: 15px;
       border-radius: 15px;
       display: grid;
@@ -53,11 +74,18 @@
       box-shadow: 0 4px 20px var(--shadow-color);
       margin-bottom: 20px;
     }
+
+    .controls button,
+    .controls input[type="range"] {
+      transition: all 0.3s;
+    }
+
     .control-group {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     button {
       padding: 10px 20px;
       background: var(--accent-color);
@@ -65,23 +93,29 @@
       color: #fff;
       border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s;
     }
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 15px var(--shadow-color);
     }
+    button:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--accent-color);
+    }
+
     input[type="range"] {
       width: 100%;
       accent-color: var(--accent-color);
     }
+
     .stats, .theory {
-      background: var(--panel-bg);
+      background: inherit;
       padding: 20px;
       border-radius: 15px;
       box-shadow: 0 4px 20px var(--shadow-color);
       margin-bottom: 20px;
     }
+
     .particle-info {
       position: absolute;
       top: 20px;
@@ -93,63 +127,73 @@
       color: #fff;
       font-size: 14px;
     }
+
+    /* Адаптивность */
+    @media (max-width: 600px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+      .particle-info {
+        font-size: 12px;
+        top: 10px;
+        right: 10px;
+      }
+    }
   </style>
 </head>
-<body>
+<body class="dark-theme">
   <div class="container">
     <h1>Научная симуляция броуновского движения</h1>
     
     <div class="simulation-box">
       <canvas id="canvas"></canvas>
-      <div class="particle-info">
+      <div class="particle-info" title="Информация о частицах">
         <div>Частиц: <span id="particleCount">100</span></div>
         <div>Ср. скорость: <span id="avgSpeed">0</span> px/фрейм</div>
       </div>
     </div>
 
     <div class="controls">
-      <button onclick="toggleAnimation()">▶ / ❚❚</button>
-      <button onclick="resetParticles()">Сбросить</button>
+      <button onclick="toggleAnimation()" title="Запуск/Пауза симуляции">▶ / ❚❚</button>
+      <button onclick="resetParticles()" title="Перезапустить симуляцию">Сбросить</button>
       <div class="control-group">
-        <label>Частицы:</label>
+        <label title="Количество частиц">Частицы:</label>
         <input type="range" id="particleSlider" min="10" max="1000" value="100">
       </div>
       <div class="control-group">
-        <label>Температура:</label>
+        <label title="Интенсивность случайных флуктуаций">Температура:</label>
         <input type="range" id="temperatureSlider" min="0.1" max="3" step="0.1" value="1">
       </div>
       <div class="control-group">
-        <label>Вязкость:</label>
+        <label title="Затухание скорости (вязкость среды)">Вязкость:</label>
         <input type="range" id="viscositySlider" min="0.90" max="1" step="0.005" value="0.995">
       </div>
       <div class="control-group">
-        <label>Длина следа:</label>
+        <label title="Длина следа (история движения)">Длина следа:</label>
         <input type="range" id="trailLengthSlider" min="5" max="50" value="20">
       </div>
-      <button onclick="toggleTrails()">Следы: <span id="trailState">Вкл</span></button>
-      <button onclick="toggleVelocityVectors()">Векторы: <span id="vectorState">Выкл</span></button>
+      <button onclick="toggleTrails()" title="Включить/выключить следы">Следы: <span id="trailState">Вкл</span></button>
+      <button onclick="toggleVelocityVectors()" title="Показать/скрыть векторы скорости">Векторы: <span id="vectorState">Выкл</span></button>
+      <button onclick="toggleTheme()" title="Переключить тему (Dark/Light)">Сменить тему</button>
+      <button onclick="exportStats()" title="Сохранить статистику симуляции">Экспорт Stats</button>
     </div>
 
     <div class="stats">
       <h3>Статистика в реальном времени</h3>
-      <div id="collisionCounter">Столкновений: 0</div>
-      <div id="avgKinetic">Ср. кин. энергия: 0</div>
-      <div id="diffusionCoeff">Коэф. диффузии: 0</div>
-      <div id="simTime">Время симуляции: 0 сек</div>
+      <div id="collisionCounter" title="Количество столкновений">Столкновений: 0</div>
+      <div id="avgKinetic" title="Средняя кинетическая энергия">Ср. кин. энергия: 0</div>
+      <div id="diffusionCoeff" title="Коэффициент диффузии">Коэф. диффузии: 0</div>
+      <div id="simTime" title="Время работы симуляции">Время симуляции: 0 сек</div>
     </div>
 
     <div class="theory">
       <h2>Теоретические основы</h2>
       <p>
-        Броуновское движение – хаотичное движение микроскопических частиц, обусловленное случайными столкновениями с молекулами среды.
-        Здесь смоделированы основные процессы: случайное ускорение (с интенсивностью, зависящей от температуры), вязкое затухание и упругие столкновения.
+        Броуновское движение – хаотичное движение микроскопических частиц, обусловленное столкновениями с молекулами среды.
+        Модель учитывает случайные флуктуации (зависящие от «температуры»), вязкое затухание, упругие столкновения и динамику диффузии.
       </p>
       <p>
-        <strong>Коэффициент диффузии</strong> можно оценить по формуле: <em>D = MSD / (4t)</em>,
-        где MSD – среднеквадратичное смещение, t – время симуляции.
-      </p>
-      <p>
-        Кроме того, рассчитывается средняя кинетическая энергия частиц, что позволяет сопоставить результаты с молекулярно-кинетической теорией.
+        Коэффициент диффузии вычисляется по формуле: <em>D = MSD / (4t)</em>, где MSD – среднеквадратичное смещение, а t – время симуляции.
       </p>
     </div>
   </div>
@@ -164,16 +208,23 @@
     let collisions = 0;
     let simulationTime = 0;
     let lastTimestamp = 0;
+    let lastSoundTime = 0; // для ограничения частоты звуковых эффектов
 
-    // Адаптация canvas под размеры экрана
+    // Поддержка Retina: масштабируем canvas с учётом devicePixelRatio
     function resizeCanvas() {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
     }
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', () => {
+      // При изменении размеров пересоздаём canvas, не теряя пропорции
+      resizeCanvas();
+    });
     resizeCanvas();
 
-    // Функция для генерации гауссовского случайного числа (Box-Muller)
+    // Функция для генерации гауссовского случайного числа (метод Бокса–Мюллера)
     function gaussianRandom() {
       let u = 0, v = 0;
       while (u === 0) u = Math.random();
@@ -189,8 +240,8 @@
       }
 
       reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * canvas.offsetWidth;
+        this.y = Math.random() * canvas.offsetHeight;
         this.initialX = this.x;
         this.initialY = this.y;
         this.vx = (Math.random() - 0.5) * 2;
@@ -213,13 +264,13 @@
         this.y += this.vy;
 
         // Граничные условия с отражением и демпфированием
-        if (this.x < 0 || this.x > canvas.width) {
+        if (this.x < 0 || this.x > canvas.offsetWidth) {
           this.vx *= -0.8;
-          this.x = Math.max(0, Math.min(canvas.width, this.x));
+          this.x = Math.max(0, Math.min(canvas.offsetWidth, this.x));
         }
-        if (this.y < 0 || this.y > canvas.height) {
+        if (this.y < 0 || this.y > canvas.offsetHeight) {
           this.vy *= -0.8;
-          this.y = Math.max(0, Math.min(canvas.height, this.y));
+          this.y = Math.max(0, Math.min(canvas.offsetHeight, this.y));
         }
 
         // Сохранение истории для следов
@@ -309,6 +360,62 @@
       document.getElementById('vectorState').textContent = showVelocityVectors ? 'Вкл' : 'Выкл';
     }
 
+    // Переключение темы (Dark/Light)
+    function toggleTheme() {
+      const bodyClass = document.body.classList;
+      if (bodyClass.contains('dark-theme')) {
+        bodyClass.replace('dark-theme', 'light-theme');
+      } else {
+        bodyClass.replace('light-theme', 'dark-theme');
+      }
+    }
+
+    // Звуковая обратная связь при столкновениях (с использованием Web Audio API)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playCollisionSound() {
+      const now = simulationTime;
+      if (now - lastSoundTime < 0.1) return; // не чаще 10 раз в секунду
+      lastSoundTime = now;
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.05);
+    }
+
+    // Экспорт статистики симуляции в JSON-файл
+    function exportStats() {
+      const totalSpeed = particles.reduce((sum, p) => sum + Math.hypot(p.vx, p.vy), 0);
+      const totalKinetic = particles.reduce((sum, p) => sum + 0.5 * (p.vx ** 2 + p.vy ** 2), 0);
+      let totalMSD = 0;
+      particles.forEach(p => {
+        const dx = p.x - p.initialX;
+        const dy = p.y - p.initialY;
+        totalMSD += dx * dx + dy * dy;
+      });
+      const msd = totalMSD / particles.length;
+      const avgSpeed = (totalSpeed / particles.length).toFixed(2);
+      const avgKinetic = (totalKinetic / particles.length).toFixed(2);
+      const diffusion = simulationTime > 0 ? (msd / (4 * simulationTime)).toFixed(2) : 0;
+      const stats = {
+        particleCount: particles.length,
+        avgSpeed,
+        avgKinetic,
+        diffusionCoefficient: diffusion,
+        collisions,
+        simulationTime: simulationTime.toFixed(1)
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stats, null, 2));
+      const dlAnchorElem = document.createElement('a');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", "simulation_stats.json");
+      dlAnchorElem.click();
+    }
+
     // Обработка столкновений между частицами
     function handleCollisions() {
       for (let i = 0; i < particles.length; i++) {
@@ -321,6 +428,7 @@
           const minDist = p1.radius + p2.radius;
           if (dist < minDist && dist > 0) {
             collisions++;
+            playCollisionSound();
 
             // Коррекция перекрытия
             const angle = Math.atan2(dy, dx);
@@ -378,10 +486,10 @@
       lastTimestamp = timestamp;
 
       // Фон: для следов заполняем прозрачным цветом, иначе очищаем полностью
-      if (!trailsEnabled) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!trailsEnabled) ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
       else {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
       }
 
       // Обновление частиц
