@@ -1,286 +1,409 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интерактивная симуляция броуновского движения</title>
-    <style>
-        :root {
-            --bg-color: #1a1a1a;
-            --particle-color: #4CAF50;
-            --accent-color: #FF5722;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            background: var(--bg-color);
-            color: #fff;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .simulation-box {
-            position: relative;
-            background: #000;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0, 150, 255, 0.2);
-            overflow: hidden;
-        }
-
-        canvas {
-            width: 100%;
-            height: 70vh;
-        }
-
-        .controls {
-            padding: 15px;
-            background: #2a2a2a;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
-            border-radius: 0 0 15px 15px;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background: var(--accent-color);
-            border: none;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
-        }
-
-        input[type="range"] {
-            width: 100%;
-            accent-color: var(--accent-color);
-        }
-
-        .stats {
-            padding: 20px;
-            background: #2a2a2a;
-            border-radius: 15px;
-            margin-top: 20px;
-        }
-
-        .theory {
-            padding: 25px;
-            background: #2a2a2a;
-            border-radius: 15px;
-            margin: 20px 0;
-            line-height: 1.6;
-        }
-
-        .particle-info {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Научная симуляция броуновского движения</title>
+  <!-- Подключаем шрифт Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-color: #f7f7f8;
+      --panel-bg: #ffffff;
+      --accent-color: #FF5722;
+      --text-color: #333;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    h1, h2, h3 {
+      text-align: center;
+    }
+    .simulation-box {
+      position: relative;
+      background: #000;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px var(--shadow-color);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    canvas {
+      width: 100%;
+      height: 70vh;
+      display: block;
+    }
+    .controls {
+      background: var(--panel-bg);
+      padding: 15px;
+      border-radius: 15px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      box-shadow: 0 4px 20px var(--shadow-color);
+      margin-bottom: 20px;
+    }
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      background: var(--accent-color);
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px var(--shadow-color);
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-color);
+    }
+    .stats, .theory {
+      background: var(--panel-bg);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px var(--shadow-color);
+      margin-bottom: 20px;
+    }
+    .particle-info {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      color: #fff;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Интерактивная симуляция броуновского движения</h1>
-        
-        <div class="simulation-box">
-            <canvas id="canvas"></canvas>
-            <div class="particle-info">
-                <div>Частиц: <span id="particleCount">100</span></div>
-                <div>Средняя скорость: <span id="avgSpeed">0</span> px/фрейм</div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button onclick="toggleAnimation()">▶/❚❚</button>
-            <button onclick="resetParticles()">Сбросить</button>
-            <div class="control-group">
-                <label>Частицы:</label>
-                <input type="range" id="particleSlider" min="10" max="1000" value="100">
-            </div>
-            <div class="control-group">
-                <label>Скорость:</label>
-                <input type="range" id="speedSlider" min="0.1" max="3" step="0.1" value="1">
-            </div>
-            <button onclick="toggleTrails()">Следы: <span id="trailState">Вкл</span></button>
-        </div>
-
-        <div class="stats">
-            <h3>Статистика в реальном времени:</h3>
-            <div id="collisionCounter">Столкновений: 0</div>
-            <div id="areaCoverage">Покрытая площадь: 0%</div>
-        </div>
-
-        <div class="theory">
-            <h2>Теория броуновского движения</h2>
-            <p>Броуновское движение — хаотическое движение микроскопических частиц в жидкости или газе, 
-            вызванное тепловым движением молекул среды. Явление впервые наблюдал Роберт Браун в 1827 году.</p>
-            
-            <h3>Ключевые особенности:</h3>
-            <ul>
-                <li>Непрерывное и хаотическое движение</li>
-                <li>Зависимость интенсивности от температуры</li>
-                <li>Подтверждение молекулярно-кинетической теории</li>
-            </ul>
-        </div>
+  <div class="container">
+    <h1>Научная симуляция броуновского движения</h1>
+    
+    <div class="simulation-box">
+      <canvas id="canvas"></canvas>
+      <div class="particle-info">
+        <div>Частиц: <span id="particleCount">100</span></div>
+        <div>Ср. скорость: <span id="avgSpeed">0</span> px/фрейм</div>
+      </div>
     </div>
 
-    <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let animationRunning = true;
-        let trailsEnabled = true;
-        let collisions = 0;
-        
-        // Адаптация под размеры экрана
-        function resizeCanvas() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+    <div class="controls">
+      <button onclick="toggleAnimation()">▶ / ❚❚</button>
+      <button onclick="resetParticles()">Сбросить</button>
+      <div class="control-group">
+        <label>Частицы:</label>
+        <input type="range" id="particleSlider" min="10" max="1000" value="100">
+      </div>
+      <div class="control-group">
+        <label>Температура:</label>
+        <input type="range" id="temperatureSlider" min="0.1" max="3" step="0.1" value="1">
+      </div>
+      <div class="control-group">
+        <label>Вязкость:</label>
+        <input type="range" id="viscositySlider" min="0.90" max="1" step="0.005" value="0.995">
+      </div>
+      <div class="control-group">
+        <label>Длина следа:</label>
+        <input type="range" id="trailLengthSlider" min="5" max="50" value="20">
+      </div>
+      <button onclick="toggleTrails()">Следы: <span id="trailState">Вкл</span></button>
+      <button onclick="toggleVelocityVectors()">Векторы: <span id="vectorState">Выкл</span></button>
+    </div>
+
+    <div class="stats">
+      <h3>Статистика в реальном времени</h3>
+      <div id="collisionCounter">Столкновений: 0</div>
+      <div id="avgKinetic">Ср. кин. энергия: 0</div>
+      <div id="diffusionCoeff">Коэф. диффузии: 0</div>
+      <div id="simTime">Время симуляции: 0 сек</div>
+    </div>
+
+    <div class="theory">
+      <h2>Теоретические основы</h2>
+      <p>
+        Броуновское движение – хаотичное движение микроскопических частиц, обусловленное случайными столкновениями с молекулами среды.
+        Здесь смоделированы основные процессы: случайное ускорение (с интенсивностью, зависящей от температуры), вязкое затухание и упругие столкновения.
+      </p>
+      <p>
+        <strong>Коэффициент диффузии</strong> можно оценить по формуле: <em>D = MSD / (4t)</em>,
+        где MSD – среднеквадратичное смещение, t – время симуляции.
+      </p>
+      <p>
+        Кроме того, рассчитывается средняя кинетическая энергия частиц, что позволяет сопоставить результаты с молекулярно-кинетической теорией.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationRunning = true;
+    let trailsEnabled = true;
+    let showVelocityVectors = false;
+    let collisions = 0;
+    let simulationTime = 0;
+    let lastTimestamp = 0;
+
+    // Адаптация canvas под размеры экрана
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Функция для генерации гауссовского случайного числа (Box-Muller)
+    function gaussianRandom() {
+      let u = 0, v = 0;
+      while (u === 0) u = Math.random();
+      while (v === 0) v = Math.random();
+      return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    }
+
+    class Particle {
+      constructor() {
+        this.reset();
+        this.radius = 4;
+        this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.initialX = this.x;
+        this.initialY = this.y;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+        this.history = [];
+      }
+
+      update(dt) {
+        // Случайное ускорение с гауссовским шумом, зависящее от температуры
+        const temp = getTemperature();
+        this.vx += gaussianRandom() * 0.3 * temp;
+        this.vy += gaussianRandom() * 0.3 * temp;
+
+        // Ограничение скорости
+        const speedLimit = 5 * temp;
+        this.vx = Math.max(-speedLimit, Math.min(speedLimit, this.vx));
+        this.vy = Math.max(-speedLimit, Math.min(speedLimit, this.vy));
+
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Граничные условия с отражением и демпфированием
+        if (this.x < 0 || this.x > canvas.width) {
+          this.vx *= -0.8;
+          this.x = Math.max(0, Math.min(canvas.width, this.x));
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor() {
-                this.reset();
-                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-            }
-
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = (Math.random() - 0.5) * 2;
-                this.history = [];
-            }
-
-            update() {
-                // Случайные изменения скорости
-                this.vx += (Math.random() - 0.5) * 0.3 * getSpeedFactor();
-                this.vy += (Math.random() - 0.5) * 0.3 * getSpeedFactor();
-                
-                // Ограничение скорости
-                const speedLimit = 5 * getSpeedFactor();
-                this.vx = Math.max(-speedLimit, Math.min(speedLimit, this.vx));
-                this.vy = Math.max(-speedLimit, Math.min(speedLimit, this.vy));
-                
-                this.x += this.vx;
-                this.y += this.vy;
-
-                // Граничные условия с демпфированием
-                if (this.x < 0 || this.x > canvas.width) {
-                    this.vx *= -0.8;
-                    this.x = Math.max(0, Math.min(canvas.width, this.x));
-                }
-                if (this.y < 0 || this.y > canvas.height) {
-                    this.vy *= -0.8;
-                    this.y = Math.max(0, Math.min(canvas.height, this.y));
-                }
-
-                // Сохраняем историю для следов
-                if (trailsEnabled) {
-                    this.history.push({x: this.x, y: this.y});
-                    if (this.history.length > 20) this.history.shift();
-                }
-            }
-
-            draw() {
-                // Рисуем след
-                if (trailsEnabled) {
-                    this.history.forEach((pos, i) => {
-                        ctx.beginPath();
-                        ctx.arc(pos.x, pos.y, 2 * (i/this.history.length), 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(255,255,255,${0.2 * (i/this.history.length)})`;
-                        ctx.fill();
-                    });
-                }
-
-                // Рисуем частицу
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 15;
-                ctx.fill();
-            }
-        }
-
-        // Управление
-        function getSpeedFactor() {
-            return parseFloat(document.getElementById('speedSlider').value);
-        }
-
-        function toggleAnimation() {
-            animationRunning = !animationRunning;
-            if (animationRunning) animate();
-        }
-
-        function resetParticles() {
-            const count = parseInt(document.getElementById('particleSlider').value);
-            particles = Array.from({length: count}, () => new Particle());
-            collisions = 0;
-            document.getElementById('particleCount').textContent = count;
-        }
-
-        function toggleTrails() {
-            trailsEnabled = !trailsEnabled;
-            document.getElementById('trailState').textContent = trailsEnabled ? 'Вкл' : 'Выкл';
-        }
-
-        // Статистика
-        function updateStats() {
-            // Расчет средней скорости
-            const avgSpeed = particles.reduce((sum, p) => 
-                sum + Math.sqrt(p.vx**2 + p.vy**2), 0) / particles.length;
-            document.getElementById('avgSpeed').textContent = avgSpeed.toFixed(2);
-        }
-
-        // Анимация
-        function animate() {
-            if (!animationRunning) return;
-
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            if (!trailsEnabled) ctx.clearRect(0, 0, canvas.width, canvas.height);
-            else ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-
-            updateStats();
-            requestAnimationFrame(animate);
+        if (this.y < 0 || this.y > canvas.height) {
+          this.vy *= -0.8;
+          this.y = Math.max(0, Math.min(canvas.height, this.y));
         }
 
-        // Инициализация
-        document.getElementById('particleSlider').addEventListener('input', function() {
-            document.getElementById('particleCount').textContent = this.value;
-            resetParticles();
-        });
+        // Сохранение истории для следов
+        if (trailsEnabled) {
+          this.history.push({ x: this.x, y: this.y });
+          if (this.history.length > getTrailLength()) this.history.shift();
+        } else {
+          this.history = [];
+        }
 
-        resetParticles();
-        animate();
-    </script>
+        // Применение эффекта вязкости (фрикция)
+        const viscosity = getViscosity();
+        this.vx *= viscosity;
+        this.vy *= viscosity;
+      }
+
+      draw() {
+        // Рисуем следы
+        if (trailsEnabled) {
+          this.history.forEach((pos, i) => {
+            ctx.beginPath();
+            ctx.arc(
+              pos.x,
+              pos.y,
+              this.radius * (i / this.history.length),
+              0,
+              Math.PI * 2
+            );
+            ctx.fillStyle = `rgba(255,255,255,${0.2 * (i / this.history.length)})`;
+            ctx.fill();
+          });
+        }
+        // Рисуем частицу
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 15;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Отрисовка вектора скорости (если включено)
+        if (showVelocityVectors) {
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x + this.vx * 10, this.y + this.vy * 10);
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Получение значений параметров из слайдеров
+    function getTemperature() {
+      return parseFloat(document.getElementById('temperatureSlider').value);
+    }
+    function getViscosity() {
+      return parseFloat(document.getElementById('viscositySlider').value);
+    }
+    function getTrailLength() {
+      return parseInt(document.getElementById('trailLengthSlider').value);
+    }
+
+    // Управление анимацией
+    function toggleAnimation() {
+      animationRunning = !animationRunning;
+      if (animationRunning) requestAnimationFrame(animate);
+    }
+
+    function resetParticles() {
+      const count = parseInt(document.getElementById('particleSlider').value);
+      particles = Array.from({ length: count }, () => new Particle());
+      collisions = 0;
+      simulationTime = 0;
+      lastTimestamp = 0;
+      document.getElementById('particleCount').textContent = count;
+    }
+
+    function toggleTrails() {
+      trailsEnabled = !trailsEnabled;
+      document.getElementById('trailState').textContent = trailsEnabled ? 'Вкл' : 'Выкл';
+    }
+
+    function toggleVelocityVectors() {
+      showVelocityVectors = !showVelocityVectors;
+      document.getElementById('vectorState').textContent = showVelocityVectors ? 'Вкл' : 'Выкл';
+    }
+
+    // Обработка столкновений между частицами
+    function handleCollisions() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const p1 = particles[i];
+          const p2 = particles[j];
+          const dx = p2.x - p1.x;
+          const dy = p2.y - p1.y;
+          const dist = Math.hypot(dx, dy);
+          const minDist = p1.radius + p2.radius;
+          if (dist < minDist && dist > 0) {
+            collisions++;
+
+            // Коррекция перекрытия
+            const angle = Math.atan2(dy, dx);
+            const overlap = (minDist - dist) / 2;
+            p1.x -= overlap * Math.cos(angle);
+            p1.y -= overlap * Math.sin(angle);
+            p2.x += overlap * Math.cos(angle);
+            p2.y += overlap * Math.sin(angle);
+
+            // Упругое столкновение: обмен нормальными составляющими скоростей
+            const nx = Math.cos(angle);
+            const ny = Math.sin(angle);
+            const v1n = p1.vx * nx + p1.vy * ny;
+            const v2n = p2.vx * nx + p2.vy * ny;
+            p1.vx += (v2n - v1n) * nx;
+            p1.vy += (v2n - v1n) * ny;
+            p2.vx += (v1n - v2n) * nx;
+            p2.vy += (v1n - v2n) * ny;
+          }
+        }
+      }
+    }
+
+    // Обновление статистики: средняя скорость, кин. энергия, диффузия и время симуляции
+    function updateStats() {
+      let totalSpeed = 0;
+      let totalKinetic = 0;
+      let totalMSD = 0;
+      particles.forEach(p => {
+        const speed = Math.hypot(p.vx, p.vy);
+        totalSpeed += speed;
+        totalKinetic += 0.5 * (p.vx ** 2 + p.vy ** 2);
+        const dx = p.x - p.initialX;
+        const dy = p.y - p.initialY;
+        totalMSD += dx * dx + dy * dy;
+      });
+      const avgSpeed = totalSpeed / particles.length;
+      const avgKinetic = totalKinetic / particles.length;
+      const msd = totalMSD / particles.length;
+      const diffusion = simulationTime > 0 ? (msd / (4 * simulationTime)).toFixed(2) : 0;
+
+      document.getElementById('avgSpeed').textContent = avgSpeed.toFixed(2);
+      document.getElementById('collisionCounter').textContent = `Столкновений: ${collisions}`;
+      document.getElementById('avgKinetic').textContent = `Ср. кин. энергия: ${avgKinetic.toFixed(2)}`;
+      document.getElementById('diffusionCoeff').textContent = `Коэф. диффузии: ${diffusion}`;
+      document.getElementById('simTime').textContent = `Время симуляции: ${simulationTime.toFixed(1)} сек`;
+    }
+
+    // Анимация с использованием метки времени
+    function animate(timestamp) {
+      if (!animationRunning) return;
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const dt = (timestamp - lastTimestamp) / 1000; // время в секундах
+      simulationTime += dt;
+      lastTimestamp = timestamp;
+
+      // Фон: для следов заполняем прозрачным цветом, иначе очищаем полностью
+      if (!trailsEnabled) ctx.clearRect(0, 0, canvas.width, canvas.height);
+      else {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // Обновление частиц
+      particles.forEach(p => p.update(dt));
+      // Обработка столкновений
+      handleCollisions();
+      // Отрисовка частиц
+      particles.forEach(p => p.draw());
+      // Обновление статистики
+      updateStats();
+
+      requestAnimationFrame(animate);
+    }
+
+    // Инициализация и обработка изменений слайдеров
+    document.getElementById('particleSlider').addEventListener('input', function () {
+      document.getElementById('particleCount').textContent = this.value;
+      resetParticles();
+    });
+
+    resetParticles();
+    requestAnimationFrame(animate);
+  </script>
 </body>
 </html>
