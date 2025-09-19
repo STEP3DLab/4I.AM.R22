@@ -1,139 +1,189 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STEP_3D — Mini App Prototype</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-    .nav-btn.active { background-color: #4f46e5; color: white; }
-    .card:hover { transform: translateY(-3px); transition: 0.2s; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEP_3D — Mini App Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1E293B; /* Тёмно-синий/графитовый фон */
+            color: #E2E8F0; /* Светлый текст для контраста */
+        }
+        .nav-btn.active {
+            background-color: #6366f1; /* Акцентный цвет индиго */
+            color: white;
+            box-shadow: 0 5px 10px rgba(99, 102, 241, 0.3);
+        }
+        .card, .nav-btn, .form-element {
+            background-color: #2D3A50; /* Цвет элементов на тёмном фоне */
+            border-radius: 1.5rem; /* Скругление углов */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+        .cta-banner {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6); /* Градиент */
+            border-radius: 2rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .custom-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23cbd5e1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>');
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.5em;
+        }
+    </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
-  <!-- Главный экран -->
-  <div id="screen" class="flex-1 p-6 overflow-auto">
-    <!-- Home: Заказать -->
-    <div id="home-screen">
-      <h1 class="text-2xl font-bold mb-4">STEP_3D — Заказать 3D-печать</h1>
-      
-      <!-- CTA Баннер -->
-      <div class="bg-indigo-600 text-white p-4 rounded-lg text-center mb-6 shadow">
-        <button class="px-6 py-3 rounded-lg font-semibold text-lg hover:bg-indigo-700 transition">Загрузить STL</button>
-      </div>
-      
-      <!-- Карточки автооценки -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div class="card bg-white p-4 rounded-lg shadow">
-          <div class="h-32 bg-gray-200 rounded mb-3 flex items-center justify-center">Preview STL</div>
-          <p>Объём: 120 см³</p>
-          <p>Время: 3ч 20м</p>
-          <p>Цена: 1200 ₽</p>
+    <div id="screen" class="flex-1 p-6 overflow-auto">
+        <div id="home-screen">
+            <h1 class="text-3xl font-bold mb-6 text-center">STEP_3D — 3D-печать</h1>
+            
+            <div class="cta-banner text-white p-6 rounded-2xl text-center mb-8 shadow-lg">
+                <p class="text-xl font-semibold mb-2">Начните 3D-печать сегодня</p>
+                <p class="mb-4">Загрузите свой STL-файл, и мы сделаем всё остальное.</p>
+                <button class="bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition">Загрузить STL</button>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div class="card p-6 rounded-2xl">
+                    <div class="h-32 bg-gray-600 rounded-xl mb-4 flex items-center justify-center text-gray-400">Превью STL</div>
+                    <p class="font-semibold text-lg mb-2">Деталь #1</p>
+                    <div class="space-y-1 text-sm">
+                        <p>Объём: <span class="font-medium text-white">120 см³</span></p>
+                        <p>Время: <span class="font-medium text-white">3ч 20м</span></p>
+                        <p class="text-xl font-bold text-indigo-400 mt-2">1200 ₽</p>
+                    </div>
+                </div>
+                <div class="card p-6 rounded-2xl">
+                    <div class="h-32 bg-gray-600 rounded-xl mb-4 flex items-center justify-center text-gray-400">Превью STL</div>
+                    <p class="font-semibold text-lg mb-2">Деталь #2</p>
+                    <div class="space-y-1 text-sm">
+                        <p>Объём: <span class="font-medium text-white">80 см³</span></p>
+                        <p>Время: <span class="font-medium text-white">2ч 10м</span></p>
+                        <p class="text-xl font-bold text-indigo-400 mt-2">800 ₽</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block font-semibold mb-2 text-lg">Материал</label>
+                <select class="custom-select w-full form-element border-none p-4 text-white placeholder-gray-400">
+                    <option class="bg-gray-700 text-white">PLA</option>
+                    <option class="bg-gray-700 text-white">PETG</option>
+                    <option class="bg-gray-700 text-white">Resin</option>
+                    <option class="bg-gray-700 text-white">SLA</option>
+                </select>
+            </div>
+            
+            <div class="mb-8">
+                <label class="block font-semibold mb-2 text-lg">Опции</label>
+                <div class="space-y-3">
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="h-5 w-5 rounded-md bg-gray-600 text-indigo-500 focus:ring-indigo-500">
+                        <span>Качество слоя: 0.1 мм</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="h-5 w-5 rounded-md bg-gray-600 text-indigo-500 focus:ring-indigo-500">
+                        <span>Заполнение: 20%</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="h-5 w-5 rounded-md bg-gray-600 text-indigo-500 focus:ring-indigo-500">
+                        <span>Поддержка: да</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="text-center mb-16">
+                <button class="bg-indigo-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-indigo-700 transition shadow-lg">
+                    Оформить заказ
+                </button>
+            </div>
         </div>
-        <div class="card bg-white p-4 rounded-lg shadow">
-          <div class="h-32 bg-gray-200 rounded mb-3 flex items-center justify-center">Preview STL</div>
-          <p>Объём: 80 см³</p>
-          <p>Время: 2ч 10м</p>
-          <p>Цена: 800 ₽</p>
+
+        <div id="orders-screen" class="hidden">
+            <h1 class="text-2xl font-bold mb-6">Мои заказы</h1>
+            <div class="space-y-4">
+                <div class="card p-5 rounded-xl">
+                    <p class="font-semibold text-lg">Заказ #1023</p>
+                    <p class="text-indigo-400 font-medium">Статус: В печати</p>
+                    <p class="text-sm mt-2">Материал: PLA, Цена: 1200 ₽</p>
+                </div>
+                <div class="card p-5 rounded-xl">
+                    <p class="font-semibold text-lg">Заказ #1020</p>
+                    <p class="text-green-400 font-medium">Статус: Отправлен</p>
+                    <p class="text-sm mt-2">Материал: PETG, Цена: 800 ₽</p>
+                </div>
+            </div>
         </div>
-      </div>
-      
-      <!-- Селектор материала -->
-      <div class="mb-4">
-        <label class="block font-semibold mb-1">Материал:</label>
-        <select class="w-full border rounded p-2">
-          <option>PLA</option>
-          <option>PETG</option>
-          <option>Resin</option>
-          <option>SLA</option>
-        </select>
-      </div>
-      
-      <!-- Опции -->
-      <div class="mb-6">
-        <label class="block font-semibold mb-1">Опции:</label>
-        <div class="space-y-2">
-          <label><input type="checkbox" class="mr-2">Качество слоя: 0.1 мм</label>
-          <label><input type="checkbox" class="mr-2">Заполнение: 20%</label>
-          <label><input type="checkbox" class="mr-2">Поддержка: да</label>
+
+        <div id="partners-screen" class="hidden">
+            <h1 class="text-2xl font-bold mb-6">Панель хоста</h1>
+            <ul class="space-y-4">
+                <li class="card p-5 rounded-xl flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold text-lg">Задание #550</p>
+                        <p class="text-sm">PLA — 3ч</p>
+                    </div>
+                    <div class="space-x-2">
+                        <button class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Принять</button>
+                        <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Отклонить</button>
+                    </div>
+                </li>
+                <li class="card p-5 rounded-xl flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold text-lg">Задание #551</p>
+                        <p class="text-sm">Resin — 2ч 30м</p>
+                    </div>
+                    <div class="space-x-2">
+                        <button class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Принять</button>
+                        <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Отклонить</button>
+                    </div>
+                </li>
+            </ul>
         </div>
-      </div>
-      
-      <!-- Кнопка оформления -->
-      <div class="text-center mb-12">
-        <button class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">Оформить заказ</button>
-      </div>
+
+        <div id="profile-screen" class="hidden">
+            <h1 class="text-2xl font-bold mb-6">Профиль</h1>
+            <div class="card p-6 rounded-xl space-y-3">
+                <p>Имя: <span class="font-medium text-white">Иван Иванов</span></p>
+                <p>Баланс: <span class="font-medium text-white">5000 ₽</span></p>
+                <p class="text-sm text-gray-400 mt-4">Здесь будут настройки и документы.</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Мои заказы -->
-    <div id="orders-screen" class="hidden">
-      <h1 class="text-2xl font-bold mb-4">Мои заказы</h1>
-      <div class="space-y-4">
-        <div class="bg-white p-4 rounded-lg shadow">
-          <p>Заказ #1023 — <b>Статус: В печати</b></p>
-          <p>Материал: PLA, Время: 3ч 20м, Цена: 1200 ₽</p>
-        </div>
-        <div class="bg-white p-4 rounded-lg shadow">
-          <p>Заказ #1020 — <b>Статус: Отправлен</b></p>
-          <p>Материал: PETG, Время: 2ч 10м, Цена: 800 ₽</p>
-        </div>
-      </div>
-    </div>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#2D3A50] border-t dark:border-gray-700 shadow-xl flex justify-around py-4 rounded-t-3xl">
+        <button class="nav-btn active px-4 py-2 rounded-xl font-semibold text-sm flex-1 mx-2" data-target="home-screen">Заказать</button>
+        <button class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm flex-1 mx-2" data-target="orders-screen">Мои заказы</button>
+        <button class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm flex-1 mx-2" data-target="partners-screen">Партнёрам</button>
+        <button class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm flex-1 mx-2" data-target="profile-screen">Профиль</button>
+    </nav>
 
-    <!-- Панель партнёров -->
-    <div id="partners-screen" class="hidden">
-      <h1 class="text-2xl font-bold mb-4">Панель хоста</h1>
-      <ul class="space-y-4">
-        <li class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-          <div>Задание #550 — PLA — 3ч</div>
-          <div class="space-x-2">
-            <button class="px-3 py-1 bg-green-500 text-white rounded">Принять</button>
-            <button class="px-3 py-1 bg-red-500 text-white rounded">Отклонить</button>
-          </div>
-        </li>
-        <li class="bg-white p-4 rounded-lg shadow flex justify-between items-center">
-          <div>Задание #551 — Resin — 2ч 30м</div>
-          <div class="space-x-2">
-            <button class="px-3 py-1 bg-green-500 text-white rounded">Принять</button>
-            <button class="px-3 py-1 bg-red-500 text-white rounded">Отклонить</button>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <script>
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const screens = document.querySelectorAll('#screen > div');
 
-    <!-- Профиль -->
-    <div id="profile-screen" class="hidden">
-      <h1 class="text-2xl font-bold mb-4">Профиль</h1>
-      <p>Имя: Иван Иванов</p>
-      <p>Баланс: 5000 ₽</p>
-      <p>Настройки и документы...</p>
-    </div>
-  </div>
-
-  <!-- Нижняя навигация -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-inner flex justify-around py-2">
-    <button class="nav-btn active px-4 py-2 rounded-lg font-semibold" data-target="home-screen">Заказать</button>
-    <button class="nav-btn px-4 py-2 rounded-lg font-semibold" data-target="orders-screen">Мои заказы</button>
-    <button class="nav-btn px-4 py-2 rounded-lg font-semibold" data-target="partners-screen">Партнёрам</button>
-    <button class="nav-btn px-4 py-2 rounded-lg font-semibold" data-target="profile-screen">Профиль</button>
-  </nav>
-
-  <script>
-    const navButtons = document.querySelectorAll('.nav-btn');
-    const screens = document.querySelectorAll('#screen > div');
-
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        screens.forEach(s => s.classList.add('hidden'));
-        const target = document.getElementById(btn.dataset.target);
-        target.classList.remove('hidden');
-        navButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-  </script>
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                screens.forEach(s => s.classList.add('hidden'));
+                const target = document.getElementById(btn.dataset.target);
+                target.classList.remove('hidden');
+                navButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
 
 </body>
 </html>
