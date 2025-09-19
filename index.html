@@ -3,187 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STEP_3D — Mini App Prototype</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Яндекс.Доставка для 3D-печати</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #1E293B; /* Тёмно-синий/графитовый фон */
-            color: #E2E8F0; /* Светлый текст для контраста */
-        }
-        .nav-btn.active {
-            background-color: #6366f1; /* Акцентный цвет индиго */
-            color: white;
-            box-shadow: 0 5px 10px rgba(99, 102, 241, 0.3);
-        }
-        .card, .nav-btn, .form-element {
-            background-color: #2D3A50; /* Цвет элементов на тёмном фоне */
-            border-radius: 1.5rem; /* Скругление углов */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
-        }
-        .cta-banner {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6); /* Градиент */
-            border-radius: 2rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .custom-select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url('data:image/svg+xml;utf8,<svg fill="%23cbd5e1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>');
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1.5em;
-        }
+        body { font-family: 'Roboto', sans-serif; margin: 0; padding: 0; background: linear-gradient(to bottom, #ffffff, #e3f2fd); color: #333; }
+        header { position: fixed; top: 0; width: 100%; background: #007bff; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        header .logo { font-size: 24px; font-weight: bold; }
+        nav ul { list-style: none; display: flex; gap: 20px; }
+        nav ul li a { color: white; text-decoration: none; }
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; background: url("https://example.com/3d-printer-bg.jpg") no-repeat center/cover; }
+        .hero h1 { font-size: 48px; margin-bottom: 20px; }
+        .hero p { font-size: 24px; margin-bottom: 40px; }
+        .btn { background: #00c853; color: white; padding: 15px 30px; border-radius: 5px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .btn:hover { transform: scale(1.05); }
+        .section { padding: 60px 20px; }
+        .cards { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        .card i { font-size: 40px; color: #007bff; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        footer { background: #007bff; color: white; text-align: center; padding: 20px; }
+        .upload-zone { background: #f5f5f5; padding: 20px; border-radius: 10px; text-align: center; border: 2px dashed #007bff; }
+        .upload-zone input, .upload-zone select { margin: 10px 0; width: 80%; padding: 10px; }
+        form input { display: block; margin: 10px auto; padding: 10px; width: 80%; border: 1px solid #ddd; border-radius: 5px; }
+        @media (max-width: 768px) { .hero h1 { font-size: 32px; } .hero p { font-size: 18px; } .cards { flex-direction: column; align-items: center; } }
     </style>
+    <!-- Для иконок добавьте: <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> -->
 </head>
-<body class="flex flex-col min-h-screen">
-
-    <div id="screen" class="flex-1 p-6 overflow-auto">
-        <div id="home-screen">
-            <h1 class="text-3xl font-bold mb-6 text-center">STEP_3D — 3D-печать</h1>
-            
-            <div class="cta-banner text-white p-6 rounded-2xl text-center mb-8 shadow-lg">
-                <p class="text-xl font-semibold mb-2">Начните 3D-печать сегодня</p>
-                <p class="mb-4">Загрузите свой STL-файл, и мы сделаем всё остальное.</p>
-                <button class="bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition">Загрузить STL</button>
-            </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                <div class="card p-6 rounded-2xl">
-                    <div class="h-32 bg-gray-600 rounded-xl mb-4 flex items-center justify-center text-gray-400">Превью STL</div>
-                    <p class="font-semibold text-lg mb-2">Деталь #1</p>
-                    <div class="space-y-1 text-sm">
-                        <p>Объём: <span class="font-medium text-white">120 см³</span></p>
-                        <p>Время: <span class="font-medium text-white">3ч 20м</span></p>
-                        <p class="text-xl font-bold text-indigo-400 mt-2">1200 ₽</p>
-                    </div>
-                </div>
-                <div class="card p-6 rounded-2xl">
-                    <div class="h-32 bg-gray-600 rounded-xl mb-4 flex items-center justify-center text-gray-400">Превью STL</div>
-                    <p class="font-semibold text-lg mb-2">Деталь #2</p>
-                    <div class="space-y-1 text-sm">
-                        <p>Объём: <span class="font-medium text-white">80 см³</span></p>
-                        <p>Время: <span class="font-medium text-white">2ч 10м</span></p>
-                        <p class="text-xl font-bold text-indigo-400 mt-2">800 ₽</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mb-6">
-                <label class="block font-semibold mb-2 text-lg">Материал</label>
-                <select class="custom-select w-full form-element border-none p-4 text-white placeholder-gray-400">
-                    <option class="bg-gray-700 text-white">PLA</option>
-                    <option class="bg-gray-700 text-white">PETG</option>
-                    <option class="bg-gray-700 text-white">Resin</option>
-                    <option class="bg-gray-700 text-white">SLA</option>
-                </select>
-            </div>
-            
-            <div class="mb-8">
-                <label class="block font-semibold mb-2 text-lg">Опции</label>
-                <div class="space-y-3">
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="h-5 w-5 rounded-md bg-gray-600 text-indigo-500 focus:ring-indigo-500">
-                        <span>Качество слоя: 0.1 мм</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="h-5 w-5 rounded-md bg-gray-600 text-indigo-500 focus:ring-indigo-500">
-                        <span>Заполнение: 20%</span>
-                    </label>
-                    <label class="flex items-center space-x-2">
-                        <input type="checkbox" class="h-5 w-5 rounded-md bg-gray-600 text-indigo-500 focus:ring-indigo-500">
-                        <span>Поддержка: да</span>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="text-center mb-16">
-                <button class="bg-indigo-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-indigo-700 transition shadow-lg">
-                    Оформить заказ
-                </button>
-            </div>
-        </div>
-
-        <div id="orders-screen" class="hidden">
-            <h1 class="text-2xl font-bold mb-6">Мои заказы</h1>
-            <div class="space-y-4">
-                <div class="card p-5 rounded-xl">
-                    <p class="font-semibold text-lg">Заказ #1023</p>
-                    <p class="text-indigo-400 font-medium">Статус: В печати</p>
-                    <p class="text-sm mt-2">Материал: PLA, Цена: 1200 ₽</p>
-                </div>
-                <div class="card p-5 rounded-xl">
-                    <p class="font-semibold text-lg">Заказ #1020</p>
-                    <p class="text-green-400 font-medium">Статус: Отправлен</p>
-                    <p class="text-sm mt-2">Материал: PETG, Цена: 800 ₽</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="partners-screen" class="hidden">
-            <h1 class="text-2xl font-bold mb-6">Панель хоста</h1>
-            <ul class="space-y-4">
-                <li class="card p-5 rounded-xl flex justify-between items-center">
-                    <div>
-                        <p class="font-semibold text-lg">Задание #550</p>
-                        <p class="text-sm">PLA — 3ч</p>
-                    </div>
-                    <div class="space-x-2">
-                        <button class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Принять</button>
-                        <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Отклонить</button>
-                    </div>
-                </li>
-                <li class="card p-5 rounded-xl flex justify-between items-center">
-                    <div>
-                        <p class="font-semibold text-lg">Задание #551</p>
-                        <p class="text-sm">Resin — 2ч 30м</p>
-                    </div>
-                    <div class="space-x-2">
-                        <button class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Принять</button>
-                        <button class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Отклонить</button>
-                    </div>
-                </li>
+<body>
+    <header>
+        <div class="logo">Яндекс.Доставка для 3D-печати</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#clients">Клиентам</a></li>
+                <li><a href="#partners">Партнерам</a></li>
+                <li><a href="#about">О нас</a></li>
+                <li><a href="#login">Вход/Регистрация</a></li>
             </ul>
-        </div>
-
-        <div id="profile-screen" class="hidden">
-            <h1 class="text-2xl font-bold mb-6">Профиль</h1>
-            <div class="card p-6 rounded-xl space-y-3">
-                <p>Имя: <span class="font-medium text-white">Иван Иванов</span></p>
-                <p>Баланс: <span class="font-medium text-white">5000 ₽</span></p>
-                <p class="text-sm text-gray-400 mt-4">Здесь будут настройки и документы.</p>
+        </nav>
+    </header>
+    <section id="home" class="hero">
+        <h1>3D-печать на заказ: быстро, надежно, по всей России</h1>
+        <p>Загружайте модель, выбирайте материал — и получите готовый продукт с доставкой. Без покупки оборудования!</p>
+        <a href="#clients" class="btn">Загрузить модель</a>
+        <a href="#partners" class="btn" style="background: #007bff; margin-left: 20px;">Стать партнером</a>
+        <a href="https://t.me/yandex3dbot" class="btn" style="background: #2196f3; margin-left: 20px;">Открыть в Telegram</a>
+    </section>
+    <section id="why" class="section">
+        <h2>Почему мы?</h2>
+        <div class="cards">
+            <div class="card">
+                <i class="fas fa-network-wired"></i>
+                <h3>Распределенная сеть</h3>
+                <p>Сотни партнеров по России. Поддержка FDM, SLA, SLS для кастомизации и мелкосерийного производства.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-check-circle"></i>
+                <h3>Контроль качества</h3>
+                <p>Автоматическая верификация STL, удаленный мониторинг, фото/видео подтверждение готового изделия.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-dollar-sign"></i>
+                <h3>Экономия и масштабирование</h3>
+                <p>Комиссия 15%, GMV от 4 млн руб/мес. Дополнительно: подписка для партнеров и продажа материалов.</p>
             </div>
         </div>
-    </div>
-
-    <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#2D3A50] border-t dark:border-gray-700 shadow-xl flex justify-around py-4 rounded-t-3xl">
-        <button class="nav-btn active px-4 py-2 rounded-xl font-semibold text-sm flex-1 mx-2" data-target="home-screen">Заказать</button>
-        <button class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm flex-1 mx-2" data-target="orders-screen">Мои заказы</button>
-        <button class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm flex-1 mx-2" data-target="partners-screen">Партнёрам</button>
-        <button class="nav-btn px-4 py-2 rounded-xl font-semibold text-sm flex-1 mx-2" data-target="profile-screen">Профиль</button>
-    </nav>
-
-    <script>
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const screens = document.querySelectorAll('#screen > div');
-
-        navButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                screens.forEach(s => s.classList.add('hidden'));
-                const target = document.getElementById(btn.dataset.target);
-                target.classList.remove('hidden');
-                navButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            });
-        });
-    </script>
-
+    </section>
+    <section id="market" class="section">
+        <h2>Рыночные тренды</h2>
+        <p>На основе анализа: рост рынка до 46 млрд руб. к 2027 в России.</p>
+        <table>
+            <tr><th>Показатель</th><th>Глобальный рынок</th><th>Российский рынок</th></tr>
+            <tr><td>Объем 2024</td><td>$19,7 млрд</td><td>15 млрд руб. (2023)</td></tr>
+            <tr><td>Прогноз</td><td>$41 млрд (2028)</td><td>46 млрд руб. (2027)</td></tr>
+            <tr><td>CAGR</td><td>22,3%</td><td>>60% (2022-2023)</td></tr>
+        </table>
+        <a href="#about" class="btn">Узнать больше об отчете</a>
+    </section>
+    <section id="clients" class="section">
+        <h2>Для клиентов (B2C/B2B)</h2>
+        <div class="upload-zone">
+            <p>Перетащите STL-файл сюда или выберите файл для автоматической оценки</p>
+            <input type="file" accept=".stl">
+            <select>
+                <option>FDM (для прототипов)</option>
+                <option>SLA (высокая детализация)</option>
+                <option>SLS (прочные детали)</option>
+            </select>
+            <select>
+                <option>PLA (стандартный пластик)</option>
+                <option>ABS (прочный)</option>
+                <option>Фотополимер (для SLA)</option>
+            </select>
+            <p>Авто-расчет: Стоимость ~500 руб., Время ~24 ч. (зависит от модели)</p>
+            <button class="btn">Рассчитать и заказать (СБП)</button>
+            <p>Для B2B: Укажите количество (2-500 шт.) для мелкосерийного производства.</p>
+            <input type="number" placeholder="Количество" min="2" max="500">
+        </div>
+        <p>Отслеживание заказа: Через личный кабинет или Telegram-бот.</p>
+    </section>
+    <section id="partners" class="section">
+        <h2>Для партнеров</h2>
+        <p>Присоединяйтесь к сети! Получайте заказы, приоритет по подписке и материалы по опту.</p>
+        <form>
+            <input type="text" placeholder="Тип принтера (FDM/SLA/SLS)" required>
+            <input type="text" placeholder="Геолокация (город)" required>
+            <input type="email" placeholder="Email для регистрации" required>
+            <button type="submit" class="btn">Зарегистрироваться</button>
+        </form>
+        <p>Личный кабинет: Управление заказами, загрузка фото/видео для верификации.</p>
+        <table style="max-width: 600px; margin: auto;">
+            <tr><th>Заказ ID</th><th>Модель</th><th>Статус</th><th>Оплата</th></tr>
+            <tr><td>001</td><td>Прототип</td><td>В печати</td><td>800 руб.</td></tr>
+        </table>
+    </section>
+    <section id="about" class="section">
+        <h2>О нас</h2>
+        <p>Проект основан на отчете: анализ рынка, техзадание, дорожная карта на 18 месяцев (Фаза 1: MVP с FDM, Фаза 2: Масштабирование, Фаза 3: B2B и новые технологии).</p>
+        <ul>
+            <li>Фаза 1 (0-3 мес.): Telegram-бот, 10-20 партнеров.</li>
+            <li>Фаза 2 (4-9 мес.): Интеграция СДЭК/Ozon, маркетинг.</li>
+            <li>Фаза 3 (10-18 мес.): SLA/SLS, 3D-моделирование на заказ.</li>
+        </ul>
+        <p>Финмодель: Комиссия + материалы + подписки. Контакты для инвесторов: info@yandex3d.ru.</p>
+    </section>
+    <footer>
+        <p>Контакты: support@yandex3d.ru | Telegram: @yandex3dbot | © 2025 Яндекс.Доставка для 3D-печати</p>
+    </footer>
 </body>
 </html>
