@@ -1,517 +1,170 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Научная симуляция броуновского движения</title>
-  <!-- Подключение шрифта Montserrat -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg-color-dark: #1a1a1a;
-      --panel-bg-dark: #262626;
-      --text-color-dark: #f0f0f0;
-      --accent-color: #FF5722;
-      --shadow-color: rgba(0, 0, 0, 0.2);
+import React from 'react';
 
-      --bg-color-light: #f7f7f8;
-      --panel-bg-light: #ffffff;
-      --text-color-light: #333;
-    }
+// STEP_3D — Telegram Mini-App
+// Single-file design spec & prototype mockup for a Telegram WebApp (Mini App)
+// Uses Tailwind-like classes in markup for easy conversion. This file is a design-document
+// presented as a React component so it can be previewed in canvas and exported.
 
-    /* По умолчанию темная тема */
-    body.dark-theme {
-      background: var(--bg-color-dark);
-      color: var(--text-color-dark);
-    }
-    body.light-theme {
-      background: var(--bg-color-light);
-      color: var(--text-color-light);
-    }
+export default function Step3dTelegramMiniAppDesign() {
+  return (
+    <div className="p-8 max-w-4xl mx-auto font-sans text-slate-800">
+      <h1 className="text-3xl font-bold">STEP_3D — Mini App (Telegram Web App) — Дизайн‑проект</h1>
+      <p className="mt-3 text-slate-600">Цель: удобное мобильное mini‑приложение внутри Telegram для приёма заказов на 3D‑печать, управления заданиями хостов (школ/колледжей) и мониторинга статуса печати.</p>
 
-    body {
-      margin: 0;
-      font-family: 'Montserrat', sans-serif;
-      transition: background 0.3s, color 0.3s;
-    }
+      <hr className="my-6" />
 
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-    }
+      <h2 className="text-2xl font-semibold">1. Ключевые сценарии (User Journeys)</h2>
+      <ol className="mt-3 space-y-2 list-decimal list-inside text-slate-700">
+        <li><b>Клиент:</b> загрузить STL → выбрать материал и параметры → увидеть мгновенную оценку → оплатить → отслеживать статус → получить трек‑номер.</li>
+        <li><b>Школа/колледж (хост):</b> получать задания → принять/отклонировать → печать → фотофиксация и загрузка фото → отметить как готово → запрос на отгрузку.</li>
+        <li><b>Оператор STEP_3D:</b> мониторить очередь, переназначать задания, обрабатывать рекламации и отчёты по качеству.</li>
+      </ol>
 
-    h1, h2, h3 {
-      text-align: center;
-      margin: 10px 0;
-    }
+      <h2 className="text-2xl font-semibold mt-6">2. Структура и навигация</h2>
+      <p className="mt-2 text-slate-700">Мини-приложение делится на 4 вкладки (нижняя навигация):</p>
+      <ul className="mt-3 list-disc list-inside">
+        <li><b>Заказать</b> — загрузка STL, автоматическая оценка, варианты материалов, быстрый заказ.</li>
+        <li><b>Мои заказы</b> — история, статусы, чаты с хостом и саппортом, трек‑номер.</li>
+        <li><b>Партнёрам</b> — панель хоста: входящие задания, инструкции, чек‑листы, отчётность.</li>
+        <li><b>Профиль</b> — настройки, платёжные методы, юридические документы, обучение.</li>
+      </ul>
 
-    .simulation-box {
-      position: relative;
-      background: #000;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px var(--shadow-color);
-      overflow: hidden;
-      margin-bottom: 20px;
-    }
-
-    canvas {
-      width: 100%;
-      height: 70vh;
-      display: block;
-    }
-
-    .controls {
-      background: currentColor;
-      background-color: /* подставим в зависимости от темы через класс */ inherit;
-      padding: 15px;
-      border-radius: 15px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 10px;
-      box-shadow: 0 4px 20px var(--shadow-color);
-      margin-bottom: 20px;
-    }
-
-    .controls button,
-    .controls input[type="range"] {
-      transition: all 0.3s;
-    }
-
-    .control-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    button {
-      padding: 10px 20px;
-      background: var(--accent-color);
-      border: none;
-      color: #fff;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px var(--shadow-color);
-    }
-    button:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--accent-color);
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--accent-color);
-    }
-
-    .stats, .theory {
-      background: inherit;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px var(--shadow-color);
-      margin-bottom: 20px;
-    }
-
-    .particle-info {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 15px;
-      border-radius: 10px;
-      backdrop-filter: blur(5px);
-      color: #fff;
-      font-size: 14px;
-    }
-
-    /* Адаптивность */
-    @media (max-width: 600px) {
-      .controls {
-        grid-template-columns: 1fr;
-      }
-      .particle-info {
-        font-size: 12px;
-        top: 10px;
-        right: 10px;
-      }
-    }
-  </style>
-</head>
-<body class="dark-theme">
-  <div class="container">
-    <h1>Научная симуляция броуновского движения</h1>
-    
-    <div class="simulation-box">
-      <canvas id="canvas"></canvas>
-      <div class="particle-info" title="Информация о частицах">
-        <div>Частиц: <span id="particleCount">100</span></div>
-        <div>Ср. скорость: <span id="avgSpeed">0</span> px/фрейм</div>
+      <h2 className="text-2xl font-semibold mt-6">3. Главный экран — «Заказать» (Wireframe)</h2>
+      <div className="mt-3 border rounded-lg p-4 bg-white shadow-sm">
+        <div className="text-sm text-slate-600">Компоненты:</div>
+        <ul className="mt-2 list-disc list-inside">
+          <li><b>1.</b> Баннер: CTA «Загрузить STL»</li>
+          <li><b>2.</b> Карточка автооценки: превью, объём (см³), время, цена</li>
+          <li><b>3.</b> Селектор материала: PLA / PETG / Resin / SLA</li>
+          <li><b>4.</b> Опции: качество слоя, заполнение, поддержка</li>
+          <li><b>5.</b> Кнопка «Оформить заказ» → встроенная оплата через Telegram Payments</li>
+        </ul>
       </div>
+
+      <h2 className="text-2xl font-semibold mt-6">4. Экран хоста (школа)</h2>
+      <p className="mt-2 text-slate-700">Панель хоста — упрощённая, сфокусирована на задачах:</p>
+      <ul className="mt-2 list-disc list-inside">
+        <li>Список входящих заданий (приоритет, материал, ориентировочное время)</li>
+        <li>Кнопки: «Принять», «Отклонить», «Переназначить»</li>
+        <li>Инструкция по профилю печати (pre-set) и чек‑лист</li>
+        <li>Загрузка фото перед упаковкой + поле для комментариев</li>
+      </ul>
+
+      <h2 className="text-2xl font-semibold mt-6">5. Встроенные диалоги и уведомления</h2>
+      <p className="mt-2 text-slate-700">Мини-приложение должно использовать возможности Telegram: встроенный WebApp.button, бота для уведомлений и чат‑интеграцию.</p>
+      <ul className="mt-2 list-disc list-inside">
+        <li>Push‑уведомления в Telegram (bot): заказ принят, печать начата, печать завершена, отправлено.</li>
+        <li>Встроенный chat-with-host: быстрый шаблон сообщений (вопросы по качеству / сроки).</li>
+        <li>Интерактивные клавиши: «Принять», «Отклонить», «Запросить фото».</li>
+      </ul>
+
+      <h2 className="text-2xl font-semibold mt-6">6. Визуальная айдентика и UI-палитра</h2>
+      <p className="mt-2 text-slate-700">Рекомендуемая палитра (современная, технологичная):</p>
+      <div className="mt-3 flex gap-3 items-center">
+        <div className="w-12 h-12 rounded bg-indigo-600 flex items-center justify-center text-white font-bold">#1</div>
+        <div className="w-12 h-12 rounded bg-cyan-400"></div>
+        <div className="w-12 h-12 rounded bg-slate-900"></div>
+        <div className="w-12 h-12 rounded bg-white border"></div>
+      </div>
+      <p className="mt-3 text-sm text-slate-600">Шрифты: Inter / Roboto. Иконки: lucide / feather. Кнопки — большие, округлые, контрастные для тача.</p>
+
+      <h2 className="text-2xl font-semibold mt-6">7. Техническая архитектура (кратко)</h2>
+      <ol className="list-decimal list-inside">
+        <li><b>Frontend:</b> Telegram Web App (React + Tailwind), адаптивный для iOS/Android.</li>
+        <li><b>Bot:</b> Telegram Bot API — уведомления, прием платежей, fallback команды.</li>
+        <li><b>Backend:</b> REST API (Node.js/Express или Python FastAPI) — endpoints ниже.</li>
+        <li><b>AI/Оценка:</b> STEP_3D_System – microservice: auto-cost + slicing heuristics.</li>
+        <li><b>DB:</b> PostgreSQL (orders, users, hosts), Redis (очереди), S3 (файлы STL, фото).</li>
+        <li><b>Интеграции:</b> Ozon/SDEK API (логистика), Telegram Payments / SBP для платежей.</li>
+      </ol>
+
+      <h3 className="mt-4 font-semibold">Ключевые API endpoints (пример)</h3>
+      <pre className="bg-slate-50 p-3 rounded">
+POST /api/orders/upload-stl  – загружает STL, возвращает оценку
+POST /api/orders/create      – создаёт заказ (userId, stlId, material, options)
+GET  /api/orders/:id/status  – статус заказа
+POST /api/hosts/:id/accept    – хост принимает заказ
+POST /api/hosts/:id/finish    – хост отмечает как готово + фото
+POST /api/integrations/ship  – создаёт отправление у логиста
+GET  /api/analytics/usage     – агрегированные метрики
+      </pre>
+
+      <h2 className="text-2xl font-semibold mt-6">8. Data model (упрощённо)</h2>
+      <pre className="bg-slate-50 p-3 rounded">
+User { id, telegram_id, name, role(client|host|admin), balance }
+Order { id, user_id, stl_id, host_id, material, options, volume_cm3, price, status }
+STLFile { id, user_id, path, volume_cm3, preview_url }
+Host { id, name, location, rating, active_printers }
+HostPrinter { id, host_id, model, status }
+      </pre>
+
+      <h2 className="text-2xl font-semibold mt-6">9. Платежи и расчёты</h2>
+      <p className="text-slate-700">Рекомендуемые потоки:</p>
+      <ul className="list-disc list-inside">
+        <li>Оплата через Telegram Payments / Stripe / SberPay. Платёж резервируется, затем распределяется: хосту — по факту выполнения, платформа — комиссия.</li>
+        <li>Для партнёров (школ): еженедельные или ежемесячные выплаты через банк + отчётность.</li>
+      </ul>
+
+      <h2 className="text-2xl font-semibold mt-6">10. UX‑правила и ограничения</h2>
+      <ul className="list-disc list-inside">
+        <li>Максимум 3 шага до оплаты для repeat‑пользователя.</li>
+        <li>Обязательная автооценка в 1–3 секунды (показывать placeholder если долго).</li>
+        <li>Фотофиксация обязательна для хостов перед упаковкой — минимизирует споры.</li>
+        <li>Отключать печать опасных/запрещённых объектов через фильтр ключевых слов + manual check.</li>
+      </ul>
+
+      <h2 className="text-2xl font-semibold mt-6">11. Метрики и аналитика</h2>
+      <p className="text-slate-700">Отслеживать в real-time:</p>
+      <ul className="list-disc list-inside">
+        <li>Количество загрузок STL / conversion rate → заказ</li>
+        <li>Средний чек, GMV, % повторных клиентов</li>
+        <li>Время от заказа до старта печати</li>
+        <li>Качество: % возвратов по хосту</li>
+      </ul>
+
+      <h2 className="text-2xl font-semibold mt-6">12. Accessibility & Security</h2>
+      <ul className="list-disc list-inside">
+        <li>Использовать HTTPS + CSP; проверка файлов STL на malware и size limits.</li>
+        <li>Авторизация через Telegram (tg.user) + server-side verification.</li>
+        <li>Хранение персональных данных в соответствии с российским законодательством.</li>
+      </ul>
+
+      <h2 className="text-2xl font-semibold mt-6">13. Прототипы экранов (описание)</h2>
+      <p className="mt-2 text-slate-700">Готовлю 6 ключевых экранов как статические макеты (PNG) или интерактивный прототип:</p>
+      <ol className="list-decimal list-inside">
+        <li>Домашний (Заказать) — загрузка STL</li>
+        <li>Auto‑estimate — карточка оценки и опции</li>
+        <li>Checkout — оплата</li>
+        <li>Order status — трекинг и чат</li>
+        <li>Host dashboard — список заданий</li>
+        <li>Profile & Docs — настройки и справка</li>
+      </ol>
+
+      <h2 className="text-2xl font-semibold mt-6">14. План разработки и приоритеты (MVP)</h2>
+      <ol className="list-decimal list-inside">
+        <li>Telegram WebApp skeleton + Telegram Bot (auth + notifications)</li>
+        <li>Upload STL → auto-estimate (fast path) → checkout (payments)</li>
+        <li>Host panel: accept/finish + photo upload</li>
+        <li>Integrations: S3, PostgreSQL, basic analytics</li>
+        <li>POC with 5 pilot schools, 10 own printers</li>
+      </ol>
+
+      <h2 className="text-2xl font-semibold mt-6">15. QA и Acceptance criteria</h2>
+      <ul className="list-disc list-inside">
+        <li>Upload latency &lt; 5s for 5MB STL (mobile networks)</li>
+        <li>Auto-estimate accuracy &lt; ±20% vs manual estimate</li>
+        <li>Payments success rate &gt; 98%</li>
+        <li>Host acceptance flow — 95% of tasks processed within SLA window</li>
+      </ul>
+
+      <h2 className="text-2xl font-semibold mt-6">16. Next steps (предложение от меня)</h2>
+      <ol className="list-decimal list-inside">
+        <li>Подтвердите scope MVP — я подготовлю UI-макеты (6 экранов) в PNG + интерактивный прототип.</li>
+        <li>Подготовлю техническое ТЗ (API spec + DB schema) для dev‑команды.</li>
+        <li>Соберу package для пилота: onboarding‑пак школ, шаблоны договоров и инструкций.</li>
+      </ol>
+
+      <div className="mt-6 text-sm text-slate-600">Автор: STEP_3D — дизайн и продукт. Если хотите — я могу сейчас сгенерировать визуальные макеты (PNG) для всех перечисленных экранов и подготовить assets для разработчиков.</div>
     </div>
-
-    <div class="controls">
-      <button onclick="toggleAnimation()" title="Запуск/Пауза симуляции">▶ / ❚❚</button>
-      <button onclick="resetParticles()" title="Перезапустить симуляцию">Сбросить</button>
-      <div class="control-group">
-        <label title="Количество частиц">Частицы:</label>
-        <input type="range" id="particleSlider" min="10" max="1000" value="100">
-      </div>
-      <div class="control-group">
-        <label title="Интенсивность случайных флуктуаций">Температура:</label>
-        <input type="range" id="temperatureSlider" min="0.1" max="3" step="0.1" value="1">
-      </div>
-      <div class="control-group">
-        <label title="Затухание скорости (вязкость среды)">Вязкость:</label>
-        <input type="range" id="viscositySlider" min="0.90" max="1" step="0.005" value="0.995">
-      </div>
-      <div class="control-group">
-        <label title="Длина следа (история движения)">Длина следа:</label>
-        <input type="range" id="trailLengthSlider" min="5" max="50" value="20">
-      </div>
-      <button onclick="toggleTrails()" title="Включить/выключить следы">Следы: <span id="trailState">Вкл</span></button>
-      <button onclick="toggleVelocityVectors()" title="Показать/скрыть векторы скорости">Векторы: <span id="vectorState">Выкл</span></button>
-      <button onclick="toggleTheme()" title="Переключить тему (Dark/Light)">Сменить тему</button>
-      <button onclick="exportStats()" title="Сохранить статистику симуляции">Экспорт Stats</button>
-    </div>
-
-    <div class="stats">
-      <h3>Статистика в реальном времени</h3>
-      <div id="collisionCounter" title="Количество столкновений">Столкновений: 0</div>
-      <div id="avgKinetic" title="Средняя кинетическая энергия">Ср. кин. энергия: 0</div>
-      <div id="diffusionCoeff" title="Коэффициент диффузии">Коэф. диффузии: 0</div>
-      <div id="simTime" title="Время работы симуляции">Время симуляции: 0 сек</div>
-    </div>
-
-    <div class="theory">
-      <h2>Теоретические основы</h2>
-      <p>
-        Броуновское движение – хаотичное движение микроскопических частиц, обусловленное столкновениями с молекулами среды.
-        Модель учитывает случайные флуктуации (зависящие от «температуры»), вязкое затухание, упругие столкновения и динамику диффузии.
-      </p>
-      <p>
-        Коэффициент диффузии вычисляется по формуле: <em>D = MSD / (4t)</em>, где MSD – среднеквадратичное смещение, а t – время симуляции.
-      </p>
-    </div>
-  </div>
-
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let animationRunning = true;
-    let trailsEnabled = true;
-    let showVelocityVectors = false;
-    let collisions = 0;
-    let simulationTime = 0;
-    let lastTimestamp = 0;
-    let lastSoundTime = 0; // для ограничения частоты звуковых эффектов
-
-    // Поддержка Retina: масштабируем canvas с учётом devicePixelRatio
-    function resizeCanvas() {
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.scale(dpr, dpr);
-    }
-    window.addEventListener('resize', () => {
-      // При изменении размеров пересоздаём canvas, не теряя пропорции
-      resizeCanvas();
-    });
-    resizeCanvas();
-
-    // Функция для генерации гауссовского случайного числа (метод Бокса–Мюллера)
-    function gaussianRandom() {
-      let u = 0, v = 0;
-      while (u === 0) u = Math.random();
-      while (v === 0) v = Math.random();
-      return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-    }
-
-    class Particle {
-      constructor() {
-        this.reset();
-        this.radius = 4;
-        this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-      }
-
-      reset() {
-        this.x = Math.random() * canvas.offsetWidth;
-        this.y = Math.random() * canvas.offsetHeight;
-        this.initialX = this.x;
-        this.initialY = this.y;
-        this.vx = (Math.random() - 0.5) * 2;
-        this.vy = (Math.random() - 0.5) * 2;
-        this.history = [];
-      }
-
-      update(dt) {
-        // Случайное ускорение с гауссовским шумом, зависящее от температуры
-        const temp = getTemperature();
-        this.vx += gaussianRandom() * 0.3 * temp;
-        this.vy += gaussianRandom() * 0.3 * temp;
-
-        // Ограничение скорости
-        const speedLimit = 5 * temp;
-        this.vx = Math.max(-speedLimit, Math.min(speedLimit, this.vx));
-        this.vy = Math.max(-speedLimit, Math.min(speedLimit, this.vy));
-
-        this.x += this.vx;
-        this.y += this.vy;
-
-        // Граничные условия с отражением и демпфированием
-        if (this.x < 0 || this.x > canvas.offsetWidth) {
-          this.vx *= -0.8;
-          this.x = Math.max(0, Math.min(canvas.offsetWidth, this.x));
-        }
-        if (this.y < 0 || this.y > canvas.offsetHeight) {
-          this.vy *= -0.8;
-          this.y = Math.max(0, Math.min(canvas.offsetHeight, this.y));
-        }
-
-        // Сохранение истории для следов
-        if (trailsEnabled) {
-          this.history.push({ x: this.x, y: this.y });
-          if (this.history.length > getTrailLength()) this.history.shift();
-        } else {
-          this.history = [];
-        }
-
-        // Применение эффекта вязкости (фрикция)
-        const viscosity = getViscosity();
-        this.vx *= viscosity;
-        this.vy *= viscosity;
-      }
-
-      draw() {
-        // Рисуем следы
-        if (trailsEnabled) {
-          this.history.forEach((pos, i) => {
-            ctx.beginPath();
-            ctx.arc(
-              pos.x,
-              pos.y,
-              this.radius * (i / this.history.length),
-              0,
-              Math.PI * 2
-            );
-            ctx.fillStyle = `rgba(255,255,255,${0.2 * (i / this.history.length)})`;
-            ctx.fill();
-          });
-        }
-        // Рисуем частицу
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.shadowColor = this.color;
-        ctx.shadowBlur = 15;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-        // Отрисовка вектора скорости (если включено)
-        if (showVelocityVectors) {
-          ctx.beginPath();
-          ctx.moveTo(this.x, this.y);
-          ctx.lineTo(this.x + this.vx * 10, this.y + this.vy * 10);
-          ctx.strokeStyle = this.color;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-      }
-    }
-
-    // Получение значений параметров из слайдеров
-    function getTemperature() {
-      return parseFloat(document.getElementById('temperatureSlider').value);
-    }
-    function getViscosity() {
-      return parseFloat(document.getElementById('viscositySlider').value);
-    }
-    function getTrailLength() {
-      return parseInt(document.getElementById('trailLengthSlider').value);
-    }
-
-    // Управление анимацией
-    function toggleAnimation() {
-      animationRunning = !animationRunning;
-      if (animationRunning) requestAnimationFrame(animate);
-    }
-
-    function resetParticles() {
-      const count = parseInt(document.getElementById('particleSlider').value);
-      particles = Array.from({ length: count }, () => new Particle());
-      collisions = 0;
-      simulationTime = 0;
-      lastTimestamp = 0;
-      document.getElementById('particleCount').textContent = count;
-    }
-
-    function toggleTrails() {
-      trailsEnabled = !trailsEnabled;
-      document.getElementById('trailState').textContent = trailsEnabled ? 'Вкл' : 'Выкл';
-    }
-
-    function toggleVelocityVectors() {
-      showVelocityVectors = !showVelocityVectors;
-      document.getElementById('vectorState').textContent = showVelocityVectors ? 'Вкл' : 'Выкл';
-    }
-
-    // Переключение темы (Dark/Light)
-    function toggleTheme() {
-      const bodyClass = document.body.classList;
-      if (bodyClass.contains('dark-theme')) {
-        bodyClass.replace('dark-theme', 'light-theme');
-      } else {
-        bodyClass.replace('light-theme', 'dark-theme');
-      }
-    }
-
-    // Звуковая обратная связь при столкновениях (с использованием Web Audio API)
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playCollisionSound() {
-      const now = simulationTime;
-      if (now - lastSoundTime < 0.1) return; // не чаще 10 раз в секунду
-      lastSoundTime = now;
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
-      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.05);
-    }
-
-    // Экспорт статистики симуляции в JSON-файл
-    function exportStats() {
-      const totalSpeed = particles.reduce((sum, p) => sum + Math.hypot(p.vx, p.vy), 0);
-      const totalKinetic = particles.reduce((sum, p) => sum + 0.5 * (p.vx ** 2 + p.vy ** 2), 0);
-      let totalMSD = 0;
-      particles.forEach(p => {
-        const dx = p.x - p.initialX;
-        const dy = p.y - p.initialY;
-        totalMSD += dx * dx + dy * dy;
-      });
-      const msd = totalMSD / particles.length;
-      const avgSpeed = (totalSpeed / particles.length).toFixed(2);
-      const avgKinetic = (totalKinetic / particles.length).toFixed(2);
-      const diffusion = simulationTime > 0 ? (msd / (4 * simulationTime)).toFixed(2) : 0;
-      const stats = {
-        particleCount: particles.length,
-        avgSpeed,
-        avgKinetic,
-        diffusionCoefficient: diffusion,
-        collisions,
-        simulationTime: simulationTime.toFixed(1)
-      };
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stats, null, 2));
-      const dlAnchorElem = document.createElement('a');
-      dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", "simulation_stats.json");
-      dlAnchorElem.click();
-    }
-
-    // Обработка столкновений между частицами
-    function handleCollisions() {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const p1 = particles[i];
-          const p2 = particles[j];
-          const dx = p2.x - p1.x;
-          const dy = p2.y - p1.y;
-          const dist = Math.hypot(dx, dy);
-          const minDist = p1.radius + p2.radius;
-          if (dist < minDist && dist > 0) {
-            collisions++;
-            playCollisionSound();
-
-            // Коррекция перекрытия
-            const angle = Math.atan2(dy, dx);
-            const overlap = (minDist - dist) / 2;
-            p1.x -= overlap * Math.cos(angle);
-            p1.y -= overlap * Math.sin(angle);
-            p2.x += overlap * Math.cos(angle);
-            p2.y += overlap * Math.sin(angle);
-
-            // Упругое столкновение: обмен нормальными составляющими скоростей
-            const nx = Math.cos(angle);
-            const ny = Math.sin(angle);
-            const v1n = p1.vx * nx + p1.vy * ny;
-            const v2n = p2.vx * nx + p2.vy * ny;
-            p1.vx += (v2n - v1n) * nx;
-            p1.vy += (v2n - v1n) * ny;
-            p2.vx += (v1n - v2n) * nx;
-            p2.vy += (v1n - v2n) * ny;
-          }
-        }
-      }
-    }
-
-    // Обновление статистики: средняя скорость, кин. энергия, диффузия и время симуляции
-    function updateStats() {
-      let totalSpeed = 0;
-      let totalKinetic = 0;
-      let totalMSD = 0;
-      particles.forEach(p => {
-        const speed = Math.hypot(p.vx, p.vy);
-        totalSpeed += speed;
-        totalKinetic += 0.5 * (p.vx ** 2 + p.vy ** 2);
-        const dx = p.x - p.initialX;
-        const dy = p.y - p.initialY;
-        totalMSD += dx * dx + dy * dy;
-      });
-      const avgSpeed = totalSpeed / particles.length;
-      const avgKinetic = totalKinetic / particles.length;
-      const msd = totalMSD / particles.length;
-      const diffusion = simulationTime > 0 ? (msd / (4 * simulationTime)).toFixed(2) : 0;
-
-      document.getElementById('avgSpeed').textContent = avgSpeed.toFixed(2);
-      document.getElementById('collisionCounter').textContent = `Столкновений: ${collisions}`;
-      document.getElementById('avgKinetic').textContent = `Ср. кин. энергия: ${avgKinetic.toFixed(2)}`;
-      document.getElementById('diffusionCoeff').textContent = `Коэф. диффузии: ${diffusion}`;
-      document.getElementById('simTime').textContent = `Время симуляции: ${simulationTime.toFixed(1)} сек`;
-    }
-
-    // Анимация с использованием метки времени
-    function animate(timestamp) {
-      if (!animationRunning) return;
-      if (!lastTimestamp) lastTimestamp = timestamp;
-      const dt = (timestamp - lastTimestamp) / 1000; // время в секундах
-      simulationTime += dt;
-      lastTimestamp = timestamp;
-
-      // Фон: для следов заполняем прозрачным цветом, иначе очищаем полностью
-      if (!trailsEnabled) ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
-      else {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
-      }
-
-      // Обновление частиц
-      particles.forEach(p => p.update(dt));
-      // Обработка столкновений
-      handleCollisions();
-      // Отрисовка частиц
-      particles.forEach(p => p.draw());
-      // Обновление статистики
-      updateStats();
-
-      requestAnimationFrame(animate);
-    }
-
-    // Инициализация и обработка изменений слайдеров
-    document.getElementById('particleSlider').addEventListener('input', function () {
-      document.getElementById('particleCount').textContent = this.value;
-      resetParticles();
-    });
-
-    resetParticles();
-    requestAnimationFrame(animate);
-  </script>
-</body>
-</html>
+  );
+}
