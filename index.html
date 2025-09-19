@@ -1,503 +1,367 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrintFlow - Профессиональная 3D-печать</title>
-    <meta name="description" content="PrintFlow - сервис по 3D-печати на заказ. Загрузите свою модель, выберите материал и получите готовую деталь. FDM, SLA, SLS технологии.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Step3D — Устройство для доступа к ПММ</title>
+  <meta name="description" content="Мобильная платформа с подъёмом корзины для посудомоечной машины: меньше наклонов — меньше боли в спине. Дорожная карта, характеристики и контакты." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',
+              500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'
+            }
+          },
+          boxShadow: {
+            soft: '0 10px 30px rgba(31,41,55,.08), 0 4px 10px rgba(31,41,55,.06)'
+          }
         }
-        .text-gradient {
-            background-image: linear-gradient(to right, #6366f1, #8b5cf6, #d946ef);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .btn-primary {
-            background: linear-gradient(to right, #6366f1, #8b5cf6);
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-        }
-        .card {
-            background-color: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .section-header {
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        .chat-btn {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            z-index: 50;
-        }
-    </style>
+      }
+    }
+  </script>
+  <style>
+    .glass { backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); background: rgba(255,255,255,.6); }
+    .reveal { opacity:0; transform: translateY(16px); transition: .6s cubic-bezier(.2,.8,.2,1); }
+    .reveal.on { opacity:1; transform: none; }
+    html { scroll-behavior: smooth; }
+  </style>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Step3D — устройство для доступа к ПММ">
+  <meta property="og:description" content="Подъём корзины ПММ без наклонов. Дорожная карта и контакты." />
+  <meta property="og:image" content="https://step3dlab.github.io/Viwer/og-cover.jpg" />
+  <meta name="theme-color" content="#6366f1">
 </head>
-<body class="antialiased">
-
-    <!-- Language Toggle and Navbar -->
-    <header class="bg-white sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                    <path d="M2 17l10 5 10-5"></path>
-                    <path d="M2 12l10 5 10-5"></path>
-                </svg>
-                <h1 class="text-3xl font-bold text-gray-900">PrintFlow</h1>
-            </div>
-            <nav class="hidden md:flex space-x-8 text-gray-600 font-medium">
-                <a href="#steps" class="hover:text-indigo-600 transition-colors">Как это работает?</a>
-                <a href="#calculator" class="hover:text-indigo-600 transition-colors">Калькулятор</a>
-                <a href="#gallery" class="hover:text-indigo-600 transition-colors">Галерея</a>
-                <a href="#partners" class="hover:text-indigo-600 transition-colors">Партнерам</a>
-                <a href="#faq" class="hover:text-indigo-600 transition-colors">FAQ</a>
-                <a href="#contacts" class="hover:text-indigo-600 transition-colors">Контакты</a>
-            </nav>
-            <div class="relative">
-                <button id="lang-toggle" class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-full hover:bg-gray-300 transition-colors">RU</button>
-            </div>
+<body class="bg-slate-50 text-slate-800">
+  <!-- Header -->
+  <header class="fixed top-0 inset-x-0 z-40">
+    <nav class="glass border-b border-white/40">
+      <div class="mx-auto max-w-7xl px-4 py-3 flex items-center gap-4">
+        <a href="#home" class="font-extrabold tracking-tight text-xl">Step3D</a>
+        <div class="hidden md:flex items-center gap-6 ml-6 text-sm">
+          <a href="#problem" class="hover:text-brand-700">Проблема</a>
+          <a href="#solution" class="hover:text-brand-700">Решение</a>
+          <a href="#specs" class="hover:text-brand-700">Технические</a>
+          <a href="#roadmap" class="hover:text-brand-700">Дорожная карта</a>
+          <a href="#report" class="hover:text-brand-700">Отчёт</a>
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <section id="hero" class="text-center py-20 bg-white rounded-3xl shadow-xl">
-            <h2 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-gray-900">
-                Ваш надежный сервис для <span class="text-gradient">3D-печати на заказ</span>
-            </h2>
-            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                Загрузите свою модель, выберите материал и технологию, и мы доставим готовую деталь в кратчайшие сроки.
-            </p>
-            <button id="cta-button" class="mt-8 btn-primary text-white font-bold py-4 px-8 rounded-full shadow-lg">Загрузить STL файл</button>
-            <div class="mt-8 text-gray-500 font-medium">
-                <span id="social-proof-count" class="text-2xl font-bold text-indigo-500">2568+</span> выполненных заказов
-            </div>
-        </section>
-
-        <!-- Steps Section -->
-        <section id="steps" class="py-20">
-            <h3 class="section-header text-gray-800">Как это работает?</h3>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Step 1 -->
-                <div class="card p-6 text-center">
-                    <div class="text-indigo-500 text-4xl mb-4">1</div>
-                    <h4 class="font-bold text-lg mb-2">Загрузите модель</h4>
-                    <p class="text-gray-600">Загрузите вашу 3D-модель в формате STL или OBJ.</p>
-                </div>
-                <!-- Step 2 -->
-                <div class="card p-6 text-center">
-                    <div class="text-indigo-500 text-4xl mb-4">2</div>
-                    <h4 class="font-bold text-lg mb-2">Настройте параметры</h4>
-                    <p class="text-gray-600">Выберите материал, цвет, и желаемое качество печати.</p>
-                </div>
-                <!-- Step 3 -->
-                <div class="card p-6 text-center">
-                    <div class="text-indigo-500 text-4xl mb-4">3</div>
-                    <h4 class="font-bold text-lg mb-2">Оформите заказ</h4>
-                    <p class="text-gray-600">Мгновенно рассчитайте стоимость и оформите заказ.</p>
-                </div>
-                <!-- Step 4 -->
-                <div class="card p-6 text-center">
-                    <div class="text-indigo-500 text-4xl mb-4">4</div>
-                    <h4 class="font-bold text-lg mb-2">Получите деталь</h4>
-                    <p class="text-gray-600">Мы напечатаем и доставим готовую деталь прямо к вам.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Interactive Calculator & Delivery -->
-        <section id="calculator" class="py-20">
-            <h3 class="section-header text-gray-800">Мгновенный расчет стоимости</h3>
-            <div class="card p-8 grid md:grid-cols-2 gap-8 items-center">
-                <div class="space-y-6">
-                    <div>
-                        <label for="material" class="block text-sm font-medium text-gray-700">Материал</label>
-                        <select id="material" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="pla" selected>PLA</option>
-                            <option value="abs">ABS</option>
-                            <option value="petg">PETG</option>
-                            <option value="nylon">Nylon</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="volume" class="block text-sm font-medium text-gray-700">Объем модели (см³)</label>
-                        <input type="number" id="volume" value="100" min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label for="delivery" class="block text-sm font-medium text-gray-700">Примерная стоимость доставки</label>
-                        <div class="mt-1 flex space-x-4">
-                            <input type="text" id="delivery-city" placeholder="Город" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <span id="delivery-cost" class="flex-shrink-0 inline-flex items-center justify-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md font-medium">0 руб.</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center md:text-right">
-                    <h4 class="text-3xl font-extrabold text-gray-900">Итоговая стоимость:</h4>
-                    <p id="total-price" class="text-5xl font-extrabold text-indigo-600 mt-2">0 руб.</p>
-                    <button class="mt-6 btn-primary text-white font-bold py-3 px-6 rounded-full shadow-lg">Заказать печать</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Technology Visualization -->
-        <section id="technologies" class="py-20">
-            <h3 class="section-header text-gray-800">Наши технологии</h3>
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- FDM -->
-                <div class="card p-6 text-center">
-                    <div id="fdm-canvas" class="w-full h-48 mb-4 rounded-lg bg-gray-100"></div>
-                    <h4 class="font-bold text-xl mb-2">FDM (Fused Deposition Modeling)</h4>
-                    <p class="text-gray-600 text-sm">Надежная и экономичная технология. Отлично подходит для функциональных прототипов и крупных деталей.</p>
-                </div>
-                <!-- SLA -->
-                <div class="card p-6 text-center">
-                    <div id="sla-canvas" class="w-full h-48 mb-4 rounded-lg bg-gray-100"></div>
-                    <h4 class="font-bold text-xl mb-2">SLA (Stereolithography)</h4>
-                    <p class="text-gray-600 text-sm">Идеальна для деталей с высокой детализацией, гладкой поверхностью и сложной геометрией.</p>
-                </div>
-                <!-- SLS -->
-                <div class="card p-6 text-center">
-                    <div id="sls-canvas" class="w-full h-48 mb-4 rounded-lg bg-gray-100"></div>
-                    <h4 class="font-bold text-xl mb-2">SLS (Selective Laser Sintering)</h4>
-                    <p class="text-gray-600 text-sm">Позволяет создавать прочные детали без поддерживающих структур. Отличный выбор для сложных изделий.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Gallery Section -->
-        <section id="gallery" class="py-20">
-            <h3 class="section-header text-gray-800">Галерея наших работ</h3>
-            <div class="relative w-full overflow-hidden rounded-3xl shadow-xl">
-                <div id="gallery-container" class="flex transition-transform duration-500 ease-in-out">
-                    <div class="min-w-full"><img src="https://placehold.co/1200x600/b3b3e2/262626?text=Пример+1" alt="Пример 3D-печати 1" class="w-full h-auto rounded-3xl"></div>
-                    <div class="min-w-full"><img src="https://placehold.co/1200x600/e3c0f4/262626?text=Пример+2" alt="Пример 3D-печати 2" class="w-full h-auto rounded-3xl"></div>
-                    <div class="min-w-full"><img src="https://placehold.co/1200x600/f4b0b0/262626?text=Пример+3" alt="Пример 3D-печати 3" class="w-full h-auto rounded-3xl"></div>
-                </div>
-                <button id="prev-btn" class="absolute top-1/2 left-4 -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <button id="next-btn" class="absolute top-1/2 right-4 -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
-            </div>
-        </section>
-
-        <!-- Reviews Section -->
-        <section id="reviews" class="py-20">
-            <h3 class="section-header text-gray-800">Что говорят наши клиенты</h3>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card p-6">
-                    <p class="text-gray-600 italic">"Быстрый расчет и безупречное качество печати. Заказ был готов даже раньше срока. Очень доволен!"</p>
-                    <p class="mt-4 font-semibold text-gray-800">- Иван П.</p>
-                </div>
-                <div class="card p-6">
-                    <p class="text-gray-600 italic">"Очень удобно! Загрузил модель, выбрал PLA, и уже через несколько дней получил деталь. Рекомендую!"</p>
-                    <p class="mt-4 font-semibold text-gray-800">- Елена Р.</p>
-                </div>
-                <div class="card p-6">
-                    <p class="text-gray-600 italic">"Материал Nylon оказался невероятно прочным. Идеально для моей задачи. Спасибо, PrintFlow!"</p>
-                    <p class="mt-4 font-semibold text-gray-800">- Сергей К.</p>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Materials Comparison Section -->
-        <section id="materials" class="py-20">
-            <h3 class="section-header text-gray-800">Сравнение материалов</h3>
-            <div class="card p-6 overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Материал</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Прочность</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Детализация</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Стоимость</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Применение</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">PLA</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Средняя</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Хорошая</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Низкая</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Прототипы, декор</td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">ABS</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Высокая</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Средняя</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Средняя</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Функциональные детали</td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">PETG</td>
-                            <td class="px-6 py-4 whitespace-now-wrap">Высокая</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Хорошая</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Средняя</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Уличные изделия, механика</td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">Nylon</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Очень высокая</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Отличная</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Высокая</td>
-                            <td class="px-6 py-4 whitespace-nowrap">Механические детали, шестерни</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- About Us Section -->
-        <section id="about" class="py-20">
-            <h3 class="section-header text-gray-800">О нас</h3>
-            <div class="card p-8">
-                <p class="text-gray-600 text-center max-w-4xl mx-auto">
-                    Мы — команда энтузиастов 3D-печати, объединившаяся для того, чтобы сделать аддитивные технологии доступными для всех. Наша миссия — предоставить быстрый, качественный и надежный сервис 3D-печати для инженеров, дизайнеров, художников и всех, кто нуждается в создании физических прототипов и деталей. Мы верим, что 3D-печать меняет мир, и готовы помочь вам воплотить в жизнь любую идею.
-                </p>
-            </div>
-        </section>
-
-        <!-- Partner Program Section -->
-        <section id="partners" class="py-20">
-            <h3 class="section-header text-gray-800">Партнерская программа</h3>
-            <div class="card p-8 text-center">
-                <p class="text-gray-600 mb-4">
-                    У вас есть 3D-принтер и вы хотите заработать? Присоединяйтесь к нашей сети партнеров! Мы предлагаем вам стабильный поток заказов и гибкие условия сотрудничества. Станьте частью PrintFlow и развивайте свой бизнес вместе с нами.
-                </p>
-                <button class="btn-primary text-white font-bold py-3 px-6 rounded-full shadow-lg">Стать партнером</button>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" class="py-20">
-            <h3 class="section-header text-gray-800">Часто задаваемые вопросы</h3>
-            <div class="card p-8 space-y-6">
-                <div class="border-b pb-4">
-                    <h4 class="font-semibold text-lg">Как я могу загрузить свою модель?</h4>
-                    <p class="text-gray-600 mt-2">Просто нажмите на кнопку "Загрузить STL файл" на главной странице и следуйте инструкциям.</p>
-                </div>
-                <div class="border-b pb-4">
-                    <h4 class="font-semibold text-lg">Какие материалы вы используете?</h4>
-                    <p class="text-gray-600 mt-2">Мы работаем с PLA, ABS, PETG, Nylon и другими материалами. Подробное сравнение можно найти в разделе "Сравнение материалов".</p>
-                </div>
-                <div>
-                    <h4 class="font-semibold text-lg">Как рассчитывается стоимость?</h4>
-                    <p class="text-gray-600 mt-2">Стоимость зависит от объема вашей модели, выбранного материала и технологии печати. Воспользуйтесь нашим калькулятором для мгновенного расчета.</p>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Blog/News Section -->
-        <section id="blog" class="py-20">
-            <h3 class="section-header text-gray-800">Блог и новости</h3>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card p-6">
-                    <h4 class="font-bold text-xl mb-2">Новинки в мире 3D-печати</h4>
-                    <p class="text-gray-600 text-sm">Обзор последних тенденций и новых технологий в аддитивном производстве.</p>
-                    <a href="#" class="mt-4 block text-indigo-600 font-semibold hover:underline">Читать далее</a>
-                </div>
-                <div class="card p-6">
-                    <h4 class="font-bold text-xl mb-2">PLA против ABS: какой материал выбрать?</h4>
-                    <p class="text-gray-600 text-sm">Подробное сравнение двух самых популярных материалов для 3D-печати.</p>
-                    <a href="#" class="mt-4 block text-indigo-600 font-semibold hover:underline">Читать далее</a>
-                </div>
-                <div class="card p-6">
-                    <h4 class="font-bold text-xl mb-2">Наши кейсы: 3D-печать для инженерии</h4>
-                    <p class="text-gray-600 text-sm">Примеры успешных проектов, выполненных нашей командой для различных отраслей.</p>
-                    <a href="#" class="mt-4 block text-indigo-600 font-semibold hover:underline">Читать далее</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Newsletter Section -->
-        <section id="newsletter" class="py-20 text-center">
-            <h3 class="section-header text-gray-800">Подпишитесь на нашу рассылку</h3>
-            <p class="text-gray-600 max-w-xl mx-auto mb-6">
-                Получайте эксклюзивные новости, скидки и полезные статьи о 3D-печати прямо на вашу почту.
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <input type="email" placeholder="Ваш Email" class="px-6 py-3 rounded-full border border-gray-300 w-full sm:w-80 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                <button class="btn-primary text-white font-bold py-3 px-8 rounded-full shadow-lg w-full sm:w-auto">Подписаться</button>
-            </div>
-        </section>
-        
-        <!-- Contact Info Section -->
-        <section id="contacts" class="py-20">
-            <h3 class="section-header text-gray-800">Контакты</h3>
-            <div class="card p-8 grid md:grid-cols-3 gap-8 text-center">
-                <div class="flex flex-col items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                    <p class="font-medium">Телефон</p>
-                    <p class="text-gray-600">+7 (495) 123-45-67</p>
-                </div>
-                <div class="flex flex-col items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-9 13a9 9 0 110-18 9 9 0 010 18z" />
-                    </svg>
-                    <p class="font-medium">Email</p>
-                    <p class="text-gray-600">info@printflow.ru</p>
-                </div>
-                <div class="flex flex-col items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <p class="font-medium">Адрес</p>
-                    <p class="text-gray-600">г. Москва, ул. Примерная, 10</p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Chatbot Button (Simple) -->
-    <div class="chat-btn">
-        <button id="chat-toggle" class="bg-indigo-600 text-white rounded-full p-4 shadow-lg hover:bg-indigo-700 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
+        <div class="ml-auto">
+          <a href="https://t.me/step_3d_mngr" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 shadow-soft">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.99 15.17 9.9 19c.36 0 .52-.16.71-.35l1.7-1.64 3.53 2.59c.65.36 1.1.17 1.27-.6l2.3-10.78h.01c.2-.94-.34-1.31-.96-1.08l-13.5 5.2c-.92.36-.9.88-.16 1.11l3.45 1.08 7.99-5.05c.38-.25.72-.11.44.14"/></svg>
+            Связаться
+          </a>
+        </div>
+        <button id="menuBtn" class="md:hidden ml-2 p-2 rounded-lg hover:bg-white/60" aria-label="Открыть меню">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
+      </div>
+      <div id="mobileMenu" class="hidden md:hidden border-t border-white/40 px-4 pb-4">
+        <div class="flex flex-col gap-3 py-3 text-sm">
+          <a href="#problem" class="hover:text-brand-700">Проблема</a>
+          <a href="#solution" class="hover:text-brand-700">Решение</a>
+          <a href="#specs" class="hover:text-brand-700">Технические</a>
+          <a href="#roadmap" class="hover:text-brand-700">Дорожная карта</a>
+          <a href="#report" class="hover:text-brand-700">Отчёт</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section id="home" class="pt-28 md:pt-32">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div class="reveal">
+          <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+            Устройство для <span class="text-brand-600">доступа к ПММ</span> без наклонов
+          </h1>
+          <p class="mt-4 text-slate-600">
+            Мобильная платформа с регулируемым подъёмом корзины: меньше наклонов — меньше боли в спине. Эргономично, эстетично и экономично.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <span class="inline-flex items-center gap-2 text-sm bg-white rounded-xl px-3 py-2 shadow-soft">
+              ✓ Мобильность: колёса с фиксатором
+            </span>
+            <span class="inline-flex items-center gap-2 text-sm bg-white rounded-xl px-3 py-2 shadow-soft">
+              ✓ Газовые амортизаторы
+            </span>
+            <span class="inline-flex items-center gap-2 text-sm bg-white rounded-xl px-3 py-2 shadow-soft">
+              ✓ Совместимость 45/60 см
+            </span>
+          </div>
+          <div class="mt-7 flex gap-3">
+            <a href="#roadmap" class="px-4 py-2 rounded-2xl border border-brand-200 text-brand-700 bg-brand-50 hover:bg-brand-100">Дорожная карта</a>
+            <a href="https://t.me/step_3d_mngr" target="_blank" rel="noopener" class="px-4 py-2 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white shadow-soft">Связаться</a>
+          </div>
+        </div>
+
+        <!-- Simple interactive mock (height slider) -->
+        <div class="reveal">
+          <div class="relative rounded-3xl bg-gradient-to-br from-brand-50 to-white p-6 shadow-soft">
+            <div class="absolute inset-0 rounded-3xl ring-1 ring-black/5 pointer-events-none"></div>
+            <h3 class="font-semibold mb-3">Интерактивное демо (эскиз)</h3>
+            <div class="grid md:grid-cols-[1fr_auto] gap-5">
+              <div class="relative bg-white rounded-2xl p-4 ring-1 ring-slate-100">
+                <div class="h-64 md:h-72 relative">
+                  <!-- Base -->
+                  <div class="absolute bottom-0 inset-x-4 h-4 bg-slate-200 rounded-full"></div>
+                  <!-- Post -->
+                  <div id="post" class="absolute bottom-4 left-1/2 -translate-x-1/2 w-2 bg-slate-300 rounded-md" style="height: 160px;"></div>
+                  <!-- Basket -->
+                  <div id="basket" class="absolute left-1/2 -translate-x-1/2 w-40 h-20 bg-gradient-to-br from-slate-50 to-slate-200 rounded-xl shadow" style="bottom: 150px;"></div>
+                </div>
+              </div>
+              <div class="flex flex-col justify-between">
+                <label for="height" class="text-sm text-slate-600">Высота подъёма</label>
+                <input id="height" type="range" min="0" max="100" value="40" class="w-40 accent-brand-600">
+                <div class="text-sm"><span id="heightVal" class="font-semibold">40%</span></div>
+                <p class="text-xs text-slate-500">Эскиз. Цель — показать идею подъёма корзины.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <div class="text-3xl font-extrabold text-brand-700">–60%</div>
+          <div class="text-xs text-slate-500 mt-1">снижение нагрузки на поясницу</div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <div class="text-3xl font-extrabold text-brand-700">45/60</div>
+          <div class="text-xs text-slate-500 mt-1">совместимость ПММ, узк./полноразм.</div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <div class="text-3xl font-extrabold text-brand-700">AISI 304</div>
+          <div class="text-xs text-slate-500 mt-1">каркас из нержавеющей стали</div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-soft text-center">
+          <div class="text-3xl font-extrabold text-brand-700">ЛДСП</div>
+          <div class="text-xs text-slate-500 mt-1">влагостойкая облицовка</div>
+        </div>
+      </div>
     </div>
-    
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8 text-center">
-        <p>&copy; 2024 PrintFlow. Все права защищены.</p>
-    </footer>
+  </section>
 
-    <!-- JavaScript for interactivity -->
-    <script>
-        // Interactive calculator logic
-        const materialCosts = { pla: 10, abs: 12, petg: 15, nylon: 25 };
-        const priceElement = document.getElementById('total-price');
-        const materialSelect = document.getElementById('material');
-        const volumeInput = document.getElementById('volume');
-        const deliveryCostElement = document.getElementById('delivery-cost');
-        const deliveryInput = document.getElementById('delivery-city');
+  <!-- Problem -->
+  <section id="problem" class="py-16 md:py-24">
+    <div class="mx-auto max-w-7xl px-4 grid md:grid-cols-2 gap-10 items-start">
+      <div class="reveal">
+        <h2 class="text-2xl md:text-3xl font-extrabold">Проблема</h2>
+        <p class="mt-4 text-slate-600">
+          Многократные наклоны при загрузке/выгрузке ПММ приводят к болям в спине и рискам травм. Особенно актуально для пожилых и людей с ОДА.
+        </p>
+        <ul class="mt-4 space-y-2 text-slate-700">
+          <li>• Хроническая нагрузка на поясницу</li>
+          <li>• Ограниченное пространство небольших кухонь</li>
+          <li>• Отсутствие эстетичных бытовых решений</li>
+        </ul>
+      </div>
+      <div class="reveal">
+        <div class="bg-white rounded-3xl p-6 shadow-soft ring-1 ring-slate-100">
+          <h3 class="font-semibold">Мы решаем это</h3>
+          <p class="mt-2 text-slate-600">Подъём корзины на комфортный уровень без усилий и наклонов.</p>
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            <span class="text-sm bg-brand-50 text-brand-700 px-3 py-2 rounded-xl">Безопасность</span>
+            <span class="text-sm bg-brand-50 text-brand-700 px-3 py-2 rounded-xl">Эргономика</span>
+            <span class="text-sm bg-brand-50 text-brand-700 px-3 py-2 rounded-xl">Эстетика</span>
+            <span class="text-sm bg-brand-50 text-brand-700 px-3 py-2 rounded-xl">Комфорт</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        function calculatePrice() {
-            const material = materialSelect.value;
-            const volume = parseFloat(volumeInput.value);
-            if (volume > 0) {
-                const price = materialCosts[material] * volume;
-                priceElement.textContent = `${price.toFixed(2)} руб.`;
-            } else {
-                priceElement.textContent = '0 руб.';
-            }
+  <!-- Solution & Specs -->
+  <section id="solution" class="py-8">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="reveal bg-white rounded-3xl p-6 md:p-10 shadow-soft ring-1 ring-slate-100">
+        <h2 class="text-2xl md:text-3xl font-extrabold">Решение</h2>
+        <p class="mt-3 text-slate-600">
+          Мобильная платформа с плавным газовым подъёмом. Подходит для ПММ 45/60 см, компактно убирается, легко перемещается.
+        </p>
+        <div class="mt-6 grid sm:grid-cols-3 gap-4">
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <div class="text-sm text-slate-500">Подъёмный механизм</div>
+            <div class="font-semibold">Газовые амортизаторы</div>
+            <p class="text-sm text-slate-600 mt-1">Плавность и регулируемое усилие.</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <div class="text-sm text-slate-500">Каркас</div>
+            <div class="font-semibold">Нержавеющая сталь AISI 304</div>
+            <p class="text-sm text-slate-600 mt-1">Долговечность и устойчивость к коррозии.</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <div class="text-sm text-slate-500">Облицовка</div>
+            <div class="font-semibold">Влагостойкая ЛДСП/МДФ</div>
+            <p class="text-sm text-slate-600 mt-1">Широкий выбор текстур и цветов.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="specs" class="py-8">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="reveal grid md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-3xl p-6 shadow-soft ring-1 ring-slate-100">
+          <h3 class="font-semibold">Технические характеристики</h3>
+          <ul class="mt-3 space-y-2 text-slate-700 text-sm">
+            <li>• Диапазон подъёма: 0–350 мм (настройка)</li>
+            <li>• Грузоподъёмность: 10–15 кг (домашняя ПММ)</li>
+            <li>• Габариты: компактные, проходят в стандартные проёмы</li>
+            <li>• Колёса: поворотные, фиксируемые</li>
+            <li>• Безопасность: демпфирование, механическая блокировка</li>
+          </ul>
+        </div>
+        <div class="bg-gradient-to-br from-brand-50 to-white rounded-3xl p-6 shadow-soft ring-1 ring-slate-100">
+          <h3 class="font-semibold">Преимущества</h3>
+          <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
+            <div class="bg-white rounded-2xl p-3 shadow">Снижение нагрузки на поясницу</div>
+            <div class="bg-white rounded-2xl p-3 shadow">Чистый внешний вид</div>
+            <div class="bg-white rounded-2xl p-3 shadow">Простая интеграция</div>
+            <div class="bg-white rounded-2xl p-3 shadow">Доступная себестоимость</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap -->
+  <section id="roadmap" class="py-16 md:py-24 bg-white">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="reveal text-center">
+        <h2 class="text-2xl md:text-3xl font-extrabold">Дорожная карта</h2>
+        <p class="mt-3 text-slate-600">Этапы от исследования до серийного запуска.</p>
+      </div>
+
+      <!-- Progress timeline -->
+      <ol class="mt-10 relative border-s-2 border-brand-100 ps-6">
+        <!-- 1 -->
+        <li class="mb-10 ms-6 reveal">
+          <span class="absolute -start-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-white text-xs">1</span>
+          <h3 class="font-semibold">Исследование и UX <span class="text-slate-400 font-normal">· 1–2 мес</span></h3>
+          <p class="text-slate-600 text-sm mt-1">Опросы, фокус-группы, анализ патентов, сценарии использования.</p>
+          <div class="mt-2 w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-2 bg-brand-400 w-[85%]"></div>
+          </div>
+        </li>
+        <!-- 2 -->
+        <li class="mb-10 ms-6 reveal">
+          <span class="absolute -start-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-white text-xs">2</span>
+          <h3 class="font-semibold">Проектирование <span class="text-slate-400 font-normal">· 2–3 мес</span></h3>
+          <p class="text-slate-600 text-sm mt-1">3D-модели, чертежи, выбор поставщиков, расчёт себестоимости.</p>
+          <div class="mt-2 w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-2 bg-brand-400 w-[55%]" id="rm2"></div>
+          </div>
+        </li>
+        <!-- 3 -->
+        <li class="mb-10 ms-6 reveal">
+          <span class="absolute -start-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-white text-xs">3</span>
+          <h3 class="font-semibold">Прототипы и тесты <span class="text-slate-400 font-normal">· 3–4 мес</span></h3>
+          <p class="text-slate-600 text-sm mt-1">Изготовление прототипов, тестирование, доработка конструкции.</p>
+          <div class="mt-2 w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-2 bg-brand-400 w-[25%]" id="rm3"></div>
+          </div>
+        </li>
+        <!-- 4 -->
+        <li class="ms-6 reveal">
+          <span class="absolute -start-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-white text-xs">4</span>
+          <h3 class="font-semibold">Производство и маркетинг <span class="text-slate-400 font-normal">· 4–6 мес</span></h3>
+          <p class="text-slate-600 text-sm mt-1">Пилотная партия, сертификация, запуск рекламы и продаж.</p>
+          <div class="mt-2 w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="h-2 bg-brand-400 w-[10%]" id="rm4"></div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="mt-8 text-center reveal">
+        <a href="https://t.me/step_3d_mngr" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white px-5 py-3 shadow-soft">
+          Связаться для демо
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Report -->
+  <section id="report" class="py-16 md:py-24">
+    <div class="mx-auto max-w-7xl px-4">
+      <div class="reveal text-center">
+        <h2 class="text-2xl md:text-3xl font-extrabold">Полный отчёт проекта</h2>
+        <p class="mt-3 text-slate-600">Аналитика рынка, ТЗ, дорожная карта, базовая финмодель.</p>
+        <a href="https://docs.google.com/document/d/1rt-c9IXPk9TfibsPgENWii8aT75_IGGIeOkOGP7pX3g/edit?tab=t.0" target="_blank" rel="noopener" class="inline-flex items-center gap-2 mt-6 px-5 py-3 rounded-2xl border border-brand-200 bg-brand-50 text-brand-700 hover:bg-brand-100">
+          Ознакомиться с отчётом
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 border-t bg-white">
+    <div class="mx-auto max-w-7xl px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-600">
+      <div>© Step3D — идея-прототип</div>
+      <div class="flex items-center gap-4">
+        <a href="#home" class="hover:text-brand-700">Наверх</a>
+        <a href="https://t.me/step_3d_mngr" target="_blank" rel="noopener" class="hover:text-brand-700">Контакты</a>
+        <a href="#" class="hover:text-brand-700">Политика конфиденциальности</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu
+    const mb = document.getElementById('menuBtn');
+    const mm = document.getElementById('mobileMenu');
+    mb?.addEventListener('click', () => mm.classList.toggle('hidden'));
+
+    // Simple reveal on scroll
+    const io = new IntersectionObserver((entries)=> {
+      entries.forEach(e=> { if (e.isIntersecting) e.target.classList.add('on'); });
+    }, {threshold:.12});
+    document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+    // Demo slider logic
+    const range = document.getElementById('height');
+    const val = document.getElementById('heightVal');
+    const basket = document.getElementById('basket');
+    const post = document.getElementById('post');
+    const clamp = (n,min,max)=> Math.max(min, Math.min(max,n));
+
+    function updateDemo(v){
+      val.textContent = v+'%';
+      const postH = 80 + (v*1.2); // 80–200
+      const basketB = 60 + (v*1.5); // 60–210
+      post.style.height = clamp(postH,80,220) + 'px';
+      basket.style.bottom = clamp(basketB,60,230) + 'px';
+    }
+    range?.addEventListener('input', e=> updateDemo(e.target.value));
+    updateDemo(range?.value || 40);
+
+    // Animate roadmap bars when visible
+    const bars = ['rm2','rm3','rm4'].map(id=>document.getElementById(id)).filter(Boolean);
+    const ioBars = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const el = e.target;
+          const w = el.style.width;
+          el.style.width = '0%';
+          el.style.transition = 'width 1s cubic-bezier(.2,.8,.2,1)';
+          requestAnimationFrame(()=> { el.style.width = w; });
+          ioBars.unobserve(el);
         }
-        materialSelect.addEventListener('change', calculatePrice);
-        volumeInput.addEventListener('input', calculatePrice);
-        
-        // Simple delivery cost simulation
-        deliveryInput.addEventListener('input', (e) => {
-            const city = e.target.value.toLowerCase();
-            if (city.includes('москва') || city.includes('moscow')) {
-                deliveryCostElement.textContent = '350 руб.';
-            } else {
-                deliveryCostElement.textContent = '~500-1000 руб.';
-            }
-        });
-        
-        // Gallery slider logic
-        let currentSlide = 0;
-        const galleryContainer = document.getElementById('gallery-container');
-        const slides = galleryContainer.children;
-        const totalSlides = slides.length;
-        const nextBtn = document.getElementById('next-btn');
-        const prevBtn = document.getElementById('prev-btn');
-        
-        function updateGallery() {
-            galleryContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-        }
-        nextBtn.addEventListener('click', () => {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            updateGallery();
-        });
-        prevBtn.addEventListener('click', () => {
-            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-            updateGallery();
-        });
-        
-        // Simple chat toggle logic (non-functional popup)
-        const chatBtn = document.getElementById('chat-toggle');
-        chatBtn.addEventListener('click', () => {
-            const chatMessage = 'Здравствуйте! Чем могу помочь?';
-            const chatbox = document.createElement('div');
-            chatbox.className = 'fixed bottom-20 right-4 p-4 bg-white rounded-lg shadow-xl max-w-sm z-50';
-            chatbox.innerHTML = `<p class="text-gray-800">${chatMessage}</p><button class="absolute top-1 right-2 text-gray-500 hover:text-gray-800">X</button>`;
-            document.body.appendChild(chatbox);
-            chatbox.querySelector('button').addEventListener('click', () => {
-                chatbox.remove();
-            });
-        });
-
-        // 3D Visualizations using Three.js (simple, conceptual)
-        function create3DScene(elementId, color) {
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true });
-            const container = document.getElementById(elementId);
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-
-            const geometry = new THREE.TorusKnotGeometry(1, 0.4, 100, 16);
-            const material = new THREE.MeshNormalMaterial();
-            const cube = new THREE.Mesh(geometry, material);
-            scene.add(cube);
-
-            camera.position.z = 3;
-
-            function animate() {
-                requestAnimationFrame(animate);
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.01;
-                renderer.render(scene, camera);
-            }
-            animate();
-            
-            window.addEventListener('resize', () => {
-                const newWidth = container.clientWidth;
-                const newHeight = container.clientHeight;
-                camera.aspect = newWidth / newHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(newWidth, newHeight);
-            });
-        }
-
-        window.onload = function() {
-            calculatePrice();
-            updateGallery();
-            // Create conceptual 3D visualizations for technologies
-            create3DScene('fdm-canvas', 0x6366f1);
-            create3DScene('sla-canvas', 0x8b5cf6);
-            create3DScene('sls-canvas', 0xd946ef);
-        };
-    </script>
+      });
+    }, {threshold:.3});
+    bars.forEach(el=> ioBars.observe(el));
+  </script>
 </body>
 </html>
