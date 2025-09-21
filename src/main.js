@@ -379,7 +379,11 @@ function createPill(text, tone = 'neutral') {
 }
 function renderBenefits() {
   const root = $('#benefits');
-  ['a', 'b'];
+  if (!root) {
+    console.warn('Не удалось отрисовать преимущества: контейнер #benefits не найден.');
+    return;
+  }
+  root.innerHTML = '';
   benefits.forEach((b) => root.appendChild(createPill(b)));
 }
 function renderIcon(name) {
@@ -1530,12 +1534,20 @@ function renderStartCalendar() {
     .fill(0)
     .map((_, i) => new Date(COURSE_START.getTime() + i * 86400000));
   const root = $('#startCalendar');
+  if (!root) {
+    console.warn('Контейнер стартового календаря не найден, блок пропущен.');
+    return;
+  }
   const head = `<div class="grid grid-cols-6 bg-white/60 text-xs">${labels.map((l) => `<div class="px-3 py-2 text-center font-medium text-black/60">${l}</div>`).join('')}</div>`;
   const body = `<div class="grid grid-cols-6 bg-white/30 text-sm">${arr.map((d) => `<div class="px-3 py-3 text-center"><div class="inline-flex min-w-[3rem] items-center justify-center rounded-full border border-black/10 px-3 py-1">${formatShortDateRu(d)}</div></div>`).join('')}</div>`;
   root.innerHTML = head + body;
 }
 function renderProgram() {
   const root = $('#programRoot');
+  if (!root) {
+    console.warn('Контейнер программы (#programRoot) не найден. Секция расписания не будет инициализирована.');
+    return;
+  }
   let view = 'full';
   let openDay = '01 (Пн)';
   const railTone = (t) =>
@@ -1858,6 +1870,10 @@ function initForm() {
   const assistantOutput = document.getElementById('assistantOutput');
   const storageKey = 'applyForm';
   let feedbackTimer = null;
+  if (!(form instanceof HTMLFormElement) || !(submitBtn instanceof HTMLButtonElement)) {
+    console.warn('Форма заявки недоступна, инициализация пропущена.');
+    return;
+  }
   try {
     const raw = localStorage.getItem(storageKey);
     if (raw) {
@@ -2224,15 +2240,25 @@ function initMobileNav() {
   else if (typeof mm.addListener === 'function') mm.addListener(handleMediaChange);
 }
 function renderLead() {
-  document.getElementById('leadPrice').textContent = lead.price;
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (!el) {
+      console.warn(`Элемент #${id} не найден, пропускаем обновление данных лида.`);
+      return;
+    }
+    el.textContent = value;
+  };
+  setText('leadPrice', lead.price);
   const totalHours = Math.round(calculateProgramHours(modules));
   const durationEl = document.getElementById('leadDuration');
   if (durationEl) {
     durationEl.textContent = `${totalHours} часов · ${lead.schedule}`;
+  } else {
+    console.warn('Элемент #leadDuration не найден, длительность курса не обновлена.');
   }
-  document.getElementById('leadSeats').textContent = lead.seats;
-  document.getElementById('leadPriceInline').textContent = lead.price;
-  document.getElementById('leadPriceMobile').textContent = lead.price;
+  setText('leadSeats', lead.seats);
+  setText('leadPriceInline', lead.price);
+  setText('leadPriceMobile', lead.price);
 }
 renderBenefits();
 renderStats();
