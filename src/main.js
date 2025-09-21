@@ -1641,10 +1641,11 @@ function renderProgram() {
   function renderDays() {
     body.innerHTML = '';
     modules.forEach((m, i) => {
-      const panel = document.createElement('div');
-      panel.className = 'relative z-10 border-b border-black/10';
+      const host = document.createElement('div');
+      host.className = 'relative z-10 border-b border-black/10';
       const summary = getBlocksSummary(m.blocks);
       const expanded = openDay === m.day;
+      const panelId = `program-day-${String(i + 1).padStart(2, '0')}`;
       const hoursChip = summary.hours > 0 ? formatHoursChip(summary.hours) : '';
       const compactChips = renderTypeChips(summary.typeCounts, 'compact');
       const fullChips = renderTypeChips(summary.typeCounts, 'full');
@@ -1653,72 +1654,98 @@ function renderProgram() {
       const buttonClasses =
         'group flex w-full flex-col gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-left transition hover:bg-white md:flex-row md:items-center md:justify-between' +
         (expanded ? ' border-black/20 shadow-soft-md' : '');
-      panel.innerHTML = `
-        <button type="button" class="${buttonClasses}" aria-expanded="${expanded}">
-          <div class="flex items-center gap-3">
-            <span class="grid h-10 w-10 place-items-center rounded-xl border border-black/10 bg-white text-sm font-semibold text-black/80">${String(i + 1).padStart(2, '0')}</span>
-            <div>
-              <div class="font-medium text-black">${m.day}</div>
-              <div class="text-xs text-black/60">${displayDate}</div>
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center gap-2 text-xs text-black/60 md:hidden">
-            ${hoursChip}
-            ${compactChips}
-          </div>
-          <div class="hidden flex-wrap items-center gap-2 md:flex md:justify-end">
-            ${hoursChip}
-            ${fullChips}
-          </div>
-          <span class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 bg-white text-black/50 md:self-auto">${chevron}</span>
-        </button>
-        <div class="overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out" style="grid-template-rows: ${expanded ? '1fr' : '0fr'};">
-          <div class="grid min-h-0 ${view === 'full' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4 p-4">
-            ${
-              m.blocks.length === 0
-                ? '<div class="rounded-xl border border-black/10 p-4 text-sm opacity-60">Зарезервировано под защиту проектов/экскурсию/подведение итогов.</div>'
-                : ''
-            }
-            ${m.blocks
-              .map((b) => {
-                const t = activityTypeFromTitle(b.title);
-                const icon =
-                  t === 'lecture'
-                    ? 'lecture'
-                    : t === 'practice'
-                      ? 'practice'
-                      : t === 'exam'
-                        ? 'exam'
-                        : 'workshop';
-                return `
-                <div class="relative overflow-hidden rounded-xl border border-black/10 p-4 shadow-sm hover:shadow-md hover-shimmer">
-                  <span aria-hidden class="absolute left-0 top-0 h-full w-0.5 bg-gradient-to-b ${railTone(t)} to-transparent"></span>
-                  <div class="flex items-start gap-3">
-                    <div class="grid h-8 w-8 place-items-center rounded-lg border border-black/10 bg-white">
-                      <span class="h-5 w-5 text-black/80">${renderIcon(icon)}</span>
-                    </div>
-                    <div class="flex-1">
-                      <div class="font-medium leading-snug ${view === 'compact' ? 'line-clamp-2' : ''}">${b.title}</div>
-                      <div class="mt-2 flex flex-wrap items-center gap-2 text-xs opacity-70">
-                        ${b.hours !== '—' ? createPill('⏱ ' + b.hours).outerHTML : ''}
-                        ${b.control !== '—' ? createPill('✔ ' + b.control).outerHTML : ''}
-                        ${createPill('Тип: ' + { lecture: 'Лекция', practice: 'Практика', workshop: 'Мастер-класс', exam: 'Экзамен' }[t], t).outerHTML}
-                      </div>
-                    </div>
-                  </div>
-                </div>`;
-              })
-              .join('')}
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = buttonClasses;
+      btn.setAttribute('aria-controls', panelId);
+      btn.setAttribute('aria-expanded', String(expanded));
+      btn.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl border border-black/10 bg-white text-sm font-semibold text-black/80">${String(i + 1).padStart(2, '0')}</span>
+          <div>
+            <div class="font-medium text-black">${m.day}</div>
+            <div class="text-xs text-black/60">${displayDate}</div>
           </div>
         </div>
+        <div class="flex flex-wrap items-center gap-2 text-xs text-black/60 md:hidden">
+          ${hoursChip}
+          ${compactChips}
+        </div>
+        <div class="hidden flex-wrap items-center gap-2 md:flex md:justify-end">
+          ${hoursChip}
+          ${fullChips}
+        </div>
+        <span class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 bg-white text-black/50 md:self-auto">${chevron}</span>
       `;
-      const btn = panel.querySelector('button');
       btn.addEventListener('click', () => {
         openDay = openDay === m.day ? '' : m.day;
         renderTabs();
         renderDays();
       });
-      body.appendChild(panel);
+      host.appendChild(btn);
+
+      const panel = document.createElement('div');
+      panel.id = panelId;
+      panel.className = 'overflow-hidden transition-[max-height] duration-300 ease-out';
+      panel.setAttribute('aria-hidden', String(!expanded));
+      panel.toggleAttribute('hidden', !expanded);
+      panel.toggleAttribute('inert', !expanded);
+
+      const panelContent = document.createElement('div');
+      panelContent.className = `min-h-0 gap-4 p-4 ${view === 'full' ? 'md:grid-cols-2' : 'md:grid-cols-3'}`;
+      panelContent.classList.toggle('grid', expanded);
+      panelContent.classList.toggle('hidden', !expanded);
+      panelContent.innerHTML = `
+        ${
+          m.blocks.length === 0
+            ? '<div class="rounded-xl border border-black/10 p-4 text-sm opacity-60">Зарезервировано под защиту проектов/экскурсию/подведение итогов.</div>'
+            : ''
+        }
+        ${m.blocks
+          .map((b) => {
+            const t = activityTypeFromTitle(b.title);
+            const icon =
+              t === 'lecture'
+                ? 'lecture'
+                : t === 'practice'
+                  ? 'practice'
+                  : t === 'exam'
+                    ? 'exam'
+                    : 'workshop';
+            return `
+            <div class="relative overflow-hidden rounded-xl border border-black/10 p-4 shadow-sm hover:shadow-md hover-shimmer">
+              <span aria-hidden class="absolute left-0 top-0 h-full w-0.5 bg-gradient-to-b ${railTone(t)} to-transparent"></span>
+              <div class="flex items-start gap-3">
+                <div class="grid h-8 w-8 place-items-center rounded-lg border border-black/10 bg-white">
+                  <span class="h-5 w-5 text-black/80">${renderIcon(icon)}</span>
+                </div>
+                <div class="flex-1">
+                  <div class="font-medium leading-snug ${view === 'compact' ? 'line-clamp-2' : ''}">${b.title}</div>
+                  <div class="mt-2 flex flex-wrap items-center gap-2 text-xs opacity-70">
+                    ${b.hours !== '—' ? createPill('⏱ ' + b.hours).outerHTML : ''}
+                    ${b.control !== '—' ? createPill('✔ ' + b.control).outerHTML : ''}
+                    ${createPill('Тип: ' + { lecture: 'Лекция', practice: 'Практика', workshop: 'Мастер-класс', exam: 'Экзамен' }[t], t).outerHTML}
+                  </div>
+                </div>
+              </div>
+            </div>`;
+          })
+          .join('')}
+      `;
+
+      panel.appendChild(panelContent);
+      host.appendChild(panel);
+      body.appendChild(host);
+
+      window.requestAnimationFrame(() => {
+        const isExpanded = openDay === m.day;
+        panel.setAttribute('aria-hidden', String(!isExpanded));
+        panel.toggleAttribute('hidden', !isExpanded);
+        panel.toggleAttribute('inert', !isExpanded);
+        panelContent.classList.toggle('hidden', !isExpanded);
+        panelContent.classList.toggle('grid', isExpanded);
+        panel.style.maxHeight = isExpanded ? `${panelContent.scrollHeight}px` : '0px';
+      });
     });
   }
   updateViewButtons(view);
