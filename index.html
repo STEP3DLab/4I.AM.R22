@@ -442,14 +442,10 @@
             class="inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1 text-sm"
             >Стоимость: <span class="font-medium" id="leadPriceInline"></span
           ></span>
-          <span
-            class="inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1 text-sm"
-            >Адрес:
-            <span class="font-medium"
-              >Москва, ул. Беговая, д. 12 (лаборатория промдизайна). Итоговое занятие (суббота):
-              Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)</span
-            ></span
-          >
+        </div>
+        <div class="mt-6 grid gap-4 md:grid-cols-2 md:items-start">
+          <div id="applyLocations" class="flex flex-col gap-3"></div>
+          <div id="applyMap" class="min-h-[18rem]"></div>
         </div>
       </form>
       <div class="mt-4 space-y-2 text-xs opacity-70">
@@ -472,29 +468,7 @@
       </div>
       <div class="mt-6">
         <div class="text-sm opacity-60">Полезные ссылки</div>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <a
-            href="https://technopark-rgsu.ru/"
-            target="_blank"
-            rel="noreferrer"
-            class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white"
-            >Сайт технопарка РГСУ</a
-          >
-          <a
-            href="https://t.me/STEP_3D_Lab"
-            target="_blank"
-            rel="noreferrer"
-            class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white"
-            >Портфолио и новости (Telegram)</a
-          >
-          <a
-            href="https://t.me/step_3d_mngr"
-            target="_blank"
-            rel="noreferrer"
-            class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white"
-            >Связаться с нами в Telegram</a
-          >
-        </div>
+        <div id="helpfulLinks" class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
       </div>
     </section>
     <div
@@ -519,6 +493,17 @@
           class="underline-offset-2 hover:underline"
           >© 2025 РГСУ · Курс «Реверсивный инжиниринг и АТ». Все права защищены.</a
         >
+        <div class="mt-3 space-y-1 text-xs leading-relaxed text-black/60">
+          <p>
+            Образовательная деятельность осуществляется на основании лицензии на осуществление
+            образовательной деятельности № 2755 от 11.07.2016 (серия 90Л01 № 0009250), выданной
+            Федеральной службой по надзору в сфере образования и науки (Рособрнадзор).
+          </p>
+          <p>
+            РГСУ имеет государственную аккредитацию по основным профессиональным образовательным
+            программам (свидетельство № 2756 от 11.07.2016).
+          </p>
+        </div>
       </div>
     </footer>
     <script type="module" src="./src/main.js"></script>

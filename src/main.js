@@ -317,6 +317,44 @@ const lead = {
   venue:
     'Москва, ул. Беговая, д. 12 (лаборатория промдизайна); итоговое занятие (суббота) — Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)',
 };
+const applyLocations = [
+  {
+    id: 'begovaya',
+    kind: 'Основная площадка',
+    badge: 'Будни',
+    address: 'Москва, ул. Беговая, д. 12',
+    caption: 'Лаборатория промышленного дизайна',
+    mapQuery: 'Москва, ул. Беговая, 12',
+  },
+  {
+    id: 'vika',
+    kind: 'Финальное занятие',
+    badge: 'Суббота',
+    address: 'Москва, ул. Вильгельма Пика, д. 4, к. 8',
+    caption: 'Технопарк РГСУ, пространство STEP_3D',
+    mapQuery: 'Москва, ул. Вильгельма Пика, 4к8',
+  },
+];
+const helpfulLinks = [
+  {
+    title: 'Сайт технопарка РГСУ',
+    subtitle: 'Официальный портал и проекты',
+    href: 'https://technopark-rgsu.ru/',
+    icon: 'campus',
+  },
+  {
+    title: 'Портфолио и новости',
+    subtitle: 'Telegram-канал STEP_3D Lab',
+    href: 'https://t.me/STEP_3D_Lab',
+    icon: 'telegram',
+  },
+  {
+    title: 'Связаться с нами в Telegram',
+    subtitle: 'Ответим на вопросы и согласуем детали',
+    href: 'https://t.me/step_3d_mngr',
+    icon: 'chat',
+  },
+];
 const GALLERY_FOLDER = 'images/gallery';
 const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json`;
 const COURSE_START = new Date('2025-10-20T09:00:00+03:00');
@@ -358,6 +396,34 @@ function renderIcon(name) {
       return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M12 4l8 4-8 4-8-4 8-4z" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M6 12v3c2 2 10 2 12 0v-3" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>';
     case 'designer':
       return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M4 20l6-2 10-10-4-4L6 14l-2 6z" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>';
+    case 'calendar':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><rect x="3" y="5" width="18" height="16" rx="2" ry="2" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.5"/><path d="M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    case 'view-detailed':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><rect x="4" y="6" width="16" height="12" rx="2" ry="2" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    case 'view-compact':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><rect x="5" y="6" width="6" height="12" rx="1.5" stroke="currentColor" fill="none" stroke-width="1.5"/><rect x="13" y="6" width="6" height="12" rx="1.5" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>';
+    case 'map-pin':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M12 3c-3.2 0-5.5 2.5-5.5 5.6 0 3.6 4 8.5 5.1 9.8a0.6 0.6 0 0 0 .8 0c1.1-1.3 5.1-6.2 5.1-9.8C17.5 5.5 15.2 3 12 3z" stroke="currentColor" fill="none" stroke-width="1.5"/><circle cx="12" cy="8.6" r="2.2" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>';
+    case 'external':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M14 4h6v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M20 4l-9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 7H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>';
+    case 'chevron-down':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+    case 'chevron-up':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+    case 'chevron-left':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+    case 'chevron-right':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+    case 'close':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    case 'focus':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="7" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>';
+    case 'campus':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M4 20V8l8-4 8 4v12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M10 20v-6h4v6" stroke="currentColor" stroke-width="1.5"/><path d="M4 12h16" stroke="currentColor" stroke-width="1.5"/></svg>';
+    case 'telegram':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M20.5 5.5L4.5 11.2c-.8.3-.8 1.3 0 1.6l4.3 1.6 1.7 5.4c.2.7 1 .8 1.5.2l2.5-2.9 4.3 3.2c.6.4 1.4.1 1.6-.6l2.5-13c.2-.8-.5-1.4-1.4-1.1zM9.8 16.1l.4 2.4 1-1.2 7.1-7.1-8.5 6z" fill="currentColor"/></svg>';
+    case 'chat':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H9l-4 4v-4.5A3 3 0 0 1 4 13V6z" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>';
     case 'lecture':
       return '<svg viewBox="0 0 24 24" class="h-full w-full"><rect x="3" y="5" width="18" height="12" rx="2" ry="2" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M7 9h10M7 12h6" stroke="currentColor" stroke-width="1.5"/></svg>';
     case 'practice':
@@ -606,14 +672,66 @@ function renderTeamShowcase() {
   }
   const cards = [];
   let activeIndex = 0;
+  let lightboxIndex = 0;
   let scrollRaf = 0;
+  let restoreFocusTo = null;
+
+  const createOverlay = () => {
+    const el = document.createElement('div');
+    el.id = 'showcaseLightbox';
+    el.className =
+      'pointer-events-none fixed inset-0 z-[70] hidden items-center justify-center bg-neutral-950/80 px-4 py-8 opacity-0 transition-opacity duration-200';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-modal', 'true');
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = `
+      <div class="relative flex w-full max-w-5xl flex-col gap-5 rounded-3xl border border-white/10 bg-neutral-900/85 p-5 text-white shadow-[0_35px_90px_rgba(0,0,0,0.45)] backdrop-blur" data-showcase-panel>
+        <button type="button" data-showcase-close class="absolute right-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="Закрыть галерею">
+          ${renderIcon('close')}
+        </button>
+        <div class="relative overflow-hidden rounded-2xl bg-black/40">
+          <img data-showcase-image alt="" class="max-h-[70vh] w-full object-contain" loading="lazy" decoding="async" />
+          <button type="button" data-showcase-nav="prev" class="absolute left-4 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="Предыдущее фото">
+            ${renderIcon('chevron-left')}
+          </button>
+          <button type="button" data-showcase-nav="next" class="absolute right-4 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="Следующее фото">
+            ${renderIcon('chevron-right')}
+          </button>
+          <div class="pointer-events-none absolute left-0 right-0 top-0 flex justify-between px-5 py-3 text-xs uppercase tracking-[.3em] text-white/50">
+            <span data-showcase-counter></span>
+          </div>
+        </div>
+        <div class="space-y-2 text-left">
+          <div data-showcase-title class="text-lg font-semibold leading-tight"></div>
+          <p data-showcase-caption class="text-sm text-white/80"></p>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(el);
+    return el;
+  };
+
+  let overlay = document.getElementById('showcaseLightbox');
+  if (!overlay) {
+    overlay = createOverlay();
+  }
+  const overlayPanel = overlay.querySelector('[data-showcase-panel]');
+  const overlayImage = overlay.querySelector('[data-showcase-image]');
+  const overlayTitle = overlay.querySelector('[data-showcase-title]');
+  const overlayCaption = overlay.querySelector('[data-showcase-caption]');
+  const overlayCounter = overlay.querySelector('[data-showcase-counter]');
+  const prevControl = overlay.querySelector('[data-showcase-nav="prev"]');
+  const nextControl = overlay.querySelector('[data-showcase-nav="next"]');
+  const closeControl = overlay.querySelector('[data-showcase-close]');
+
   function updateStatus() {
     if (!status || !cards.length) return;
     const currentCard = cards[activeIndex];
     const title = currentCard?.querySelector('[data-showcase-title]');
     const titleText = title?.textContent?.trim();
-    status.textContent = `Элемент ${activeIndex + 1} из ${total}${titleText ? `: ${titleText}` : ''}`;
+    status.textContent = `Элемент ${activeIndex + 1} из ${total}${titleText ? `: ${titleText}` : ''}. Нажмите на фото, чтобы открыть полноэкранный просмотр.`;
   }
+
   function setActiveCard(nextIndex, options = {}) {
     if (!cards.length) return;
     const { scroll = true, focus = false, announce = true, force = false } = options;
@@ -638,17 +756,84 @@ function renderTeamShowcase() {
       updateStatus();
     }
   }
+
   function moveBy(delta, options = {}) {
     if (!cards.length) return;
     const target = clampIndex(activeIndex, delta, cards.length);
     setActiveCard(target, options);
   }
+
+  function updateLightbox() {
+    const item = teamShowcase[lightboxIndex];
+    if (!item) return;
+    const picture = item.picture || { fallback: item.src };
+    const fallback = picture.fallback || picture.webp || picture.avif || item.src || '';
+    if (overlayImage) {
+      overlayImage.src = fallback;
+      overlayImage.alt = item.alt || item.title || 'Фотография из галереи';
+    }
+    if (overlayTitle) {
+      overlayTitle.textContent = item.title || '';
+    }
+    if (overlayCaption) {
+      overlayCaption.textContent = item.caption || '';
+    }
+    if (overlayCounter) {
+      overlayCounter.textContent = `${String(lightboxIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+    }
+  }
+
+  function openLightbox(index, trigger) {
+    if (!overlay) return;
+    lightboxIndex = Math.max(0, Math.min(total - 1, index));
+    restoreFocusTo =
+      trigger instanceof HTMLElement
+        ? trigger
+        : document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null;
+    updateLightbox();
+    overlay.classList.remove('hidden');
+    overlay.classList.remove('pointer-events-none');
+    overlay.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(() => {
+      overlay.classList.add('opacity-100', 'pointer-events-auto');
+      if (closeControl) {
+        closeControl.focus({ preventScroll: true });
+      } else if (overlayPanel) {
+        overlayPanel.focus({ preventScroll: true });
+      }
+    });
+    setActiveCard(lightboxIndex, { scroll: true, announce: false, force: true });
+  }
+
+  function closeLightbox() {
+    if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.classList.remove('opacity-100', 'pointer-events-auto');
+    overlay.classList.add('pointer-events-none');
+    const handleTransitionEnd = (event) => {
+      if (event.target !== overlay) return;
+      overlay.classList.add('hidden');
+      overlay.removeEventListener('transitionend', handleTransitionEnd);
+    };
+    overlay.addEventListener('transitionend', handleTransitionEnd);
+    if (restoreFocusTo && typeof restoreFocusTo.focus === 'function') {
+      restoreFocusTo.focus({ preventScroll: true });
+    }
+  }
+
+  function step(delta) {
+    lightboxIndex = (lightboxIndex + delta + total) % total;
+    updateLightbox();
+    setActiveCard(lightboxIndex, { scroll: true, announce: false, force: true });
+  }
+
   function handleKeydownNavigation(event) {
     const targetCard = event.currentTarget.closest('.showcase-card');
     if (!targetCard) return;
     const current = cards.indexOf(targetCard);
     if (current === -1) return;
-    let nextIndex = null;
     switch (event.key) {
       case 'ArrowRight':
         event.preventDefault();
@@ -659,23 +844,59 @@ function renderTeamShowcase() {
         moveBy(-1, { focus: true });
         return;
       case 'Home':
-        nextIndex = 0;
-        break;
-      case 'End':
-        nextIndex = cards.length - 1;
-        break;
-      default:
+        event.preventDefault();
+        setActiveCard(0, { focus: true });
         return;
+      case 'End':
+        event.preventDefault();
+        setActiveCard(cards.length - 1, { focus: true });
+        return;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        openLightbox(current, event.currentTarget);
+        return;
+      default:
+        break;
     }
-    event.preventDefault();
-    setActiveCard(nextIndex, { focus: true });
   }
+
+  const handleOverlayKeydown = (event) => {
+    if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeLightbox();
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      step(-1);
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      step(1);
+    }
+  };
+
+  if (!overlay.dataset.bound) {
+    prevControl?.addEventListener('click', () => step(-1));
+    nextControl?.addEventListener('click', () => step(1));
+    closeControl?.addEventListener('click', () => closeLightbox());
+    overlay.addEventListener('click', (event) => {
+      if (event.target === overlay) closeLightbox();
+    });
+    overlayImage?.addEventListener('click', () => step(1));
+    overlay.dataset.bound = 'true';
+  }
+
+  if (!document.body.dataset.showcaseLightboxKeydown) {
+    document.addEventListener('keydown', handleOverlayKeydown);
+    document.body.dataset.showcaseLightboxKeydown = 'bound';
+  }
+
   teamShowcase.forEach((item, index) => {
     const card = document.createElement('article');
     const titleId = `${item.id || `showcase-${index + 1}`}-title`;
     const captionId = `${item.id || `showcase-${index + 1}`}-caption`;
     card.className =
-      'showcase-card group flex min-w-[260px] max-w-xs flex-col overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-soft backdrop-blur outline-none transition hover:-translate-y-0.5 hover:shadow-soft-md focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white data-[active=true]:border-black/30 data-[active=true]:shadow-soft-md';
+      'showcase-card group flex min-w-[260px] max-w-xs flex-col overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-soft backdrop-blur outline-none transition hover:-translate-y-0.5 hover:shadow-soft-md focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
     card.setAttribute('role', 'listitem');
     card.setAttribute('tabindex', '0');
     card.setAttribute('aria-labelledby', titleId);
@@ -685,18 +906,25 @@ function renderTeamShowcase() {
     card.dataset.index = String(index);
     const picture = item.picture || { fallback: item.src };
     card.innerHTML = `
-      <div class="relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+      <button type="button" data-showcase-open class="group/image relative block aspect-[4/3] w-full overflow-hidden rounded-2xl bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
         <picture>
           ${picture.avif ? `<source srcset="${picture.avif}" type="image/avif" />` : ''}
           ${picture.webp ? `<source srcset="${picture.webp}" type="image/webp" />` : ''}
-          <img src="${picture.fallback || picture.webp || picture.avif || ''}" alt="${item.alt || ''}" class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" loading="lazy" decoding="async" />
+          <img src="${picture.fallback || picture.webp || picture.avif || ''}" alt="${item.alt || ''}" class="h-full w-full object-cover transition duration-300 group-hover/image:scale-[1.02]" loading="lazy" decoding="async" />
         </picture>
         ${item.tag ? `<span class="absolute left-3 top-3 inline-flex rounded-full bg-black/80 px-3 py-1 text-xs font-medium text-white/90">${item.tag}</span>` : ''}
-      </div>
+        <span aria-hidden class="pointer-events-none absolute inset-0 border border-black/10 opacity-0 transition duration-300 group-hover/image:opacity-100"></span>
+      </button>
       <div class="flex flex-1 flex-col p-4">
         <div id="${titleId}" data-showcase-title class="text-sm font-semibold text-black">${item.title}</div>
         <p id="${captionId}" class="mt-2 text-sm text-black/60">${item.caption}</p>
-        <button type="button" data-showcase-open class="mt-4 inline-flex items-center gap-2 self-start rounded-lg border border-black/10 px-3 py-1.5 text-xs font-medium text-black/70 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white">Открыть фото<span aria-hidden>↗</span></button>
+        <div class="mt-4 flex items-center justify-between text-xs text-black/45">
+          <span>Нажмите на фото</span>
+          <span class="inline-flex items-center gap-1 text-black/60">
+            <span class="h-3 w-3 text-current">${renderIcon('chevron-right')}</span>
+            <span class="translate-y-[1px]">Листайте</span>
+          </span>
+        </div>
       </div>
     `;
     card.addEventListener('focus', () => setActiveCard(index, { announce: false, force: true }));
@@ -709,19 +937,19 @@ function renderTeamShowcase() {
     openButton?.addEventListener('click', (event) => {
       event.stopPropagation();
       setActiveCard(index, { announce: false, force: true });
-      const fallback = picture.fallback || picture.webp || picture.avif;
-      if (fallback) {
-        window.open(fallback, '_blank', 'noopener,noreferrer');
-      }
+      openLightbox(index, event.currentTarget);
     });
     rail.appendChild(card);
     cards.push(card);
   });
+
   setActiveCard(activeIndex, { scroll: false, announce: true, force: true });
+
   const prev = document.querySelector('[data-showcase-prev]');
   const next = document.querySelector('[data-showcase-next]');
   prev?.addEventListener('click', () => moveBy(-1, { focus: true }));
   next?.addEventListener('click', () => moveBy(1, { focus: true }));
+
   rail.addEventListener(
     'scroll',
     () => {
@@ -744,6 +972,131 @@ function renderTeamShowcase() {
     },
     { passive: true },
   );
+}
+
+function renderApplyLocations() {
+  const root = document.getElementById('applyLocations');
+  const mapContainer = document.getElementById('applyMap');
+  if (!root) return;
+  root.innerHTML = '';
+  const cards = [];
+  let activeIndex = 0;
+  let frame = null;
+  let mapTitle = null;
+  if (mapContainer) {
+    mapContainer.innerHTML = `
+      <div class="relative h-full overflow-hidden rounded-2xl border border-black/10 bg-white shadow-soft">
+        <div class="flex items-center justify-between border-b border-black/10 bg-white/70 px-4 py-3 text-xs text-black/60">
+          <div class="flex items-center gap-2 text-sm font-medium text-black">
+            <span class="h-4 w-4 text-black/60">${renderIcon('map-pin')}</span>
+            <span data-map-address></span>
+          </div>
+          <span class="hidden text-xs text-black/40 sm:inline">Выберите площадку, чтобы обновить карту</span>
+        </div>
+        <iframe data-map-frame title="Карта площадки курса" class="h-64 w-full border-0" src="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+    `;
+    frame = mapContainer.querySelector('[data-map-frame]');
+    mapTitle = mapContainer.querySelector('[data-map-address]');
+  }
+  const getMapUrl = (loc) =>
+    `https://yandex.ru/map-widget/v1/?text=${encodeURIComponent(loc.mapQuery || loc.address)}&lang=ru_RU&z=16`;
+  const getMapLink = (loc) =>
+    `https://yandex.ru/maps/?text=${encodeURIComponent(loc.mapQuery || loc.address)}`;
+  function setActive(index) {
+    activeIndex = index;
+    cards.forEach((card, idx) => {
+      const isActive = idx === index;
+      card.dataset.active = isActive ? 'true' : 'false';
+      card.classList.toggle('border-black/30', isActive);
+      card.classList.toggle('shadow-soft-md', isActive);
+    });
+    const loc = applyLocations[index];
+    if (!loc) return;
+    const mapUrl = getMapUrl(loc);
+    if (frame && frame.getAttribute('src') !== mapUrl) {
+      frame.setAttribute('src', mapUrl);
+    }
+    if (mapTitle) {
+      mapTitle.textContent = loc.address;
+    }
+  }
+  applyLocations.forEach((loc, index) => {
+    const card = document.createElement('article');
+    card.className =
+      'group relative overflow-hidden rounded-2xl border border-black/10 bg-white/70 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-within:ring-2 focus-within:ring-black/20';
+    const mapLink = getMapLink(loc);
+    card.innerHTML = `
+      <div class="flex items-start gap-3">
+        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">
+          ${renderIcon('map-pin')}
+        </span>
+        <div class="flex-1">
+          <div class="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[.2em] text-black/40">
+            <span>${loc.kind}</span>
+            ${loc.badge ? `<span class="rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-black/60">${loc.badge}</span>` : ''}
+          </div>
+          <a href="${mapLink}" target="_blank" rel="noreferrer" class="mt-2 inline-flex items-center gap-2 text-left text-sm font-semibold text-black underline-offset-4 transition hover:underline">
+            <span>${loc.address}</span>
+            <span aria-hidden class="h-4 w-4 text-black/40 transition group-hover:text-black">${renderIcon('external')}</span>
+          </a>
+          ${loc.caption ? `<p class="mt-1 text-xs text-black/60">${loc.caption}</p>` : ''}
+          <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-black/60">
+            <button type="button" data-location-activate class="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1 font-medium text-black/70 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30">
+              <span class="h-3 w-3 text-current">${renderIcon('focus')}</span>
+              <span>Показать на карте</span>
+            </button>
+            <a href="${mapLink}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1 transition hover:bg-black hover:text-white">
+              <span class="h-3 w-3 text-current">${renderIcon('external')}</span>
+              <span>Маршрут</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+    card.addEventListener('mouseenter', () => setActive(index));
+    card.addEventListener('focusin', () => setActive(index));
+    card.addEventListener('click', (event) => {
+      if (event.target instanceof HTMLAnchorElement) return;
+      setActive(index);
+    });
+    const activateBtn = card.querySelector('[data-location-activate]');
+    activateBtn?.addEventListener('click', () => setActive(index));
+    root.appendChild(card);
+    cards.push(card);
+  });
+  if (applyLocations.length > 0) {
+    setActive(activeIndex);
+  }
+}
+
+function renderHelpfulLinks() {
+  const root = document.getElementById('helpfulLinks');
+  if (!root) return;
+  root.innerHTML = '';
+  helpfulLinks.forEach((link) => {
+    const card = document.createElement('a');
+    card.href = link.href;
+    card.target = '_blank';
+    card.rel = 'noreferrer';
+    card.className =
+      'group relative flex flex-col justify-between gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
+    card.innerHTML = `
+      <div class="flex items-start gap-3">
+        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">
+          ${renderIcon(link.icon)}
+        </span>
+        <div>
+          <div class="font-semibold text-black">${link.title}</div>
+          ${link.subtitle ? `<p class="mt-1 text-xs text-black/60">${link.subtitle}</p>` : ''}
+        </div>
+      </div>
+      <span aria-hidden class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 text-black/40 transition group-hover:translate-x-1 group-hover:text-black">
+        ${renderIcon('external')}
+      </span>
+    `;
+    root.appendChild(card);
+  });
 }
 async function loadGallery() {
   try {
@@ -882,18 +1235,23 @@ function initCarousel(gallery) {
 }
 function renderAudience() {
   const root = $('#audienceGrid');
+  if (!root) return;
+  root.innerHTML = '';
   const icons = ['engineer', 'cnc', 'student', 'designer'];
   audience.forEach((a, i) => {
-    const card = document.createElement('div');
-    card.className = 'group h-full rounded-2xl border border-black/10 p-5 hover:shadow-md';
+    const card = document.createElement('article');
+    card.className =
+      'group relative overflow-hidden rounded-2xl border border-black/10 bg-white/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft';
     card.innerHTML = `
-      <div class="flex h-full items-start gap-3">
-        <span aria-hidden class="mt-0.5 h-6 w-6 text-black/80 md:h-7 md:w-7">${renderIcon(icons[i % 4])}</span>
-        <div class="flex-1">
-          <div class="text-[10px] uppercase tracking-[.15em] text-black/50">Аудитория</div>
-          <div class="mt-0.5 text-[15px] font-medium leading-snug md:text-base line-clamp-2" title="${a}">${a}</div>
+      <div class="flex items-start gap-3">
+        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">${renderIcon(icons[i % icons.length])}</span>
+        <div>
+          <div class="text-[10px] uppercase tracking-[.18em] text-black/40">Аудитория</div>
+          <div class="mt-2 text-base font-medium leading-snug text-black">${a}</div>
         </div>
-      </div>`;
+      </div>
+      <span aria-hidden class="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full border border-black/5 opacity-0 transition group-hover:opacity-100"></span>
+    `;
     root.appendChild(card);
   });
 }
@@ -919,53 +1277,116 @@ function renderProgram() {
       workshop: 'from-amber-400/50',
       exam: 'from-rose-400/40',
     })[t] || 'from-black/20';
+  const typeChipMeta = {
+    lecture: { label: 'Лекции', dot: 'bg-sky-400', badge: 'border-sky-200 bg-sky-50 text-sky-800' },
+    practice: {
+      label: 'Практика',
+      dot: 'bg-emerald-400',
+      badge: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+    },
+    workshop: {
+      label: 'Мастер-класс',
+      dot: 'bg-amber-400',
+      badge: 'border-amber-200 bg-amber-50 text-amber-800',
+    },
+    exam: {
+      label: 'Экзамен',
+      dot: 'bg-rose-400',
+      badge: 'border-rose-200 bg-rose-50 text-rose-800',
+    },
+  };
   const head = document.createElement('div');
-  head.className = 'flex items中心 justify-between gap-3 border-b border-black/10 p-3'.replace(
-    'центр',
-    'center',
-  );
+  head.className =
+    'flex flex-col gap-4 border-b border-black/10 bg-white/60 p-4 md:flex-row md:items-center md:justify-between';
   head.innerHTML = `
-    <div class="text-sm opacity-60">Режим просмотра</div>
-    <div class="flex items-center gap-2">
-      <button data-view="full" class="rounded-lg px-3 py-1 text-sm bg-black text-white">подробно</button>
-      <button data-view="compact" class="rounded-lg px-3 py-1 text-sm border border-black/10 hover:bg-neutral-50">кратко</button>
-    </div>`;
+    <div class="flex items-center gap-3">
+      <span aria-hidden class="grid h-11 w-11 place-items-center rounded-xl bg-black/5 text-black/70">${renderIcon('calendar')}</span>
+      <div>
+        <div class="text-[11px] uppercase tracking-[.2em] text-black/40">Режим просмотра</div>
+        <div class="text-sm text-black/70">Выберите формат расписания под ваше устройство</div>
+      </div>
+    </div>
+    <div class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 p-1 shadow-sm">
+      <button type="button" data-view="full" class="group/view flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-black/70 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
+        <span class="h-4 w-4 text-current">${renderIcon('view-detailed')}</span>
+        <span>Подробно</span>
+      </button>
+      <button type="button" data-view="compact" class="group/view flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-black/70 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
+        <span class="h-4 w-4 text-current">${renderIcon('view-compact')}</span>
+        <span>Кратко</span>
+      </button>
+    </div>
+  `;
   root.appendChild(head);
+  const updateViewButtons = (active) => {
+    head.querySelectorAll('button[data-view]').forEach((btn) => {
+      const isActive = btn.getAttribute('data-view') === active;
+      btn.classList.toggle('bg-black', isActive);
+      btn.classList.toggle('text-white', isActive);
+      btn.classList.toggle('shadow-soft-md', isActive);
+    });
+  };
   const tabsWrap = document.createElement('div');
   tabsWrap.className = 'sticky top-16 z-20 border-b border-black/10 bg-white/80 backdrop-blur';
   tabsWrap.innerHTML =
-    '<div class="overflow-x-auto px-3 py-2"><div class="flex items-center gap-2" id="dayTabs"></div></div>';
+    '<div class="overflow-x-auto px-3 py-2"><div class="flex items-stretch gap-3" id="dayTabs"></div></div>';
   root.appendChild(tabsWrap);
   const body = document.createElement('div');
   body.id = 'programDays';
   root.appendChild(body);
+  const formatHoursChip = (hours) =>
+    `<span class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[11px] font-medium text-black/70"><span class="h-3 w-3 text-current">${renderIcon(
+      'clock',
+    )}</span>${hours} ч</span>`;
+  const renderTypeChips = (counts, variant = 'full') =>
+    Object.entries(typeChipMeta)
+      .map(([type, meta]) => {
+        const value = counts?.[type] ?? 0;
+        if (!value) return '';
+        if (variant === 'compact') {
+          return `<span class="inline-flex items-center gap-1 rounded-full bg-black/5 px-2 py-0.5 text-[11px] font-medium text-black/70"><span class="h-2.5 w-2.5 rounded-full ${meta.dot}"></span>${value}</span>`;
+        }
+        return `<span class="inline-flex items-center gap-1 rounded-full border ${meta.badge} px-2 py-0.5 text-[11px] font-medium"><span class="h-3.5 w-3.5 text-current">${renderIcon(
+          type,
+        )}</span>${meta.label} · ${value}</span>`;
+      })
+      .filter(Boolean)
+      .join('');
   function renderTabs() {
     const tabs = $('#dayTabs');
+    if (!tabs) return;
     tabs.innerHTML = '';
     modules.forEach((m, i) => {
       const isActive = openDay === m.day;
       const d = new Date(COURSE_START.getTime() + i * 86400000);
-      const s = getBlocksSummary(m.blocks);
+      const summary = getBlocksSummary(m.blocks);
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className =
-        'relative rounded-full px-3 py-1.5 text-sm transition ' +
-        (isActive ? 'bg-black text-white' : 'border border-black/10 bg-white hover:bg-neutral-50');
+        'group relative flex min-w-[220px] flex-col gap-3 rounded-2xl border border-black/10 bg-white/80 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30';
+      if (isActive) {
+        btn.classList.add('border-black/30', 'shadow-soft-md');
+      }
+      const hoursChip = summary.hours > 0 ? formatHoursChip(summary.hours) : '';
+      const typeChips = renderTypeChips(summary.typeCounts, 'compact');
       btn.innerHTML = `
-        <span class="font-medium">${String(i + 1).padStart(2, '0')}</span>
-        <span class="mx-1 opacity-60">·</span>
-        <span class="opacity-80">${formatShortDateRu(d)}</span>
-        ${s.hours > 0 ? `<span class="ml-2 rounded-full bg-black/10 px-2 text-xs">${s.hours} ч</span>` : ''}
-        <span class="ml-2 inline-flex gap-1 align-middle">
-          ${s.typeCounts.lecture > 0 ? '<span title="Лекции" class="h-2 w-2 rounded-full bg-sky-400/70"></span>' : ''}
-          ${s.typeCounts.practice > 0 ? '<span title="Практика" class="h-2 w-2 rounded-full bg-emerald-400/70"></span>' : ''}
-          ${s.typeCounts.workshop > 0 ? '<span title="Мастер-класс" class="h-2 w-2 rounded-full bg-amber-400/80"></span>' : ''}
-          ${s.typeCounts.exam > 0 ? '<span title="Экзамен" class="h-2 w-2 rounded-full bg-rose-400/70"></span>' : ''}
-        </span>`;
-      btn.onclick = () => {
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-sm font-semibold text-black/80">${String(i + 1).padStart(2, '0')}</span>
+          <div>
+            <div class="text-sm font-semibold text-black">${m.day}</div>
+            <div class="text-xs text-black/60">${formatShortDateRu(d)}</div>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 text-xs text-black/60">
+          ${hoursChip}
+          ${typeChips}
+        </div>
+      `;
+      btn.addEventListener('click', () => {
         openDay = m.day;
         renderTabs();
         renderDays();
-      };
+      });
       tabs.appendChild(btn);
     });
   }
@@ -976,24 +1397,40 @@ function renderProgram() {
       panel.className = 'relative z-10 border-b border-black/10';
       const summary = getBlocksSummary(m.blocks);
       const expanded = openDay === m.day;
+      const hoursChip = summary.hours > 0 ? formatHoursChip(summary.hours) : '';
+      const compactChips = renderTypeChips(summary.typeCounts, 'compact');
+      const fullChips = renderTypeChips(summary.typeCounts, 'full');
+      const chevron = expanded ? renderIcon('chevron-up') : renderIcon('chevron-down');
+      const displayDate = formatShortDateRu(new Date(COURSE_START.getTime() + i * 86400000));
+      const buttonClasses =
+        'group flex w-full flex-col gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-left transition hover:bg-white md:flex-row md:items-center md:justify-between' +
+        (expanded ? ' border-black/20 shadow-soft-md' : '');
       panel.innerHTML = `
-        <button class="group flex w-full items-center justify-between gap-4 p-4 text-left hover:bg-neutral-50" aria-expanded="${expanded}">
+        <button type="button" class="${buttonClasses}" aria-expanded="${expanded}">
           <div class="flex items-center gap-3">
-            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-black/10 text-xs">${String(i + 1).padStart(2, '0')}</span>
-            <span class="font-medium">${m.day} · ${formatShortDateRu(new Date(COURSE_START.getTime() + i * 86400000))}</span>
+            <span class="grid h-10 w-10 place-items-center rounded-xl border border-black/10 bg-white text-sm font-semibold text-black/80">${String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <div class="font-medium text-black">${m.day}</div>
+              <div class="text-xs text-black/60">${displayDate}</div>
+            </div>
           </div>
-          <div class="hidden items-center gap-2 md:flex">
-            ${summary.hours > 0 ? `<span class="rounded-full border border-black/10 px-2 py-0.5 text-xs">⏱ ${summary.hours} ч</span>` : ''}
-            ${summary.typeCounts.lecture > 0 ? `<span class="rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-xs text-sky-800">Л ${summary.typeCounts.lecture}</span>` : ''}
-            ${summary.typeCounts.practice > 0 ? `<span class="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-800">П ${summary.typeCounts.practice}</span>` : ''}
-            ${summary.typeCounts.workshop > 0 ? `<span class="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-800">М ${summary.typeCounts.workshop}</span>` : ''}
-            ${summary.typeCounts.exam > 0 ? `<span class="rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-xs text-rose-800">Э ${summary.typeCounts.exam}</span>` : ''}
+          <div class="flex flex-wrap items-center gap-2 text-xs text-black/60 md:hidden">
+            ${hoursChip}
+            ${compactChips}
           </div>
-          <span class="text-xs opacity-60">${expanded ? '⌃' : '⌄'}</span>
+          <div class="hidden flex-wrap items-center gap-2 md:flex md:justify-end">
+            ${hoursChip}
+            ${fullChips}
+          </div>
+          <span class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 bg-white text-black/50 md:self-auto">${chevron}</span>
         </button>
         <div class="overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out" style="grid-template-rows: ${expanded ? '1fr' : '0fr'};">
           <div class="grid min-h-0 ${view === 'full' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4 p-4">
-            ${m.blocks.length === 0 ? '<div class="rounded-xl border border-black/10 p-4 text-sm opacity-60">Зарезервировано под защиту проектов/экскурсию/подведение итогов.</div>' : ''}
+            ${
+              m.blocks.length === 0
+                ? '<div class="rounded-xl border border-black/10 p-4 text-sm opacity-60">Зарезервировано под защиту проектов/экскурсию/подведение итогов.</div>'
+                : ''
+            }
             ${m.blocks
               .map((b) => {
                 const t = activityTypeFromTitle(b.title);
@@ -1025,32 +1462,29 @@ function renderProgram() {
               })
               .join('')}
           </div>
-        </div>`;
+        </div>
+      `;
       const btn = panel.querySelector('button');
       btn.addEventListener('click', () => {
         openDay = openDay === m.day ? '' : m.day;
+        renderTabs();
         renderDays();
       });
       body.appendChild(panel);
     });
   }
-  head.querySelectorAll('button[data-view]').forEach((b) => {
-    b.addEventListener('click', () => {
-      view = b.getAttribute('data-view');
-      head.querySelectorAll('button[data-view]').forEach((x) => {
-        if (x === b) {
-          x.classList.add('bg-black', 'text-white');
-          x.classList.remove('border', 'border-black/10', 'hover:bg-neutral-50');
-        } else {
-          x.classList.remove('bg-black', 'text-white');
-          x.classList.add('border', 'border-black/10');
-        }
-      });
+  updateViewButtons(view);
+  renderTabs();
+  renderDays();
+  head.querySelectorAll('button[data-view]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const nextView = btn.getAttribute('data-view') || 'full';
+      if (view === nextView) return;
+      view = nextView;
+      updateViewButtons(view);
       renderDays();
     });
   });
-  renderTabs();
-  renderDays();
 }
 function initCountdown() {
   const el = document.getElementById('countdown');
@@ -1351,6 +1785,8 @@ renderStartCalendar();
 renderProgram();
 renderTeam();
 renderTeamShowcase();
+renderApplyLocations();
+renderHelpfulLinks();
 initCountdown();
 initForm();
 initObservers();
