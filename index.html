@@ -180,6 +180,19 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
+      .main-nav-container {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .showcase-card {
+        flex: 0 0 auto;
+      }
+      [data-showcase-prev],
+      [data-showcase-next] {
+        position: relative;
+        z-index: 5;
+      }
       .reveal {
         opacity: 0;
         transform: translateY(8px);
@@ -275,7 +288,7 @@
       class="fixed left-0 top-0 z-[60] h-0.5 w-full bg-black/80"
       style="transform-origin: left center; transform: scaleX(0)"
     ></div>
-    <header class="sticky top-0 z-50 border-b border-black/10 bg-white/75 shadow-sm backdrop-blur">
+    <header class="main-nav-container sticky top-0 border-b border-black/10 bg-white/75 shadow-sm backdrop-blur">
       <div class="layout flex items-center justify-between py-3">
         <a href="#top" class="font-semibold tracking-tight">4I.R22.01</a>
         <div class="flex items-center gap-3">
@@ -358,7 +371,7 @@
               <a
                 href="#apply"
                 class="rounded-xl bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
-                >Записаться</a
+                >Подать заявку</a
               >
               <a
                 href="#program"
@@ -369,7 +382,7 @@
             <div
               class="inline-flex flex-wrap items-center gap-3 rounded-full border border-black/10 bg-white/80 px-4 py-2 text-sm shadow-soft"
             >
-              <span>Старт: <span class="font-semibold">20 октября 2025</span></span>
+              <span>Старт: <span class="font-semibold">25 октября 2025</span></span>
               <span class="opacity-70"
                 >Осталось: <span class="font-medium" id="countdown" aria-live="off">—</span></span
               >
@@ -395,7 +408,8 @@
         <h2 class="reveal section-heading">Для кого</h2>
         <p class="reveal section-subheading">
           Курс рассчитан на специалистов, которым нужен прикладной навык — от оцифровки до готовой
-          детали.
+          детали. Программа также подходит начинающим, которые хотят освоить аддитивные технологии с
+          нуля.
         </p>
         <div id="audienceGrid" class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"></div>
         <p class="mt-3 text-xs text-black/60">
@@ -404,9 +418,12 @@
         </p>
         <div class="mt-6 rounded-3xl border border-amber-200/60 bg-amber-50/70 p-5 text-sm shadow-soft">
           <div class="font-medium">Предварительные требования</div>
-          <p class="mt-1 text-black/70">
-            Слушатели должны владеть базовыми навыками CAD-проектирования и быть знакомыми с основами
-            теории машиностроения.
+          <p class="mt-1 flex items-start gap-2 text-black/80">
+            <span aria-hidden="true" class="mt-0.5 text-lg">⚙️</span>
+            <span class="font-semibold"
+              >Слушатели должны владеть базовыми навыками CAD-проектирования и быть знакомыми с
+              основами теории машиностроения.</span
+            >
           </p>
         </div>
       </div>
@@ -602,7 +619,7 @@
         <p>
           Индустриальный партнёр курса — <span class="font-medium">STEP_3D</span>. По всем вопросам
           можно
-          <a class="underline" href="https://t.me/step_3d_mngr" target="_blank" rel="noreferrer"
+          <a class="underline" href="https://t.me/step3d_support" target="_blank" rel="noreferrer"
             >Связаться с нами в Telegram</a
           >.
         </p>
