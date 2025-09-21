@@ -357,7 +357,9 @@ const helpfulLinks = [
   },
 ];
 const GALLERY_FOLDER = 'images/gallery';
-const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json`;
+const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json?v=${encodeURIComponent(
+  import.meta.env.VITE_APP_VERSION ?? 'dev',
+)}`;
 const COURSE_START = new Date('2025-10-20T09:00:00+03:00');
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
@@ -1348,7 +1350,7 @@ function renderHelpfulLinks() {
 }
 async function loadGallery() {
   try {
-    const response = await fetch(GALLERY_MANIFEST, { cache: 'no-store' });
+    const response = await fetch(GALLERY_MANIFEST);
     if (!response.ok) throw new Error(`Не удалось получить manifest: ${response.status}`);
     const manifest = await response.json();
     const items = Array.isArray(manifest?.items) ? manifest.items : [];
