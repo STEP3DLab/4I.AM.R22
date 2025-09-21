@@ -42,15 +42,39 @@ html, body { scroll-behavior: smooth; }
   <header class="sticky top-0 z-50 border-b border-black/10 bg-white/70 backdrop-blur">
     <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
       <a href="#top" class="font-semibold tracking-tight">4I.R22.01</a>
-      <nav class="hidden gap-6 text-sm md:flex" id="navLinks" aria-label="Основная навигация">
-        <a href="#about" class="opacity-70 transition hover:opacity-100" data-nav="about">О курсе</a>
-        <a href="#program" class="opacity-70 transition hover:opacity-100" data-nav="program">Программа</a>
-        <a href="#team" class="opacity-70 transition hover:opacity-100" data-nav="team">Команда</a>
-        <a href="#apply" class="opacity-70 transition hover:opacity-100" data-nav="apply">Запись</a>
-      </nav>
-      <a href="#apply" class="rounded-xl border border-black/10 px-3 py-1.5 text-sm transition hover:bg-black hover:text-white">Поступить</a>
+      <div class="flex items-center gap-3">
+        <button type="button" id="mobileNavToggle"
+                class="inline-flex items-center gap-2 rounded-xl border border-black/10 px-3 py-1.5 text-sm font-medium transition hover:bg-black hover:text-white md:hidden"
+                aria-controls="mobileNavPanel" aria-expanded="false">
+          <span aria-hidden="true" class="inline-flex h-4 w-4 flex-col justify-between">
+            <span class="block h-[2px] w-full rounded-full bg-current"></span>
+            <span class="block h-[2px] w-full rounded-full bg-current"></span>
+            <span class="block h-[2px] w-full rounded-full bg-current"></span>
+          </span>
+          <span>Меню</span>
+        </button>
+        <nav class="hidden gap-6 text-sm md:flex" id="navLinks" aria-label="Основная навигация">
+          <a href="#about" class="opacity-70 transition hover:opacity-100" data-nav="about">О курсе</a>
+          <a href="#program" class="opacity-70 transition hover:opacity-100" data-nav="program">Программа</a>
+          <a href="#team" class="opacity-70 transition hover:opacity-100" data-nav="team">Команда</a>
+          <a href="#apply" class="opacity-70 transition hover:opacity-100" data-nav="apply">Запись</a>
+        </nav>
+        <a href="#apply" class="rounded-xl border border-black/10 px-3 py-1.5 text-sm transition hover:bg-black hover:text-white">Поступить</a>
+      </div>
     </div>
   </header>
+  <div id="mobileNav" class="fixed inset-0 z-[70] hidden" aria-hidden="true" data-open="false">
+    <div data-mobile-nav-overlay class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-200 pointer-events-none"></div>
+    <nav id="mobileNavPanel" tabindex="-1" aria-label="Мобильная навигация"
+         class="absolute right-0 top-0 flex h-full w-72 max-w-[80vw] translate-x-full flex-col gap-6 bg-white p-6 shadow-xl transition-transform duration-200 focus:outline-none">
+      <div class="flex items-center justify-between gap-3">
+        <span class="text-xs uppercase tracking-[.2em] text-black/40">Меню</span>
+        <button type="button" data-mobile-nav-close
+                class="rounded-lg border border-black/10 px-2.5 py-1 text-xs uppercase tracking-[.2em] text-black/60 transition hover:bg-black hover:text-white">Закрыть</button>
+      </div>
+      <div class="flex flex-col gap-3" data-mobile-nav-links></div>
+    </nav>
+  </div>
   <section id="top" class="relative overflow-hidden">
     <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-4 py-16 md:grid-cols-2">
       <div>
@@ -986,6 +1010,103 @@ function initScrollBar(){
   document.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
 }
+function initMobileNav(){
+  const toggleBtn = document.getElementById('mobileNavToggle');
+  const container = document.getElementById('mobileNav');
+  const panel = document.getElementById('mobileNavPanel');
+  if (!toggleBtn || !container || !panel) return;
+  const overlay = container.querySelector('[data-mobile-nav-overlay]');
+  const linksRoot = container.querySelector('[data-mobile-nav-links]');
+  const closeBtn = container.querySelector('[data-mobile-nav-close]');
+  if (!overlay || !linksRoot) return;
+  let closeTimer = null;
+  let previousOverflow = '';
+  const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  const mm = window.matchMedia('(min-width: 768px)');
+  function syncLinks(){
+    linksRoot.innerHTML = '';
+    $$('#navLinks a').forEach(link => {
+      const clone = link.cloneNode(true);
+      clone.className = 'block rounded-xl border border-black/10 px-3 py-2 text-base font-medium text-black transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40';
+      clone.addEventListener('click', ()=> close());
+      linksRoot.appendChild(clone);
+    });
+  }
+  function getFocusable(){
+    return Array.from(panel.querySelectorAll(focusableSelector))
+      .filter(el => el !== panel && !el.hasAttribute('disabled') && el.tabIndex !== -1 && (el.offsetParent !== null || el === document.activeElement));
+  }
+  let restoreFocusTo = toggleBtn;
+  function open(){
+    if (container.getAttribute('data-open') === 'true') return;
+    if (closeTimer){ clearTimeout(closeTimer); closeTimer = null; }
+    restoreFocusTo = (document.activeElement instanceof HTMLElement) ? document.activeElement : toggleBtn;
+    syncLinks();
+    container.classList.remove('hidden');
+    container.setAttribute('data-open','true');
+    container.setAttribute('aria-hidden','false');
+    requestAnimationFrame(()=>{
+      overlay.classList.remove('opacity-0','pointer-events-none');
+      overlay.classList.add('opacity-100');
+      panel.classList.remove('translate-x-full');
+      panel.classList.add('translate-x-0');
+      previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      toggleBtn.setAttribute('aria-expanded','true');
+      panel.focus({ preventScroll: true });
+    });
+  }
+  function close(){
+    if (container.getAttribute('data-open') !== 'true') return;
+    container.setAttribute('data-open','false');
+    container.setAttribute('aria-hidden','true');
+    overlay.classList.add('opacity-0','pointer-events-none');
+    overlay.classList.remove('opacity-100');
+    panel.classList.add('translate-x-full');
+    panel.classList.remove('translate-x-0');
+    document.body.style.overflow = previousOverflow;
+    toggleBtn.setAttribute('aria-expanded','false');
+    closeTimer = window.setTimeout(()=>{
+      container.classList.add('hidden');
+      if (window.getComputedStyle(toggleBtn).display !== 'none'){
+        toggleBtn.focus({ preventScroll: true });
+      } else if (restoreFocusTo && restoreFocusTo.focus){
+        restoreFocusTo.focus();
+      }
+    }, 220);
+  }
+  toggleBtn.addEventListener('click', ()=>{
+    if (container.getAttribute('data-open') === 'true') close();
+    else open();
+  });
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', close);
+  container.addEventListener('pointerdown', (event)=>{
+    if (container.getAttribute('data-open') !== 'true') return;
+    if (!panel.contains(event.target)){ close(); }
+  });
+  container.addEventListener('keydown', (event)=>{
+    if (container.getAttribute('data-open') !== 'true') return;
+    if (event.key === 'Escape'){ event.preventDefault(); close(); return; }
+    if (event.key !== 'Tab') return;
+    const focusable = getFocusable();
+    if (focusable.length === 0){ event.preventDefault(); panel.focus({ preventScroll: true }); return; }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey){
+      if (document.activeElement === first || !panel.contains(document.activeElement)){
+        event.preventDefault();
+        last.focus({ preventScroll: true });
+      }
+    } else if (document.activeElement === last){
+      event.preventDefault();
+      first.focus({ preventScroll: true });
+    }
+  });
+  const handleMediaChange = (event)=>{ if (event.matches) close(); };
+  if (typeof mm.addEventListener === 'function') mm.addEventListener('change', handleMediaChange);
+  else if (typeof mm.addListener === 'function') mm.addListener(handleMediaChange);
+}
 function renderLead(){
   document.getElementById('leadPrice').textContent = lead.price;
   document.getElementById('leadDuration').textContent = lead.duration;
@@ -1004,6 +1125,7 @@ renderTeamShowcase();
 initCountdown();
 initForm();
 initObservers();
+initMobileNav();
 initScrollBar();
 renderLead();
 </script>
