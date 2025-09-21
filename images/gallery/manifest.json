@@ -1,17 +1,53 @@
 {
-  "totalFiles": 3,
+  "totalFiles": 12,
   "items": [
     {
-      "file": "scan-station.svg",
-      "alt": "3D-сканирование детали на стационарном стенде"
+      "file": "gallery-workshop-01.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 1"
     },
     {
-      "file": "cad-model.svg",
-      "alt": "Подготовка CAD-модели после реверс-инжиниринга"
+      "file": "gallery-workshop-02.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 2"
     },
     {
-      "file": "printing.svg",
-      "alt": "Аддитивное изготовление детали на 3D-принтере"
+      "file": "gallery-workshop-03.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 3"
+    },
+    {
+      "file": "gallery-workshop-04.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 4"
+    },
+    {
+      "file": "gallery-workshop-05.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 5"
+    },
+    {
+      "file": "gallery-workshop-06.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 6"
+    },
+    {
+      "file": "gallery-workshop-07.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 7"
+    },
+    {
+      "file": "gallery-workshop-08.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 8"
+    },
+    {
+      "file": "gallery-workshop-09.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 9"
+    },
+    {
+      "file": "gallery-workshop-10.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 10"
+    },
+    {
+      "file": "gallery-workshop-11.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 11"
+    },
+    {
+      "file": "gallery-workshop-12.jpg",
+      "alt": "Практический интенсив STEP_3D — фото 12"
     }
   ]
 }
