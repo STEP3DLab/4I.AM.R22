@@ -10,7 +10,7 @@
     />
     <meta name="theme-color" content="#ffffff" />
     <meta name="robots" content="index, follow" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="light" />
     <link rel="canonical" href="https://step3dlab.github.io/4I.AM.R22/" />
     <meta property="og:url" content="https://step3dlab.github.io/4I.AM.R22/" />
     <meta property="og:title" content="Реверсивный инжиниринг и АТ — интенсив" />
@@ -35,10 +35,7 @@
       name="twitter:image"
       content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp"
     />
-    <link rel="stylesheet" href="styles/tokens.css" />
-    <link rel="stylesheet" href="styles/base.css" />
-    <link rel="stylesheet" href="styles/components.css" />
-    <link rel="stylesheet" href="styles/a11y.css" />
+    <link rel="stylesheet" href="assets/css/a11y.css" />
     <link rel="dns-prefetch" href="//cdn.tailwindcss.com" />
     <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -56,22 +53,121 @@
         },
       };
     </script>
+    <style>
+      html,
+      body {
+        scroll-behavior: smooth;
+      }
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .divider {
+        margin: 2rem auto;
+        height: 1px;
+        width: 100%;
+        max-width: 72rem;
+        background-image: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 0.1) 50%,
+          rgba(0, 0, 0, 0) 100%
+        );
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+      }
+      .revealed {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .brand {
+        position: relative;
+        display: grid;
+        place-items: center;
+        height: 4rem;
+        border-radius: 0.75rem;
+        background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 0 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: rgba(0, 0, 0, 0.8);
+      }
+      .brand::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 0.75rem;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transition: 0.2s ease;
+      }
+      .brand:hover::after {
+        opacity: 1;
+      }
+      .dot {
+        height: 6px;
+        border-radius: 999px;
+        transition:
+          width 0.25s ease,
+          background-color 0.25s ease,
+          opacity 0.25s ease;
+      }
+      .hover-shimmer:hover::after {
+        content: '';
+        pointer-events: none;
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(400px 60px at 0% 0%, rgba(0, 0, 0, 0.04), transparent);
+        opacity: 1;
+      }
+      .team-modal {
+        transition: opacity 0.25s ease;
+      }
+      .team-modal[aria-hidden='true'] .team-modal__panel {
+        transform: translateY(16px);
+        opacity: 0;
+      }
+      .team-modal[aria-hidden='false'] .team-modal__panel {
+        transform: none;
+        opacity: 1;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+    </style>
   </head>
-  <body>
-    <a class="skip-link" href="#main-content">Перейти к содержимому</a>
+  <body class="min-h-dvh bg-white text-neutral-900 selection:bg-black selection:text-white">
+    <a class="skip-link" href="#about">Перейти к содержимому</a>
     <div
       id="scrollbar"
       class="fixed left-0 top-0 z-[60] h-0.5 w-full bg-black/80"
       style="transform-origin: left center; transform: scaleX(0)"
     ></div>
-    <header class="site-header">
-      <div class="container site-header__bar">
-        <a href="#top" class="site-logo">4I.R22.01</a>
+    <header class="sticky top-0 z-50 border-b border-black/10 bg-white/70 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <a href="#top" class="font-semibold tracking-tight">4I.R22.01</a>
         <div class="flex items-center gap-3">
           <button
             type="button"
             id="mobileNavToggle"
-            class="btn btn--secondary md:hidden"
+            class="inline-flex items-center gap-2 rounded-xl border border-black/10 px-3 py-1.5 text-sm font-medium transition hover:bg-black hover:text-white md:hidden"
             aria-controls="mobileNavPanel"
             aria-expanded="false"
           >
@@ -82,13 +178,25 @@
             </span>
             <span>Меню</span>
           </button>
-          <nav class="nav-links hidden md:flex" id="navLinks" aria-label="Основная навигация">
-            <a href="#about" class="nav-link" data-nav="about" aria-current="false">О курсе</a>
-            <a href="#program" class="nav-link" data-nav="program" aria-current="false">Программа</a>
-            <a href="#team" class="nav-link" data-nav="team" aria-current="false">Команда</a>
-            <a href="#apply" class="nav-link" data-nav="apply" aria-current="false">Запись</a>
+          <nav class="hidden gap-6 text-sm md:flex" id="navLinks" aria-label="Основная навигация">
+            <a href="#about" class="opacity-70 transition hover:opacity-100" data-nav="about"
+              >О курсе</a
+            >
+            <a href="#program" class="opacity-70 transition hover:opacity-100" data-nav="program"
+              >Программа</a
+            >
+            <a href="#team" class="opacity-70 transition hover:opacity-100" data-nav="team"
+              >Команда</a
+            >
+            <a href="#apply" class="opacity-70 transition hover:opacity-100" data-nav="apply"
+              >Запись</a
+            >
           </nav>
-          <a href="#apply" class="btn btn--secondary">Поступить</a>
+          <a
+            href="#apply"
+            class="rounded-xl border border-black/10 px-3 py-1.5 text-sm transition hover:bg-black hover:text-white"
+            >Поступить</a
+          >
         </div>
       </div>
     </header>
@@ -101,40 +209,46 @@
         id="mobileNavPanel"
         tabindex="-1"
         aria-label="Мобильная навигация"
-        class="mobile-nav-panel absolute right-0 top-0 flex h-full w-72 max-w-[80vw] translate-x-full flex-col bg-white p-6 shadow-xl transition-transform duration-200 focus:outline-none"
+        class="absolute right-0 top-0 flex h-full w-72 max-w-[80vw] translate-x-full flex-col gap-6 bg-white p-6 shadow-xl transition-transform duration-200 focus:outline-none"
       >
         <div class="flex items-center justify-between gap-3">
           <span class="text-xs uppercase tracking-[.2em] text-black/40">Меню</span>
           <button
             type="button"
             data-mobile-nav-close
-            class="btn btn--ghost text-xs uppercase tracking-[.2em]"
+            class="rounded-lg border border-black/10 px-2.5 py-1 text-xs uppercase tracking-[.2em] text-black/60 transition hover:bg-black hover:text-white"
           >
             Закрыть
           </button>
         </div>
-        <div class="mobile-nav-panel" data-mobile-nav-links></div>
+        <div class="flex flex-col gap-3" data-mobile-nav-links></div>
       </nav>
     </div>
-    <main id="main-content" tabindex="-1">
-    <section id="top" class="hero relative overflow-hidden">
-      <div class="container hero__grid">
-        <div class="space-y-5">
-          <span class="hero__eyebrow">Практический интенсив STEP_3D × РГСУ</span>
-          <h1 class="reveal leading-tight">
+    <section id="top" class="relative overflow-hidden">
+      <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-4 py-16 md:grid-cols-2">
+        <div>
+          <h1 class="reveal text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
             Реверсивный инжиниринг<br />и аддитивное производство
           </h1>
-          <p class="reveal lead">
+          <p class="reveal mt-4 text-black/70">
             Практический интенсив на базе РГСУ: 3D-сканирование → реверс в CAD → печать оснастки и
             мастер-моделей. От кейсов к результату.
           </p>
           <div id="benefits" class="mt-6 flex flex-wrap gap-3" aria-label="Преимущества"></div>
-          <div class="flex flex-wrap items-center gap-4">
-            <a href="#apply" class="btn btn--primary">Записаться</a>
-            <a href="#program" class="btn btn--secondary">Смотреть программу</a>
+          <div class="mt-6 flex items-center gap-6">
+            <a
+              href="#apply"
+              class="rounded-xl bg-black px-4 py-2 text-white transition hover:opacity-90"
+              >Записаться</a
+            >
+            <a
+              href="#program"
+              class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white"
+              >Смотреть программу</a
+            >
           </div>
           <div
-            class="surface mt-4 inline-flex items-center gap-3 rounded-2xl bg-white/80 px-4 py-2 backdrop-blur"
+            class="mt-4 inline-flex items-center gap-3 rounded-2xl border border-black/10 bg-white/70 px-4 py-2 backdrop-blur"
             aria-live="polite"
           >
             <span class="text-sm">Старт: <span class="font-semibold">20 октября 2025</span></span>
@@ -142,22 +256,30 @@
               >Осталось: <span class="font-medium" id="countdown">—</span></span
             >
           </div>
-          <div id="stats" class="hero__stat-grid mt-6" aria-label="Статистика"></div>
+          <div
+            id="stats"
+            class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
+            aria-label="Статистика"
+          ></div>
         </div>
-        <div class="relative aspect-square rounded-3xl border border-black/10 bg-gradient-to-b from-neutral-50 to-neutral-100 p-2">
+        <div
+          class="relative aspect-square rounded-3xl border border-black/10 bg-gradient-to-b from-neutral-50 to-neutral-100 p-2"
+        >
           <div
             id="carousel"
             class="relative h-full w-full overflow-hidden rounded-2xl select-none"
             aria-roledescription="карусель"
           ></div>
-          <div class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/10"></div>
+          <div
+            class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/10"
+          ></div>
         </div>
       </div>
     </section>
     <div class="divider"></div>
-    <section id="about" class="container">
-      <h2 class="reveal section-heading">Для кого</h2>
-      <p class="reveal max-w-3xl">
+    <section id="about" class="mx-auto max-w-6xl px-4 py-16">
+      <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">Для кого</h2>
+      <p class="reveal mt-2 max-w-3xl text-black/60">
         Курс рассчитан на специалистов, которым нужен прикладной навык — от оцифровки до готовой
         детали.
       </p>
@@ -169,34 +291,34 @@
         Не нашли себя? <a href="#apply" class="underline underline-offset-2">Напишите нам</a> —
         подскажем, подойдёт ли программа под ваши задачи.
       </p>
-      <div class="card mt-4 surface-muted text-sm">
-        <div class="font-medium text-black">Предварительные требования</div>
-        <p class="mt-1 text-sm text-black/70">
+      <div class="mt-4 rounded-2xl border border-black/10 bg-amber-50/40 p-4 text-sm">
+        <div class="font-medium">Предварительные требования</div>
+        <p class="mt-1 text-black/70">
           Слушатели должны владеть базовыми навыками CAD-проектирования и быть знакомыми с основами
           теории машиностроения.
         </p>
       </div>
     </section>
     <div class="divider"></div>
-    <section id="program" class="container">
-      <h2 class="reveal section-heading">
+    <section id="program" class="mx-auto max-w-6xl px-4 py-16">
+      <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">
         Календарно-тематический план
       </h2>
-      <p class="reveal max-w-3xl">
+      <p class="reveal mt-2 max-w-3xl text-black/60">
         48 часов. Теория ровно столько, сколько нужно для практики.
       </p>
       <div id="startCalendar" class="mb-4 overflow-hidden rounded-2xl border border-black/10"></div>
       <div id="programRoot" class="relative rounded-2xl border border-black/10"></div>
       <div class="mt-6 grid gap-4 md:grid-cols-3">
-        <div class="card">
+        <div class="rounded-2xl border border-black/10 p-4">
           <div class="text-sm opacity-60">Стоимость</div>
-          <div class="mt-1 text-2xl font-semibold" id="leadPrice" aria-live="polite"></div>
+          <div class="mt-1 text-2xl font-semibold" id="leadPrice"></div>
         </div>
-        <div class="card">
+        <div class="rounded-2xl border border-black/10 p-4">
           <div class="text-sm opacity-60">Сроки и режим</div>
           <div class="mt-1 font-medium" id="leadDuration"></div>
         </div>
-        <div class="card">
+        <div class="rounded-2xl border border-black/10 p-4">
           <div class="text-sm opacity-60">Группа</div>
           <div class="mt-1 font-medium" id="leadSeats"></div>
         </div>
@@ -206,16 +328,16 @@
       </p>
     </section>
     <div class="divider"></div>
-    <section id="team" class="container">
-      <h2 class="reveal section-heading">Команда</h2>
-      <p class="reveal max-w-3xl">
+    <section id="team" class="mx-auto max-w-6xl px-4 py-16">
+      <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">Команда</h2>
+      <p class="reveal mt-2 max-ww-3xl text-black/60">
         РГСУ — один из ведущих центров компетенций по реверсивному инжинирингу. Среди преподавателей
         — чемпионы и эксперты WorldSkills/BRICS.
       </p>
       <div id="teamCards" class="mt-8 grid gap-4 md:grid-cols-3" aria-label="Команда курса"></div>
       <div id="teamDetail" class="mt-8"></div>
     </section>
-    <section id="team-showcase" class="container pb-16">
+    <section id="team-showcase" class="mx-auto max-w-6xl px-4 pb-16">
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 class="text-2xl font-semibold tracking-tight md:text-3xl">Лица и проекты</h3>
@@ -229,7 +351,7 @@
             type="button"
             aria-label="Предыдущий слайд"
             data-showcase-prev
-            class="btn btn--ghost h-10 w-10 min-w-[2.5rem] rounded-full border border-black/10 bg-white/70 text-black shadow-sm"
+            class="grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white/70 text-black shadow-sm transition hover:bg-white"
           >
             ‹
           </button>
@@ -237,7 +359,7 @@
             type="button"
             aria-label="Следующий слайд"
             data-showcase-next
-            class="btn btn--ghost h-10 w-10 min-w-[2.5rem] rounded-full border border-black/10 bg-white/70 text-black shadow-sm"
+            class="grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white/70 text-black shadow-sm transition hover:bg-white"
           >
             ›
           </button>
@@ -254,32 +376,26 @@
       </div>
     </section>
     <div class="divider"></div>
-    <section id="apply" class="container">
-      <h2 class="reveal section-heading">Поступить на курс</h2>
-      <p class="reveal max-w-3xl">
+    <section id="apply" class="mx-auto max-w-6xl px-4 py-16">
+      <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">Поступить на курс</h2>
+      <p class="reveal mt-2 max-w-3xl text-black/60">
         Оставьте заявку — менеджер свяжется с вами и уточнит детали (наличие мест, график,
         документы).
       </p>
-      <form id="applyForm" class="card mt-8" novalidate>
-        <div class="form-grid">
-          <label class="form-field" data-field="name">
+      <form id="applyForm" class="mt-8 rounded-2xl border border-black/10 p-4" novalidate>
+        <div class="grid gap-4 md:grid-cols-2">
+          <label class="flex flex-col gap-1 text-sm">
             Имя и фамилия
             <input
               name="name"
               autocomplete="name"
               required
               placeholder="Иван Иванов"
-              aria-describedby="field-name-error"
+              class="rounded-xl border border-black/10 px-3 py-2 outline-none focus-visible:ring-2 focus-visible:ring-black/30"
             />
-            <span
-              id="field-name-error"
-              class="form-error hidden"
-              data-err="name"
-              role="status"
-              aria-live="polite"
-            ></span>
+            <span class="hidden text-xs text-red-600" data-err="name"></span>
           </label>
-          <label class="form-field" data-field="email">
+          <label class="flex flex-col gap-1 text-sm">
             Электронная почта
             <input
               name="email"
@@ -287,54 +403,43 @@
               autocomplete="email"
               required
               placeholder="name@example.com"
-              aria-describedby="field-email-error"
+              class="rounded-xl border border-black/10 px-3 py-2 outline-none focus-visible:ring-2 focus-visible:ring-black/30"
             />
-            <span
-              id="field-email-error"
-              class="form-error hidden"
-              data-err="email"
-              role="status"
-              aria-live="polite"
-            ></span>
+            <span class="hidden text-xs text-red-600" data-err="email"></span>
           </label>
-          <label class="form-field md:col-span-2" data-field="comment">
+          <label class="md:col-span-2 flex flex-col gap-1 text-sm">
             Комментарий
             <textarea
               name="comment"
               rows="4"
               placeholder="Кратко о целях и опыте"
+              class="rounded-xl border border-black/10 px-3 py-2 outline-none focus-visible:ring-2 focus-visible:ring-black/30"
             ></textarea>
           </label>
-          <label class="form-field form-field--inline md:col-span-2" data-field="agree">
+          <label class="md:col-span-2 flex items-start gap-2 text-sm">
             <input
               name="agree"
               type="checkbox"
+              class="mt-1 h-4 w-4 rounded border-black/20 outline-none focus-visible:ring-2 focus-visible:ring-black/30"
             />
             <span
               >Согласен(а) на обработку персональных данных и условия политики
               конфиденциальности.</span
             >
           </label>
-          <span
-            class="form-error hidden md:col-span-2"
-            data-err="agree"
-            id="field-agree-error"
-            role="status"
-            aria-live="polite"
-          ></span>
+          <span class="hidden text-xs text-red-600 md:col-span-2" data-err="agree"></span>
         </div>
         <div class="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="submit"
             id="submitBtn"
             disabled
-            class="btn btn--primary"
+            class="cursor-not-allowed rounded-xl bg-black/30 px-4 py-2 text-white outline-none transition focus-visible:ring-2 focus-visible:ring-black/30"
           >
             Отправить заявку
           </button>
           <span
-            class="badge"
-            aria-live="polite"
+            class="inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1 text-sm"
             >Стоимость: <span class="font-medium" id="leadPriceInline"></span
           ></span>
         </div>
@@ -352,7 +457,7 @@
         <p>
           Индустриальный партнёр курса — <span class="font-medium">STEP_3D</span>. По всем вопросам
           можно
-          <a class="underline" href="https://t.me/step_3d_mngr" target="_blank" rel="noopener noreferrer"
+          <a class="underline" href="https://t.me/step_3d_mngr" target="_blank" rel="noreferrer"
             >Связаться с нами в Telegram</a
           >.
         </p>
@@ -366,39 +471,29 @@
         <div id="helpfulLinks" class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
       </div>
     </section>
-    </main>
     <div
       id="stickyCta"
-      class="sticky-cta sm:hidden transition opacity-100"
-      role="complementary"
-      aria-label="Быстрая запись на курс"
-      aria-hidden="false"
+      class="fixed inset-x-0 bottom-3 z-[55] px-3 sm:hidden transition opacity-100"
     >
-      <div class="sticky-cta__inner container">
-        <span class="text-sm" aria-live="polite"
+      <div
+        class="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-black/10 bg-white/90 px-3 py-2 shadow-lg backdrop-blur"
+      >
+        <span class="text-sm"
           >Стоимость: <span class="font-semibold" id="leadPriceMobile"></span
         ></span>
-        <a href="#apply" class="btn btn--primary">Записаться</a>
+        <a href="#apply" class="rounded-xl bg-black px-3 py-1.5 text-white">Записаться</a>
       </div>
     </div>
-    <footer class="footer">
-      <div class="container footer__grid">
-        <div class="footer__meta">
-          <a
-            href="https://rgsu.net/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="underline-offset-2 hover:underline"
-            >© 2025 РГСУ · Курс «Реверсивный инжиниринг и АТ». Все права защищены.</a
-          >
-          <div class="mt-3 flex flex-wrap gap-3 text-xs text-black/60 footer__links">
-            <a href="#about" class="footer-link">О курсе</a>
-            <a href="#program" class="footer-link">Программа</a>
-            <a href="#team" class="footer-link">Команда</a>
-            <a href="#apply" class="footer-link">Запись</a>
-          </div>
-        </div>
-        <div class="footer__legal">
+    <footer class="border-t border-black/10 py-10">
+      <div class="mx-auto max-w-6xl px-4 text-sm opacity-70">
+        <a
+          href="https://rgsu.net/"
+          target="_blank"
+          rel="noreferrer"
+          class="underline-offset-2 hover:underline"
+          >© 2025 РГСУ · Курс «Реверсивный инжиниринг и АТ». Все права защищены.</a
+        >
+        <div class="mt-3 space-y-1 text-xs leading-relaxed text-black/60">
           <p>
             Образовательная деятельность осуществляется на основании лицензии на осуществление
             образовательной деятельности № 2755 от 11.07.2016 (серия 90Л01 № 0009250), выданной

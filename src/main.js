@@ -444,11 +444,13 @@ function renderStats() {
   const root = $('#stats');
   stats.forEach((s) => {
     const card = document.createElement('div');
-    card.className = 'stat-card stat-card--hero hover-shimmer';
+    card.className =
+      'group relative overflow-hidden rounded-2xl border border-black/10 p-4 text-center hover:shadow-md';
     card.innerHTML = `
-      <span class="stat-card__icon">${renderIcon(s.icon)}</span>
-      <strong>${s.k}</strong>
-      <span class="stat-card__meta">${s.v}</span>
+      <div class="mx-auto h-7 w-7 text-black/80">${renderIcon(s.icon)}</div>
+      <div class="mt-2 text-2xl font-semibold tracking-tight">${s.k}</div>
+      <div class="text-[10px] uppercase tracking-[.15em] text-black/50">${s.v}</div>
+      <span aria-hidden class="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full border border-black/10"></span>
     `;
     root.appendChild(card);
   });
@@ -464,7 +466,7 @@ function renderInfoSection(title, items) {
       const label = item.label || '';
       const href = item.href || '';
       const content = href
-        ? `<a href="${href}" target="_blank" rel="noopener noreferrer" class="underline decoration-black/20 underline-offset-2 transition hover:decoration-black">${label}</a>`
+        ? `<a href="${href}" target="_blank" rel="noreferrer" class="underline decoration-black/20 underline-offset-2 transition hover:decoration-black">${label}</a>`
         : label;
       return `<li class="relative pl-4 text-sm leading-snug text-black/70"><span class="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-black/20"></span>${content}</li>`;
     })
@@ -1034,7 +1036,7 @@ function renderApplyLocations() {
             <span>${loc.kind}</span>
             ${loc.badge ? `<span class="rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-black/60">${loc.badge}</span>` : ''}
           </div>
-          <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex items-center gap-2 text-left text-sm font-semibold text-black underline-offset-4 transition hover:underline">
+          <a href="${mapLink}" target="_blank" rel="noreferrer" class="mt-2 inline-flex items-center gap-2 text-left text-sm font-semibold text-black underline-offset-4 transition hover:underline">
             <span>${loc.address}</span>
             <span aria-hidden class="h-4 w-4 text-black/40 transition group-hover:text-black">${renderIcon('external')}</span>
           </a>
@@ -1044,7 +1046,7 @@ function renderApplyLocations() {
               <span class="h-3 w-3 text-current">${renderIcon('focus')}</span>
               <span>Показать на карте</span>
             </button>
-            <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1 transition hover:bg-black hover:text-white">
+            <a href="${mapLink}" target="_blank" rel="noreferrer" class="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1 transition hover:bg-black hover:text-white">
               <span class="h-3 w-3 text-current">${renderIcon('external')}</span>
               <span>Маршрут</span>
             </a>
@@ -1076,7 +1078,7 @@ function renderHelpfulLinks() {
     const card = document.createElement('a');
     card.href = link.href;
     card.target = '_blank';
-    card.rel = 'noopener noreferrer';
+    card.rel = 'noreferrer';
     card.className =
       'group relative flex flex-col justify-between gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
     card.innerHTML = `
@@ -1150,7 +1152,6 @@ function initCarousel(gallery) {
     zoom = 1,
     origin = '50% 50%',
     touchStartX = null;
-  const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   if (!gallery?.length) {
     const empty = document.createElement('div');
     empty.className =
@@ -1162,78 +1163,44 @@ function initCarousel(gallery) {
   const img = document.createElement('img');
   img.draggable = false;
   img.className = 'absolute inset-0 h-full w-full object-cover transition-opacity duration-300';
-  img.loading = 'eager';
-  img.decoding = 'async';
-  img.sizes = '(min-width: 1024px) 540px, (min-width: 640px) 70vw, 90vw';
-  if ('fetchPriority' in img) {
-    img.fetchPriority = 'high';
-  }
-  if (reduceMotionQuery.matches) {
-    img.style.transition = 'none';
-  }
-  const onCarouselMotionChange = (event) => {
-    if (event.matches) {
-      img.style.transition = 'none';
-      img.style.opacity = 1;
-    } else {
-      img.style.transition = '';
-    }
-  };
-  if (typeof reduceMotionQuery.addEventListener === 'function') {
-    reduceMotionQuery.addEventListener('change', onCarouselMotionChange);
-  } else if (typeof reduceMotionQuery.addListener === 'function') {
-    reduceMotionQuery.addListener(onCarouselMotionChange);
-  }
   root.appendChild(img);
   const prevBtn = document.createElement('button');
   prevBtn.setAttribute('aria-label', 'Предыдущее фото');
-  prevBtn.className = 'carousel-control carousel-control--prev btn btn--ghost';
+  prevBtn.className =
+    'pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/70 text-black shadow transition hover:bg-white absolute left-2 top-1/2 -translate-y-1/2';
   prevBtn.textContent = '‹';
   const nextBtn = document.createElement('button');
   nextBtn.setAttribute('aria-label', 'Следующее фото');
-  nextBtn.className = 'carousel-control carousel-control--next btn btn--ghost';
+  nextBtn.className =
+    'pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/70 text-black shadow transition hover:bg-white absolute right-2 top-1/2 -translate-y-1/2';
   nextBtn.textContent = '›';
   root.appendChild(prevBtn);
   root.appendChild(nextBtn);
   const dots = document.createElement('div');
-  dots.className = 'carousel-dots';
+  dots.className =
+    'pointer-events-none absolute bottom-2 left-0 right-0 flex items-center justify-center gap-2';
   root.appendChild(dots);
   function render() {
     const item = gallery[idx];
-    const updateImage = () => {
+    img.style.opacity = 0;
+    setTimeout(() => {
       img.src = item.src;
       img.alt = item.alt || '';
       img.style.opacity = 1;
       img.style.transform = `scale(${zoom})`;
       img.style.transformOrigin = origin;
-      img.loading = idx === 0 ? 'eager' : 'lazy';
-      if ('fetchPriority' in img) {
-        img.fetchPriority = idx === 0 ? 'high' : 'auto';
-      }
-    };
-    if (reduceMotionQuery.matches) {
-      img.style.opacity = 1;
-      img.style.transition = 'none';
-      updateImage();
-    } else {
-      img.style.transition = '';
-      img.style.opacity = 0;
-      window.setTimeout(updateImage, 100);
-    }
+    }, 100);
     dots.innerHTML = '';
     gallery.forEach((_, i) => {
-      const dot = document.createElement('button');
-      dot.className = 'dot';
-      const isActive = i === idx;
-      dot.setAttribute('aria-label', `Слайд ${i + 1}`);
-      dot.setAttribute('aria-current', isActive ? 'true' : 'false');
-      dot.dataset.index = String(i);
-      dot.addEventListener('click', () => {
+      const b = document.createElement('button');
+      b.className = 'pointer-events-auto dot ' + (i === idx ? 'w-6 bg-black' : 'w-3 bg-black/40');
+      b.setAttribute('aria-label', `Слайд ${i + 1}`);
+      b.onclick = () => {
         idx = i;
         zoom = 1;
         render();
-      });
-      dots.appendChild(dot);
+      };
+      dots.appendChild(b);
     });
   }
   function go(d) {
@@ -1555,7 +1522,6 @@ function initForm() {
   }
   function showError(name, msg) {
     const err = form.querySelector(`[data-err="${name}"]`);
-    const field = err ? err.closest('.form-field') : null;
     if (!err) return;
     if (msg) {
       err.textContent = msg;
@@ -1566,10 +1532,8 @@ function initForm() {
     }
     const input = form.elements[name];
     if (input) {
-      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
-    }
-    if (field) {
-      field.dataset.invalid = msg ? 'true' : 'false';
+      if (msg) input.classList.add('border-red-400');
+      else input.classList.remove('border-red-400');
     }
   }
   function validate(silent = false) {
@@ -1590,7 +1554,9 @@ function initForm() {
       if (!silent) showError('agree', 'Нужно согласие на обработку данных');
     } else if (!silent) showError('agree', '');
     submitBtn.disabled = !ok;
-    submitBtn.setAttribute('aria-disabled', ok ? 'false' : 'true');
+    submitBtn.className =
+      'rounded-xl px-4 py-2 text-white outline-none transition focus-visible:ring-2 focus-visible:ring-black/30 ' +
+      (ok ? 'bg-black hover:opacity-90' : 'bg-black/30 cursor-not-allowed');
     return ok;
   }
   form.addEventListener('input', () => {
@@ -1629,74 +1595,44 @@ function initForm() {
   validate(true);
 }
 function initObservers() {
-  const setActiveNav = (id) => {
-    document.querySelectorAll('[data-nav]').forEach((link) => {
-      const isActive = link.dataset.nav === id;
-      link.setAttribute('aria-current', isActive ? 'true' : 'false');
-    });
-  };
+  const links = Array.from(document.querySelectorAll('#navLinks a'));
   const ids = ['top', 'about', 'program', 'team', 'apply'];
   const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
   const cta = document.getElementById('stickyCta');
-  const toggleStickyCta = (hidden) => {
-    if (!cta) return;
-    cta.setAttribute('aria-hidden', hidden ? 'true' : 'false');
-  };
-  setActiveNav(ids[0]);
-  toggleStickyCta(false);
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const id = entry.target.id;
-          setActiveNav(id);
-          toggleStickyCta(id === 'apply');
+          links.forEach((a) => {
+            a.classList.toggle('text-black', a.dataset.nav === id);
+            a.classList.toggle('opacity-70', a.dataset.nav !== id);
+          });
+          if (id === 'apply') {
+            cta.style.opacity = '0';
+            cta.style.pointerEvents = 'none';
+          } else {
+            cta.style.opacity = '1';
+            cta.style.pointerEvents = 'auto';
+          }
         }
       });
     },
     { rootMargin: '-40% 0px -55% 0px', threshold: [0, 0.2, 0.5, 1] },
   );
   sections.forEach((s) => io.observe(s));
-  const revealTargets = Array.from(document.querySelectorAll('.reveal'));
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let revealObserver = null;
-  const ensureRevealObserver = () =>
-    new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            revealObserver?.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 },
-    );
-  const applyRevealPreference = (shouldReduce) => {
-    if (shouldReduce) {
-      revealObserver?.disconnect();
-      revealObserver = null;
-      revealTargets.forEach((el) => el.classList.add('revealed'));
-      return;
-    }
-    if (!revealObserver) {
-      revealObserver = ensureRevealObserver();
-    }
-    revealTargets.forEach((el) => {
-      if (!el.classList.contains('revealed')) {
-        revealObserver.observe(el);
-      }
-    });
-  };
-  applyRevealPreference(prefersReducedMotion.matches);
-  const onMotionPreferenceChange = (event) => {
-    applyRevealPreference(event.matches);
-  };
-  if (typeof prefersReducedMotion.addEventListener === 'function') {
-    prefersReducedMotion.addEventListener('change', onMotionPreferenceChange);
-  } else if (typeof prefersReducedMotion.addListener === 'function') {
-    prefersReducedMotion.addListener(onMotionPreferenceChange);
-  }
+  const reveal = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('revealed');
+          reveal.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.15 },
+  );
+  Array.from(document.querySelectorAll('.reveal')).forEach((el) => reveal.observe(el));
 }
 function initScrollBar() {
   const bar = document.getElementById('scrollbar');
@@ -1726,18 +1662,11 @@ function initMobileNav() {
     linksRoot.innerHTML = '';
     $$('#navLinks a').forEach((link) => {
       const clone = link.cloneNode(true);
-      clone.className = 'nav-link';
+      clone.className =
+        'block rounded-xl border border-black/10 px-3 py-2 text-base font-medium text-black transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40';
       clone.addEventListener('click', () => close());
       linksRoot.appendChild(clone);
     });
-    const active = document.querySelector('#navLinks a[aria-current="true"]');
-    if (active) {
-      const activeId = active.dataset.nav;
-      linksRoot.querySelectorAll('[data-nav]').forEach((link) => {
-        const isActive = link.dataset.nav === activeId;
-        link.setAttribute('aria-current', isActive ? 'true' : 'false');
-      });
-    }
   }
   function getFocusable() {
     return Array.from(panel.querySelectorAll(focusableSelector)).filter(
