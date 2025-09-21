@@ -365,14 +365,16 @@ const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 function createPill(text, tone = 'neutral') {
   const tones = {
-    neutral: 'border-black/10 bg-white/60 text-current',
-    lecture: 'border-sky-300/40 bg-sky-50 text-sky-900',
-    practice: 'border-emerald-300/40 bg-emerald-50 text-emerald-900',
-    workshop: 'border-amber-300/40 bg-amber-50 text-amber-900',
-    exam: 'border-rose-300/40 bg-rose-50 text-rose-900',
+    neutral: 'border-black/10 bg-white/80 text-black/70 shadow-soft',
+    lecture: 'border-sky-200/60 bg-sky-50 text-sky-900 shadow-soft',
+    practice: 'border-emerald-200/60 bg-emerald-50 text-emerald-900 shadow-soft',
+    workshop: 'border-amber-200/60 bg-amber-50 text-amber-900 shadow-soft',
+    exam: 'border-rose-200/60 bg-rose-50 text-rose-900 shadow-soft',
   };
   const span = document.createElement('span');
-  span.className = `inline-flex items-center gap-2 rounded-full border px-3 py-1 text-sm backdrop-blur ${tones[tone] || tones.neutral}`;
+  span.className = `inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
+    tones[tone] || tones.neutral
+  }`;
   span.textContent = text;
   return span;
 }
@@ -605,8 +607,7 @@ function renderStats() {
   root.innerHTML = '';
   stats.forEach((stat) => {
     const card = document.createElement('div');
-    card.className =
-      'group relative overflow-hidden rounded-2xl border border-black/10 p-4 text-center hover:shadow-md';
+    card.className = 'stat-card group';
     card.setAttribute('role', 'group');
     if (stat.ariaLabel) {
       card.setAttribute('aria-label', stat.ariaLabel);
@@ -615,12 +616,15 @@ function renderStats() {
       card.setAttribute('aria-describedby', stat.chart.id);
     }
     card.innerHTML = `
-      <div class="mx-auto h-7 w-7 text-black/80">${renderIcon(stat.icon)}</div>
-      <div class="mt-2 text-2xl font-semibold tracking-tight">${stat.value}</div>
-      <div class="text-[10px] uppercase tracking-[.15em] text-black/50">${stat.label}</div>
-      ${stat.detail ? `<div class="mt-1 text-xs text-black/60">${stat.detail}</div>` : ''}
-      ${stat.chart?.markup ?? ''}
-      <span aria-hidden="true" class="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full border border-black/10"></span>
+      <div class="flex items-center gap-3">
+        <div class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/80">${renderIcon(stat.icon)}</div>
+        <div>
+          <div class="text-xl font-semibold tracking-tight">${stat.value}</div>
+          <div class="text-[11px] uppercase tracking-[.2em] text-black/45">${stat.label}</div>
+        </div>
+      </div>
+      ${stat.detail ? `<div class="mt-3 text-xs text-black/60">${stat.detail}</div>` : ''}
+      ${stat.chart?.markup ? `<div class="mt-4">${stat.chart.markup}</div>` : ''}
     `;
     root.appendChild(card);
   });
@@ -642,8 +646,8 @@ function renderInfoSection(title, items) {
     })
     .join('');
   return `
-    <div class="rounded-2xl border border-black/10 bg-white/60 p-4">
-      <div class="text-[11px] uppercase tracking-[.15em] text-black/50">${title}</div>
+    <div class="rounded-3xl border border-black/10 bg-white/85 p-5 shadow-soft">
+      <div class="text-[11px] uppercase tracking-[.15em] text-black/45">${title}</div>
       <ul class="mt-2 space-y-1">${list}</ul>
     </div>
   `;
