@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F4F7FF" />
+      <stop offset="45%" stop-color="#EEF3FF" />
+      <stop offset="100%" stop-color="#E4ECFF" />
+    </linearGradient>
+    <radialGradient id="scan" cx="0.3" cy="0.35" r="0.7">
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.25" />
+      <stop offset="45%" stop-color="#2563EB" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#1D4ED8" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="print" cx="0.7" cy="0.7" r="0.7">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.3" />
+      <stop offset="45%" stop-color="#059669" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#047857" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="grid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" stop-opacity="0.07" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="960" fill="url(#grad)" />
+  <rect x="120" y="140" width="1200" height="680" fill="url(#grid)" opacity="0.35" rx="48" />
+  <g opacity="0.6">
+    <circle cx="380" cy="320" r="260" fill="url(#scan)" />
+    <circle cx="1020" cy="640" r="280" fill="url(#print)" />
+  </g>
+  <g opacity="0.4" transform="translate(200 220) rotate(-8)">
+    <rect x="0" y="0" width="320" height="200" rx="24" fill="#fff" fill-opacity="0.8" />
+    <rect x="24" y="30" width="80" height="140" rx="16" fill="#1D4ED8" fill-opacity="0.08" />
+    <rect x="124" y="30" width="160" height="64" rx="18" fill="#fff" fill-opacity="0.9" />
+    <path d="M144 54h120v20H144z" fill="#3B82F6" fill-opacity="0.15" />
+    <rect x="124" y="112" width="160" height="44" rx="14" fill="#EEF2FF" />
+  </g>
+  <g opacity="0.35" transform="translate(880 520) rotate(12)">
+    <rect x="0" y="0" width="320" height="200" rx="24" fill="#fff" fill-opacity="0.86" />
+    <path d="M50 48h220v20H50z" fill="#10B981" fill-opacity="0.15" />
+    <path d="M82 92h156v20H82z" fill="#0EA5E9" fill-opacity="0.12" />
+    <rect x="40" y="130" width="240" height="38" rx="12" fill="#ECFDF5" />
+    <circle cx="86" cy="56" r="8" fill="#34D399" />
+    <circle cx="110" cy="56" r="8" fill="#60A5FA" />
+    <circle cx="134" cy="56" r="8" fill="#F472B6" />
+  </g>
+</svg>
