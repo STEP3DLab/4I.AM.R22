@@ -843,17 +843,23 @@ function renderTeamShowcase() {
   let lightboxIndex = 0;
   let scrollRaf = 0;
   let restoreFocusTo = null;
+  let focusTrapHandler = null;
+  let focusableElements = [];
+  let overlayKeydownAttached = false;
+  let previousBodyOverflow = '';
+  const focusableSelector =
+    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+  const overlayTitleId = 'showcaseLightboxTitle';
+  const overlayCaptionId = 'showcaseLightboxCaption';
 
   const createOverlay = () => {
     const el = document.createElement('div');
     el.id = 'showcaseLightbox';
     el.className =
       'pointer-events-none fixed inset-0 z-[70] hidden items-center justify-center bg-neutral-950/80 px-4 py-8 opacity-0 transition-opacity duration-200';
-    el.setAttribute('role', 'dialog');
-    el.setAttribute('aria-modal', 'true');
     el.setAttribute('aria-hidden', 'true');
     el.innerHTML = `
-      <div class="relative flex w-full max-w-5xl flex-col gap-5 rounded-3xl border border-white/10 bg-neutral-900/85 p-5 text-white shadow-[0_35px_90px_rgba(0,0,0,0.45)] backdrop-blur" data-showcase-panel>
+      <div class="relative flex w-full max-w-5xl flex-col gap-5 rounded-3xl border border-white/10 bg-neutral-900/85 p-5 text-white shadow-[0_35px_90px_rgba(0,0,0,0.45)] backdrop-blur" role="dialog" aria-modal="true" aria-labelledby="${overlayTitleId}" aria-describedby="${overlayCaptionId}" tabindex="-1" data-showcase-panel>
         <button type="button" data-showcase-close class="absolute right-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="Закрыть галерею">
           ${renderIcon('close')}
         </button>
@@ -870,8 +876,8 @@ function renderTeamShowcase() {
           </div>
         </div>
         <div class="space-y-2 text-left">
-          <div data-showcase-title class="text-lg font-semibold leading-tight"></div>
-          <p data-showcase-caption class="text-sm text-white/80"></p>
+          <div id="${overlayTitleId}" data-showcase-title class="text-lg font-semibold leading-tight"></div>
+          <p id="${overlayCaptionId}" data-showcase-caption class="text-sm text-white/80"></p>
         </div>
       </div>
     `;
@@ -891,6 +897,75 @@ function renderTeamShowcase() {
   const prevControl = overlay.querySelector('[data-showcase-nav="prev"]');
   const nextControl = overlay.querySelector('[data-showcase-nav="next"]');
   const closeControl = overlay.querySelector('[data-showcase-close]');
+
+  if (overlayTitle) {
+    overlayTitle.id = overlayTitleId;
+  }
+  if (overlayCaption) {
+    overlayCaption.id = overlayCaptionId;
+  }
+  if (overlayPanel) {
+    overlayPanel.setAttribute('role', 'dialog');
+    overlayPanel.setAttribute('aria-modal', 'true');
+    overlayPanel.setAttribute('aria-labelledby', overlayTitleId);
+    overlayPanel.setAttribute('aria-describedby', overlayCaptionId);
+    if (!overlayPanel.hasAttribute('tabindex')) {
+      overlayPanel.setAttribute('tabindex', '-1');
+    }
+  }
+  overlay.setAttribute('aria-labelledby', overlayTitleId);
+  overlay.setAttribute('aria-describedby', overlayCaptionId);
+
+  function bindFocusTrap() {
+    if (!overlayPanel) return;
+    focusableElements = Array.from(overlayPanel.querySelectorAll(focusableSelector)).filter(
+      (el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true',
+    );
+    if (focusTrapHandler) {
+      overlayPanel.removeEventListener('keydown', focusTrapHandler);
+    }
+    focusTrapHandler = (event) => {
+      if (event.key !== 'Tab') return;
+      if (!focusableElements.length) {
+        event.preventDefault();
+        overlayPanel.focus({ preventScroll: true });
+        return;
+      }
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement;
+      if (event.shiftKey) {
+        if (activeElement === firstElement || !overlayPanel.contains(activeElement)) {
+          event.preventDefault();
+          lastElement.focus({ preventScroll: true });
+        }
+      } else if (activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus({ preventScroll: true });
+      }
+    };
+    overlayPanel.addEventListener('keydown', focusTrapHandler);
+  }
+
+  function unbindFocusTrap() {
+    if (overlayPanel && focusTrapHandler) {
+      overlayPanel.removeEventListener('keydown', focusTrapHandler);
+    }
+    focusTrapHandler = null;
+    focusableElements = [];
+  }
+
+  function attachOverlayKeydown() {
+    if (!overlay || overlayKeydownAttached) return;
+    overlay.addEventListener('keydown', handleOverlayKeydown);
+    overlayKeydownAttached = true;
+  }
+
+  function detachOverlayKeydown() {
+    if (!overlay || !overlayKeydownAttached) return;
+    overlay.removeEventListener('keydown', handleOverlayKeydown);
+    overlayKeydownAttached = false;
+  }
 
   function updateStatus() {
     if (!status || !cards.length) return;
@@ -961,6 +1036,12 @@ function renderTeamShowcase() {
           ? document.activeElement
           : null;
     updateLightbox();
+    if (overlay.getAttribute('aria-hidden') !== 'false') {
+      previousBodyOverflow = document.body.style.overflow;
+    }
+    document.body.style.overflow = 'hidden';
+    attachOverlayKeydown();
+    bindFocusTrap();
     overlay.classList.remove('hidden');
     overlay.classList.remove('pointer-events-none');
     overlay.setAttribute('aria-hidden', 'false');
@@ -980,6 +1061,10 @@ function renderTeamShowcase() {
     overlay.setAttribute('aria-hidden', 'true');
     overlay.classList.remove('opacity-100', 'pointer-events-auto');
     overlay.classList.add('pointer-events-none');
+    detachOverlayKeydown();
+    unbindFocusTrap();
+    document.body.style.overflow = previousBodyOverflow;
+    previousBodyOverflow = '';
     const handleTransitionEnd = (event) => {
       if (event.target !== overlay) return;
       overlay.classList.add('hidden');
@@ -1029,7 +1114,7 @@ function renderTeamShowcase() {
     }
   }
 
-  const handleOverlayKeydown = (event) => {
+  function handleOverlayKeydown(event) {
     if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -1041,7 +1126,7 @@ function renderTeamShowcase() {
       event.preventDefault();
       step(1);
     }
-  };
+  }
 
   if (!overlay.dataset.bound) {
     prevControl?.addEventListener('click', () => step(-1));
@@ -1052,11 +1137,6 @@ function renderTeamShowcase() {
     });
     overlayImage?.addEventListener('click', () => step(1));
     overlay.dataset.bound = 'true';
-  }
-
-  if (!document.body.dataset.showcaseLightboxKeydown) {
-    document.addEventListener('keydown', handleOverlayKeydown);
-    document.body.dataset.showcaseLightboxKeydown = 'bound';
   }
 
   teamShowcase.forEach((item, index) => {
