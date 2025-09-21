@@ -1575,7 +1575,7 @@ function renderProgram() {
     });
   };
   const tabsWrap = document.createElement('div');
-  tabsWrap.className = 'sticky top-16 z-20 border-b border-black/10 bg-white/80 backdrop-blur';
+  tabsWrap.className = 'relative border-b border-black/10 bg-white/80 backdrop-blur md:sticky md:top-16';
   tabsWrap.innerHTML =
     '<div class="overflow-x-auto px-3 py-2"><div class="flex items-stretch gap-3" id="dayTabs"></div></div>';
   root.appendChild(tabsWrap);
