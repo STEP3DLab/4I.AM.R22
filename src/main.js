@@ -491,7 +491,7 @@ function createLinearChart({ percent, id, ariaLabel, accentClass }) {
         <div class="h-2 w-full overflow-hidden rounded-full bg-black/10">
           <div class="h-full rounded-full ${accentClass}" style="width: ${safePercent}%;" aria-hidden="true"></div>
         </div>
-        <div class="mt-1 text-xs text-black/50">${safePercent}% программы</div>
+        <div class="mt-1 text-xs text-muted">${safePercent}% программы</div>
       </div>
     `,
   };
@@ -615,7 +615,7 @@ function renderStats() {
     card.innerHTML = `
       <div class="mx-auto h-7 w-7 text-black/80">${renderIcon(stat.icon)}</div>
       <div class="mt-2 text-2xl font-semibold tracking-tight">${stat.value}</div>
-      <div class="text-[10px] uppercase tracking-[.15em] text-black/50">${stat.label}</div>
+      <div class="text-[10px] uppercase tracking-[.15em] text-muted">${stat.label}</div>
       ${stat.detail ? `<div class="mt-1 text-xs text-black/60">${stat.detail}</div>` : ''}
       ${stat.chart?.markup ?? ''}
       <span aria-hidden="true" class="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full border border-black/10"></span>
@@ -641,7 +641,7 @@ function renderInfoSection(title, items) {
     .join('');
   return `
     <div class="rounded-2xl border border-black/10 bg-white/60 p-4">
-      <div class="text-[11px] uppercase tracking-[.15em] text-black/50">${title}</div>
+      <div class="text-[11px] uppercase tracking-[.15em] text-muted">${title}</div>
       <ul class="mt-2 space-y-1">${list}</ul>
     </div>
   `;
@@ -1239,7 +1239,7 @@ function renderApplyLocations() {
             <span class="h-4 w-4 text-black/60">${renderIcon('map-pin')}</span>
             <span data-map-address></span>
           </div>
-          <span class="hidden text-xs text-black/40 sm:inline">Выберите площадку, чтобы обновить карту</span>
+          <span class="hidden text-xs text-muted sm:inline">Выберите площадку, чтобы обновить карту</span>
         </div>
         <iframe data-map-frame title="Карта площадки курса" class="h-64 w-full border-0" src="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
       </div>
@@ -1280,13 +1280,13 @@ function renderApplyLocations() {
           ${renderIcon('map-pin')}
         </span>
         <div class="flex-1">
-          <div class="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[.2em] text-black/40">
+          <div class="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[.2em] text-muted">
             <span>${loc.kind}</span>
             ${loc.badge ? `<span class="rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-black/60">${loc.badge}</span>` : ''}
           </div>
           <a href="${mapLink}" target="_blank" rel="noreferrer" class="mt-2 inline-flex items-center gap-2 text-left text-sm font-semibold text-black underline-offset-4 transition hover:underline">
             <span>${loc.address}</span>
-            <span aria-hidden class="h-4 w-4 text-black/40 transition group-hover:text-black">${renderIcon('external')}</span>
+            <span aria-hidden class="h-4 w-4 text-subtle transition group-hover:text-black">${renderIcon('external')}</span>
           </a>
           ${loc.caption ? `<p class="mt-1 text-xs text-black/60">${loc.caption}</p>` : ''}
           <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-black/60">
@@ -1339,7 +1339,7 @@ function renderHelpfulLinks() {
           ${link.subtitle ? `<p class="mt-1 text-xs text-black/60">${link.subtitle}</p>` : ''}
         </div>
       </div>
-      <span aria-hidden class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 text-black/40 transition group-hover:translate-x-1 group-hover:text-black">
+      <span aria-hidden class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 text-subtle transition group-hover:translate-x-1 group-hover:text-black">
         ${renderIcon('external')}
       </span>
     `;
@@ -1494,7 +1494,7 @@ function renderAudience() {
       <div class="flex items-start gap-3">
         <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">${renderIcon(icons[i % icons.length])}</span>
         <div>
-          <div class="text-[10px] uppercase tracking-[.18em] text-black/40">Аудитория</div>
+          <div class="text-[10px] uppercase tracking-[.18em] text-muted">Аудитория</div>
           <div class="mt-2 text-base font-medium leading-snug text-black">${a}</div>
         </div>
       </div>
@@ -1550,7 +1550,7 @@ function renderProgram() {
     <div class="flex items-center gap-3">
       <span aria-hidden class="grid h-11 w-11 place-items-center rounded-xl bg-black/5 text-black/70">${renderIcon('calendar')}</span>
       <div>
-        <div class="text-[11px] uppercase tracking-[.2em] text-black/40">Режим просмотра</div>
+        <div class="text-[11px] uppercase tracking-[.2em] text-muted">Режим просмотра</div>
         <div class="text-sm text-black/70">Выберите формат расписания под ваше устройство</div>
       </div>
     </div>
@@ -1670,7 +1670,7 @@ function renderProgram() {
             ${hoursChip}
             ${fullChips}
           </div>
-          <span class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 bg-white text-black/50 md:self-auto">${chevron}</span>
+          <span class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 bg-white text-subtle md:self-auto">${chevron}</span>
         </button>
         <div class="overflow-hidden transition-[grid-template-rows,opacity] duration-300 ease-out" style="grid-template-rows: ${expanded ? '1fr' : '0fr'};">
           <div class="grid min-h-0 ${view === 'full' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4 p-4">
