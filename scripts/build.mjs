@@ -42,7 +42,7 @@ async function build() {
   await rm(distDir, { recursive: true, force: true });
   await mkdir(distDir, { recursive: true });
   await generateSitemap();
-  const assetsToCopy = ['index.html', 'src', 'images', 'public'];
+  const assetsToCopy = ['index.html', 'src', 'images', 'public', 'assets'];
   for (const asset of assetsToCopy) {
     await copyIfExists(asset);
   }
