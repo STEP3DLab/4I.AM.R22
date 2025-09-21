@@ -4,7 +4,7 @@ test.describe('Landing page smoke', () => {
   test('loads hero and key CTA', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('heading', { name: /реверсивный инжиниринг/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Записаться' }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Подать заявку' }).first()).toBeVisible();
   });
 
   test('navigates via primary menu', async ({ page }) => {
