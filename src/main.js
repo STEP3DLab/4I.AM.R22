@@ -1780,19 +1780,51 @@ function renderProgram() {
 }
 function initCountdown() {
   const el = document.getElementById('countdown');
+  if (!el) return;
+
+  let lastContent = '';
+  let liveMode = '';
+  let timerId = null;
+
+  function setLiveMode(nextMode) {
+    if (liveMode === nextMode) return;
+    if (nextMode) {
+      el.setAttribute('aria-live', nextMode);
+    } else {
+      el.removeAttribute('aria-live');
+    }
+    liveMode = nextMode;
+  }
+
   function tick() {
     const status = getCountdownStatus(COURSE_START, new Date());
-    if (!el) return;
+
     if (status.isStarted) {
-      el.textContent = 'курс начался';
+      setLiveMode('polite');
+      const startedMessage = 'курс начался';
+      if (lastContent !== startedMessage) {
+        el.textContent = startedMessage;
+        lastContent = startedMessage;
+      }
+      if (timerId !== null) {
+        clearInterval(timerId);
+        timerId = null;
+      }
       return;
     }
-    const diffMs = Math.max(0, COURSE_START.getTime() - Date.now());
-    const seconds = Math.floor((diffMs % 60000) / 1000);
-    el.textContent = `${status.days}д ${status.hours}ч ${status.minutes}м ${String(seconds).padStart(2, '0')}с`;
+
+    const isLastHour = status.days === 0 && status.hours === 0;
+    setLiveMode(isLastHour ? 'polite' : 'off');
+
+    const nextText = `${status.days}д ${status.hours}ч ${status.minutes}м`;
+    if (nextText !== lastContent) {
+      el.textContent = nextText;
+      lastContent = nextText;
+    }
   }
+
   tick();
-  setInterval(tick, 1000);
+  timerId = setInterval(tick, 60000);
 }
 const FEEDBACK_HIDE_DELAY = 6000;
 function buildApplicationSummary({ name, email, comment }) {
