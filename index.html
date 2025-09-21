@@ -149,20 +149,20 @@ html, body { scroll-behavior: smooth; }
         <button type="submit" id="submitBtn" disabled
                 class="cursor-not-allowed rounded-xl bg-black/30 px-4 py-2 text-white outline-none transition focus-visible:ring-2 focus-visible:ring-black/30">Отправить заявку</button>
         <span class="inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1 text-sm">Стоимость: <span class="font-medium" id="leadPriceInline"></span></span>
-        <span class="inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1 text-sm">Адрес: <span class="font-medium">Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)</span></span>
+        <span class="inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1 text-sm">Адрес: <span class="font-medium">Москва, ул. Беговая, д. 12 (лаборатория промдизайна). Итоговое занятие (суббота): Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)</span></span>
       </div>
     </form>
     <div class="mt-4 space-y-2 text-xs opacity-70">
       <p>Нажимая кнопку «Отправить заявку», вы даёте <span class="underline">согласие на обработку персональных данных</span> и подтверждаете ознакомление с политикой конфиденциальности.</p>
-      <p>Индустриальный партнёр курса — <span class="font-medium">STEP_3D</span>. По всем вопросам можно писать в Telegram: <a class="underline" href="https://t.me/step_3d_mngr" target="_blank" rel="noreferrer">@step_3d_mngr</a>.</p>
+      <p>Индустриальный партнёр курса — <span class="font-medium">STEP_3D</span>. По всем вопросам можно <a class="underline" href="https://t.me/step_3d_mngr" target="_blank" rel="noreferrer">Связаться с нами в Telegram</a>.</p>
       <p>По предварительной договорённости (<span class="font-medium">от 6 человек</span>) мы можем согласовать и утвердить удобные для вашей команды даты старта и расписания.</p>
     </div>
     <div class="mt-6">
       <div class="text-sm opacity-60">Полезные ссылки</div>
       <div class="mt-4 flex flex-wrap gap-3">
-        <a href="https://rgsu.net" target="_blank" rel="noreferrer" class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white">Сайт технопарка РГСУ</a>
-        <a href="https://web.telegram.org/k/#@STEP_3D_Lab" target="_blank" rel="noreferrer" class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white">Портфолио и новости (Telegram)</a>
-        <a href="https://t.me/step_3d_mngr" target="_blank" rel="noreferrer" class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white">Контакт в Telegram: @step_3d_mngr</a>
+        <a href="https://technopark-rgsu.ru/" target="_blank" rel="noreferrer" class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white">Сайт технопарка РГСУ</a>
+        <a href="https://t.me/STEP_3D_Lab" target="_blank" rel="noreferrer" class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white">Портфолио и новости (Telegram)</a>
+        <a href="https://t.me/step_3d_mngr" target="_blank" rel="noreferrer" class="rounded-xl border border-black/10 px-4 py-2 transition hover:bg-black hover:text-white">Связаться с нами в Telegram</a>
       </div>
     </div>
   </section>
@@ -173,7 +173,7 @@ html, body { scroll-behavior: smooth; }
     </div>
   </div>
   <footer class="border-t border-black/10 py-10">
-    <div class="mx-auto max-w-6xl px-4 text-sm opacity-70">© <span id="year"></span> РГСУ · Курс «Реверсивный инжиниринг и АТ». Все права защищены.</div>
+    <div class="mx-auto max-w-6xl px-4 text-sm opacity-70"><a href="https://rgsu.net/" target="_blank" rel="noreferrer" class="underline-offset-2 hover:underline">© 2025 РГСУ · Курс «Реверсивный инжиниринг и АТ». Все права защищены.</a></div>
   </footer>
   <script>
 const benefits = [
@@ -190,21 +190,21 @@ const audience = [
 const modules = [
   { day: '01 (Пн)', blocks: [
       { title: 'Лекция: Реверсивный инжиниринг и аддитивные технологии в производстве. ОТ и ТБ. Кейсы РГСУ (Hi-Tech, Ростех, Северсталь, СИБУР, ЕВРАЗ)', hours: '2 ч (1 лк + 0,5 сем + 0,5 кт)', control: 'Устный опрос' },
-      { title: 'Мастер-класс #1: CAD/CAM-моделирование мастер-моделей и метаформ (T-FLEX CAD)', hours: '—', control: 'Зачёт' },
+      { title: 'Мастер-класс №1: CAD/CAM-моделирование мастер-моделей и метаформ (T-FLEX CAD)', hours: '—', control: 'Зачёт' },
       { title: 'Прак-работа #1: Выбор средства оцифровки и оснастки. Калибровка сканера (RangeVision Spectrum)', hours: '2 ч', control: '—' },
       { title: 'Прак-работа #2: 3D-сканирование на стационарном сканере', hours: '4 ч', control: '—' },
     ] },
   { day: '02 (Вт)', blocks: [
       { title: 'Прак-работа #3: Реверс в Geomagic Design X (базовые функции)', hours: '4 ч', control: '—' },
-      { title: 'Мастер-класс #2: Основы 3D-печати (FDM, PICASO 3D). От индустриального партнёра', hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)', control: '—' },
+      { title: 'Мастер-класс №2: Основы 3D-печати (FDM, PICASO 3D). От индустриального партнёра', hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)', control: '—' },
       { title: 'Прак-работа #4: Подготовка моделей к FDM/DLP/SLA. Запуск печати', hours: '2 ч', control: '—' },
     ] },
   { day: '03 (Ср)', blocks: [
-      { title: 'Мастер-класс #3: 3D-сканирование ручным оптическим сканером (Artec Eva)', hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)', control: 'Устный опрос' },
+      { title: 'Мастер-класс №3: 3D-сканирование ручным оптическим сканером (Artec Eva)', hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)', control: 'Устный опрос' },
       { title: 'Прак-работа #5: Geomagic Design X (продвинутые функции)', hours: '6 ч (1 лк + 5 пр)', control: 'Зачёт' },
     ] },
   { day: '04 (Чт)', blocks: [
-      { title: 'Мастер-класс #4: Основы DLP/SLA-печати. От индустриального партнёра', hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)', control: 'Устный опрос' },
+      { title: 'Мастер-класс №4: Основы DLP/SLA-печати. От индустриального партнёра', hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)', control: 'Устный опрос' },
       { title: 'Прак-работа #6: Подготовка к FDM/DLP/SLA. Запуск печати', hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)', control: 'Зачёт' },
       { title: 'Отработка навыков (сканирование/реверс/печать) — свободный формат', hours: '4 ч', control: '—' },
     ] },
@@ -217,7 +217,7 @@ const lead = {
   price: '68\u202f000 ₽',
   duration: '48 часов (1 неделя, пн-сб 09:00—18:00)',
   seats: '6–12 человек в группе',
-  venue: 'Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)',
+  venue: 'Москва, ул. Беговая, д. 12 (лаборатория промдизайна); итоговое занятие (суббота) — Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)',
 };
 const GALLERY_FOLDER = 'images/gallery';
 const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json`;
@@ -662,7 +662,6 @@ function renderLead(){
   document.getElementById('leadPriceInline').textContent = lead.price;
   document.getElementById('leadPriceMobile').textContent = lead.price;
 }
-function setYear(){ document.getElementById('year').textContent = new Date().getFullYear(); }
 renderBenefits();
 renderStats();
 loadGallery().then(initCarousel).catch(()=> initCarousel([]));
@@ -674,7 +673,6 @@ initForm();
 initObservers();
 initScrollBar();
 renderLead();
-setYear();
 </script>
 </body>
 </html>
