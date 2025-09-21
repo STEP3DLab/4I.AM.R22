@@ -35,6 +35,7 @@ html, body { scroll-behavior: smooth; }
 .team-modal{ transition: opacity .25s ease; }
 .team-modal[aria-hidden="true"] .team-modal__panel{ transform: translateY(16px); opacity: 0; }
 .team-modal[aria-hidden="false"] .team-modal__panel{ transform: none; opacity: 1; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 </style>
 </head>
 <body class="min-h-dvh bg-white text-neutral-900 selection:bg-black selection:text-white">
@@ -118,6 +119,7 @@ html, body { scroll-behavior: smooth; }
     <div class="mt-6 overflow-hidden">
       <div id="teamShowcaseRail" class="flex gap-4 overflow-x-auto scroll-smooth pb-4" role="list" aria-label="Фотогалерея команды">
       </div>
+      <p id="teamShowcaseStatus" class="sr-only" aria-live="polite"></p>
     </div>
   </section>
   <div class="divider"></div>
@@ -608,37 +610,134 @@ function renderTeam(){
 }
 function renderTeamShowcase(){
   const rail = document.getElementById('teamShowcaseRail');
+  const status = document.getElementById('teamShowcaseStatus');
   if (!rail) return;
   rail.innerHTML = '';
-  teamShowcase.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'showcase-card flex min-w-[260px] max-w-xs flex-col overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-soft backdrop-blur';
+  const total = teamShowcase.length;
+  if (!total){
+    if (status) status.textContent = 'Галерея пока пуста.';
+    return;
+  }
+  const cards = [];
+  let activeIndex = 0;
+  let scrollRaf = 0;
+  function updateStatus(){
+    if (!status || !cards.length) return;
+    const currentCard = cards[activeIndex];
+    const title = currentCard?.querySelector('[data-showcase-title]');
+    const titleText = title?.textContent?.trim();
+    status.textContent = `Элемент ${activeIndex + 1} из ${total}${titleText ? `: ${titleText}` : ''}`;
+  }
+  function setActiveCard(nextIndex, options = {}){
+    if (!cards.length) return;
+    const { scroll = true, focus = false, announce = true, force = false } = options;
+    const clamped = Math.max(0, Math.min(cards.length - 1, nextIndex));
+    if (!force && clamped === activeIndex){
+      if (announce) updateStatus();
+      return;
+    }
+    cards.forEach((card, idx) => {
+      const isActive = idx === clamped;
+      card.setAttribute('aria-current', isActive ? 'true' : 'false');
+      card.dataset.active = isActive ? 'true' : 'false';
+    });
+    activeIndex = clamped;
+    if (scroll){
+      cards[clamped].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+    if (focus){
+      cards[clamped].focus();
+    }
+    if (announce){
+      updateStatus();
+    }
+  }
+  function handleKeydownNavigation(event){
+    const targetCard = event.currentTarget.closest('.showcase-card');
+    if (!targetCard) return;
+    const current = cards.indexOf(targetCard);
+    if (current === -1) return;
+    let nextIndex = null;
+    switch (event.key){
+      case 'ArrowRight':
+        nextIndex = Math.min(cards.length - 1, current + 1);
+        break;
+      case 'ArrowLeft':
+        nextIndex = Math.max(0, current - 1);
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = cards.length - 1;
+        break;
+      default:
+        return;
+    }
+    event.preventDefault();
+    setActiveCard(nextIndex, { focus: true });
+  }
+  teamShowcase.forEach((item, index) => {
+    const card = document.createElement('article');
+    const titleId = `${item.id || `showcase-${index + 1}`}-title`;
+    const captionId = `${item.id || `showcase-${index + 1}`}-caption`;
+    card.className = 'showcase-card group flex min-w-[260px] max-w-xs flex-col overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-soft backdrop-blur outline-none transition hover:-translate-y-0.5 hover:shadow-soft-md focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white data-[active=true]:border-black/30 data-[active=true]:shadow-soft-md';
     card.setAttribute('role', 'listitem');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-labelledby', titleId);
+    card.setAttribute('aria-describedby', captionId);
+    card.setAttribute('aria-setsize', total);
+    card.setAttribute('aria-posinset', index + 1);
+    card.dataset.index = String(index);
     card.innerHTML = `
       <div class="relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
-        <img src="${item.src}" alt="${item.alt || ''}" class="h-full w-full object-cover" loading="lazy"/>
+        <img src="${item.src}" alt="${item.alt || ''}" class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" loading="lazy"/>
         ${item.tag ? `<span class="absolute left-3 top-3 inline-flex rounded-full bg-black/80 px-3 py-1 text-xs font-medium text-white/90">${item.tag}</span>` : ''}
       </div>
       <div class="flex flex-1 flex-col p-4">
-        <div class="text-sm font-semibold text-black">${item.title}</div>
-        <p class="mt-2 text-sm text-black/60">${item.caption}</p>
+        <div id="${titleId}" data-showcase-title class="text-sm font-semibold text-black">${item.title}</div>
+        <p id="${captionId}" class="mt-2 text-sm text-black/60">${item.caption}</p>
+        <button type="button" data-showcase-open class="mt-4 inline-flex items-center gap-2 self-start rounded-lg border border-black/10 px-3 py-1.5 text-xs font-medium text-black/70 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white">Открыть фото<span aria-hidden>↗</span></button>
       </div>
     `;
+    card.addEventListener('focus', () => setActiveCard(index, { announce: false, force: true }));
+    card.addEventListener('click', () => setActiveCard(index, { announce: false, force: true }));
+    card.addEventListener('keydown', handleKeydownNavigation);
+    const openButton = card.querySelector('[data-showcase-open]');
+    openButton?.addEventListener('focus', () => setActiveCard(index, { announce: false, force: true }));
+    openButton?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setActiveCard(index, { announce: false, force: true });
+      if (item.src){
+        window.open(item.src, '_blank', 'noopener,noreferrer');
+      }
+    });
     rail.appendChild(card);
+    cards.push(card);
   });
+  setActiveCard(activeIndex, { scroll: false, announce: true, force: true });
   const prev = document.querySelector('[data-showcase-prev]');
   const next = document.querySelector('[data-showcase-next]');
-  const scrollByAmount = () => {
-    const card = rail.querySelector('.showcase-card');
-    if (!card) return 320;
-    const style = getComputedStyle(card);
-    return card.offsetWidth + parseInt(style.marginRight || '0', 10);
-  };
-  function scroll(dir){
-    rail.scrollBy({ left: scrollByAmount() * dir, behavior: 'smooth' });
-  }
-  prev?.addEventListener('click', () => scroll(-1));
-  next?.addEventListener('click', () => scroll(1));
+  prev?.addEventListener('click', () => setActiveCard(activeIndex - 1, { focus: true }));
+  next?.addEventListener('click', () => setActiveCard(activeIndex + 1, { focus: true }));
+  rail.addEventListener('scroll', () => {
+    if (!cards.length) return;
+    cancelAnimationFrame(scrollRaf);
+    scrollRaf = requestAnimationFrame(() => {
+      const center = rail.scrollLeft + rail.clientWidth / 2;
+      let closestIndex = activeIndex;
+      let minDistance = Infinity;
+      cards.forEach((card, idx) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const distance = Math.abs(cardCenter - center);
+        if (distance < minDistance){
+          minDistance = distance;
+          closestIndex = idx;
+        }
+      });
+      setActiveCard(closestIndex, { scroll: false, announce: false, force: true });
+    });
+  }, { passive: true });
 }
 async function loadGallery(){
   try {
