@@ -1,0 +1,8 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+.lhci/
+.lighthouseci/
+lhci_reports/
+.DS_Store
