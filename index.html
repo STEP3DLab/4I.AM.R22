@@ -38,8 +38,24 @@
     <link rel="stylesheet" href="styles/tokens.css" />
     <link rel="stylesheet" href="styles/base.css" />
     <link rel="stylesheet" href="styles/components.css" />
-    <link rel="stylesheet" href="styles/utilities.css" />
     <link rel="stylesheet" href="styles/a11y.css" />
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com" />
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      /* global tailwind */
+      tailwind.config = {
+        theme: {
+          extend: {
+            borderRadius: { '2xl': '1rem' },
+            boxShadow: {
+              soft: '0 6px 24px rgba(0,0,0,.06)',
+              'soft-md': '0 10px 30px rgba(0,0,0,.08)',
+            },
+          },
+        },
+      };
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Перейти к содержимому</a>
