@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="printGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f97316" />
+      <stop offset="1" stop-color="#c026d3" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" rx="36" fill="#111827" />
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <path d="M100 120h200" stroke="#f97316" stroke-width="12" />
+    <path d="M130 120v140c0 16 12 28 28 28h84c16 0 28-12 28-28V120" stroke="#e2e8f0" stroke-width="8" fill="none" />
+    <path d="M160 230h80" stroke="#f97316" stroke-width="12" />
+    <path d="M160 260h80" stroke="#c026d3" stroke-width="12" />
+    <path d="M190 288h20" stroke="#facc15" stroke-width="10" />
+  </g>
+  <circle cx="200" cy="320" r="34" fill="url(#printGrad)" opacity="0.9" />
+  <circle cx="200" cy="320" r="14" fill="#ffffff" opacity="0.9" />
+</svg>
