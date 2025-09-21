@@ -1,0 +1,33 @@
+@layer a11y {
+  :focus-visible {
+    outline: none;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  [role='button']:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 35%, transparent);
+    border-radius: var(--radius-md);
+  }
+  main:focus {
+    outline: none;
+  }
+  main:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+    outline-offset: 6px;
+  }
+  .focus-ring-tight:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-secondary) 40%, transparent);
+  }
+  .high-contrast a,
+  .high-contrast button {
+    color: var(--color-primary);
+  }
+  .high-contrast .btn--primary {
+    background: hsl(0 0% 100%);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+}
