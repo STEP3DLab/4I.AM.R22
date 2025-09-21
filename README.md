@@ -1,57 +1,71 @@
 # 4I.AM.R22 — лендинг интенсивного курса
 
+Информационный сайт интенсивного курса по реверсивному инжинирингу и аддитивному производству. Кодовая база построена на статическом HTML, модульном JavaScript и утилитах для контроля качества.
+
 ## Стек
 
-- **Статика**: HTML + Tailwind CDN, модульный JS (`src/main.js`).
-- **Инструменты**: ESLint, Prettier, Vitest, Playwright, Lighthouse CI.
-- **Деплой**: GitHub Pages через GitHub Actions.
+- **Клиент**: статические HTML/CSS, Tailwind CDN, модульный JS (`src/main.js`).
+- **Инфраструктура**: GitHub Pages, GitHub Actions, Lighthouse CI.
+- **Тестирование**: Vitest (unit), Playwright (e2e).
+- **Код-стиль**: ESLint, Prettier, EditorConfig.
 
-## Быстрый старт
+## Установка
 
 ```bash
 npm install
-npm run dev             # локальный статический сервер (http://localhost:8080)
 ```
 
-## Проверки перед коммитом
+## Локальная разработка
 
 ```bash
-npm run lint            # ESLint
-npm run format:check    # Prettier в режиме проверки
-npm test                # unit-тесты (Vitest)
-npm run test:e2e        # end-to-end (Playwright)
-npx lhci autorun        # Lighthouse (использует dist)
+npm run dev            # http://localhost:8080 (http-server)
 ```
 
-## Сборка и деплой
+## Сборка
 
 ```bash
-npm run build           # dist/ + sitemap
-npm run deploy          # публикация в gh-pages ветку
+npm run build          # dist/ + sitemap.xml
 ```
 
-Автоматический деплой выполняется при пуше в `main` (`.github/workflows/deploy.yml`).
+## Тестирование
 
-## Conventional commits
+```bash
+npm run lint           # проверка ESLint
+npm run format:check   # проверка форматирования Prettier
+npm test               # unit-тесты Vitest
+npm run test:e2e       # e2e Playwright (поднимает http-server)
+```
 
-Используем схему: `type(scope): краткое описание`. Примеры:
+## Качество
+
+- Lighthouse CI настроен на целевые показатели: производительность ≥ 90, доступность ≥ 90, SEO ≥ 95 (`.lighthouserc.json`).
+- В репозитории есть стили `assets/css/a11y.css` с видимыми контурами фокуса и skip-link.
+- Для ручной проверки скорости откройте [Lighthouse](https://developers.google.com/web/tools/lighthouse) в Chrome DevTools или запустите `npx lhci autorun` локально (после `npm run build`).
+
+## Деплой
+
+Автоматический деплой выполняется GitHub Actions (`.github/workflows/pages.yml`) при пуше в `main`. Собранный `dist/` загружается через `actions/upload-pages-artifact`, затем публикуется `actions/deploy-pages`.
+
+Ручной деплой из терминала остаётся доступным:
+
+```bash
+npm run deploy         # публикация содержимого dist/ через gh-pages
+```
+
+## Lighthouse CI
+
+Запуск из Actions: используйте workflow **Lighthouse CI** (`.github/workflows/lhci.yml`). Он собирает проект, поднимает локальный http-server и сохраняет отчёты в артефактах.
+
+## SEO
+
+- Мета-теги Open Graph, Twitter и canonical уже внедрены в `<head>` (`index.html`).
+- Файл `public/robots.txt` разрешает индексацию и указывает `/sitemap.xml`.
+- Скрипт `scripts/generate-sitemap.mjs` собирает статический `public/sitemap.xml` с базовым URL `https://step3dlab.github.io/4I.AM.R22/`.
+
+## Conventional Commits
+
+Используем схему `type(scope): описание`. Примеры:
 
 - `feat(nav): add keyboard focus outline`
 - `fix(form): handle invalid email state`
-- `chore(ci): add lighthouse step`
-
-## Ветвление
-
-- `main` — стабильная ветка.
-- Фичи/фиксы: `feature/<slug>`, `fix/<slug>`, `chore/<slug>`.
-
-## Тестовые данные
-
-- Витест покрывает утилиты для расписания (парсинг часов, подсчёты).
-- Playwright проверяет загрузку, навигацию и валидацию формы.
-
-## Документация
-
-- `.github/ISSUE_TEMPLATE` — шаблоны задач/фич.
-- `.github/PULL_REQUEST_TEMPLATE.md` — чек-лист качества.
-- `.lighthouserc.json` — целевые метрики (Perf ≥ 90, A11y ≥ 90, SEO ≥ 95).
+- `chore(ci): add lighthouse workflow`
