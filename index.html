@@ -140,6 +140,17 @@
         transform: none;
         opacity: 1;
       }
+      .feedback-card {
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
+      }
+      .feedback-card[data-state='visible'] {
+        opacity: 1;
+        transform: none;
+      }
       .sr-only {
         position: absolute;
         width: 1px;
@@ -443,10 +454,43 @@
             >Стоимость: <span class="font-medium" id="leadPriceInline"></span
           ></span>
         </div>
+        <div id="applyFeedback" aria-live="polite" class="mt-4 space-y-3"></div>
         <div class="mt-6 grid gap-4 md:grid-cols-2 md:items-start">
           <div id="applyLocations" class="flex flex-col gap-3"></div>
           <div id="applyMap" class="min-h-[18rem]"></div>
         </div>
+        <section
+          id="assistantPanel"
+          class="mt-6 rounded-2xl border border-dashed border-black/10 bg-black/5 p-4 text-sm md:p-5"
+          aria-live="polite"
+        >
+          <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 class="text-base font-semibold">AI-помощник</h3>
+              <p class="text-black/70">
+                Опишите задачи или интересы — помощник предложит модули курса.
+              </p>
+            </div>
+            <button
+              type="button"
+              id="assistantSuggest"
+              class="mt-2 inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-medium text-black shadow-soft transition hover:bg-black hover:text-white md:mt-0"
+            >
+              <span aria-hidden="true">🤖</span>
+              Подобрать модули
+            </button>
+          </div>
+          <label class="mt-3 flex flex-col gap-2">
+            <span class="text-xs uppercase tracking-wide text-black/60">Комментарий для помощника</span>
+            <textarea
+              id="assistantComment"
+              rows="3"
+              class="rounded-xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-black/30"
+              placeholder="Например: интересуюсь 3D-сканированием и медицинскими кейсами"
+            ></textarea>
+          </label>
+          <div id="assistantOutput" class="mt-4 space-y-3 text-sm"></div>
+        </section>
       </form>
       <div class="mt-4 space-y-2 text-xs opacity-70">
         <p>
