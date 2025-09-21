@@ -357,9 +357,8 @@ const helpfulLinks = [
   },
 ];
 const GALLERY_FOLDER = 'images/gallery';
-const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json?v=${encodeURIComponent(
-  import.meta.env.VITE_APP_VERSION ?? 'dev',
-)}`;
+const APP_VERSION = (import.meta.env && import.meta.env.VITE_APP_VERSION) || 'dev';
+const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json?v=${encodeURIComponent(APP_VERSION)}`;
 const COURSE_START = new Date('2025-10-20T09:00:00+03:00');
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
