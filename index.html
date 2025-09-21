@@ -126,6 +126,68 @@
         gap: 1rem;
         margin-top: 2rem;
       }
+      .breadcrumbs {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.5);
+      }
+      .breadcrumbs li {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .breadcrumbs li + li::before {
+        content: '/';
+        opacity: 0.4;
+      }
+      .mission-card {
+        border-radius: 1.5rem;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        background: rgba(255, 255, 255, 0.85);
+        padding: 1.5rem;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      }
+      .mission-card h2 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(15, 23, 42, 0.55);
+      }
+      .mission-list {
+        margin: 0.9rem 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.5rem;
+      }
+      .mission-list li {
+        position: relative;
+        padding-left: 1.15rem;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        color: rgba(15, 23, 42, 0.75);
+      }
+      .mission-list li::before {
+        content: '';
+        position: absolute;
+        top: 0.55rem;
+        left: 0.3rem;
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 0.4rem;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(16, 185, 129, 0.8));
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+      }
       @media (min-width: 500px) {
         .stat-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -359,13 +421,27 @@
         >
           <div class="flex flex-col gap-6">
             <span class="eyebrow">Интенсив STEP_3D × РГСУ</span>
+            <nav aria-label="Вы здесь">
+              <ol class="breadcrumbs">
+                <li><a class="underline decoration-transparent transition hover:decoration-black" href="#top">Главная</a></li>
+                <li aria-current="page">4I.AM.R22</li>
+              </ol>
+            </nav>
             <h1 class="reveal text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-              Реверсивный инжиниринг<br />и аддитивное производство
+              4I.AM.R22 — интенсив по реверсивному инжинирингу
             </h1>
             <p class="reveal text-lg text-black/70">
-              Практический интенсив на базе РГСУ: 3D-сканирование → реверс в CAD → печать оснастки и
-              мастер-моделей. От кейсов к результату.
+              За неделю превращаем 3D-сканы в готовые детали и оснастку. Всё обучение — в лабораториях РГСУ
+              с наставниками STEP_3D.
             </p>
+            <div class="mission-card reveal" role="region" aria-labelledby="mission-title">
+              <h2 id="mission-title">Миссия 4I.AM.R22</h2>
+              <ul class="mission-list">
+                <li>Помогаем инженерам быстро внедрять цифровое производство без лишней теории.</li>
+                <li>Даем доступ к оборудованию и экспертам WorldSkills для отработки каждого шага.</li>
+                <li>Показываем, как довести кейс от скана до готового изделия за одну спринт-неделю.</li>
+              </ul>
+            </div>
             <div id="benefits" class="flex flex-wrap gap-2" aria-label="Преимущества"></div>
             <div class="flex flex-wrap items-center gap-4">
               <a
@@ -389,15 +465,32 @@
             </div>
             <div id="stats" class="stat-grid" aria-label="Статистика"></div>
           </div>
-          <div
-            class="relative aspect-square overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-b from-neutral-50 to-neutral-100 p-2"
-          >
+          <div class="flex flex-col gap-4">
+            <figure
+              class="overflow-hidden rounded-3xl border border-black/10 bg-white/80 p-4 shadow-soft"
+              aria-labelledby="mission-visual-title"
+            >
+              <figcaption id="mission-visual-title" class="sr-only">
+                Минималистичная инфографика о цепочке 3D-сканирование → CAD → печать
+              </figcaption>
+              <img
+                src="images/mission-visual.svg"
+                alt="Схема с иконками сканера, CAD и 3D-принтера на фоне кода"
+                class="w-full"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
             <div
-              id="carousel"
-              class="relative h-full w-full overflow-hidden rounded-2xl select-none"
-              aria-roledescription="карусель"
-            ></div>
-            <div class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/10"></div>
+              class="relative aspect-square overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-b from-neutral-50 to-neutral-100 p-2"
+            >
+              <div
+                id="carousel"
+                class="relative h-full w-full overflow-hidden rounded-2xl select-none"
+                aria-roledescription="карусель"
+              ></div>
+              <div class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/10"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -405,11 +498,9 @@
     <div class="section-divider" aria-hidden="true"></div>
     <section id="about" class="section-gap">
       <div class="layout">
-        <h2 class="reveal section-heading">Для кого</h2>
+        <h2 class="reveal section-heading">Кому полезен интенсив</h2>
         <p class="reveal section-subheading">
-          Курс рассчитан на специалистов, которым нужен прикладной навык — от оцифровки до готовой
-          детали. Программа также подходит начинающим, которые хотят освоить аддитивные технологии с
-          нуля.
+          Мы собрали программу для тех, кто хочет быстро пройти путь от скана до рабочего изделия и понять, как повторить его у себя на производстве.
         </p>
         <div id="audienceGrid" class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"></div>
         <p class="mt-3 text-xs text-black/60">
@@ -431,8 +522,8 @@
     <div class="section-divider" aria-hidden="true"></div>
     <section id="program" class="section-gap">
       <div class="layout">
-        <h2 class="reveal section-heading">Календарно-тематический план</h2>
-        <p class="reveal section-subheading">48 часов. Теория ровно столько, сколько нужно для практики.</p>
+        <h2 class="reveal section-heading">Программа на шесть дней</h2>
+        <p class="reveal section-subheading">48 часов практики и точечной теории, чтобы уверенно повторять процессы у себя.</p>
         <div id="startCalendar" class="mt-8 mb-6 overflow-hidden rounded-3xl border border-black/10 bg-white/80 shadow-soft"></div>
         <div id="programRoot" class="relative rounded-3xl border border-black/10 bg-white/85 shadow-soft"></div>
         <div class="mt-6 grid gap-4 md:grid-cols-3">
@@ -459,7 +550,7 @@
       <div class="layout">
         <h2 class="reveal section-heading">Команда</h2>
         <p class="reveal section-subheading">
-          РГСУ — один из ведущих центров компетенций по реверсивному инжинирингу. Среди преподавателей — чемпионы и эксперты WorldSkills/BRICS.
+          Курс ведут эксперты WorldSkills и тренеры STEP_3D. Они сопровождают слушателей на каждом шаге и делятся реальными кейсами внедрения.
         </p>
         <div id="teamCards" class="mt-8 grid gap-4 md:grid-cols-3" aria-label="Команда курса"></div>
         <div id="teamDetail" class="mt-8"></div>
@@ -469,9 +560,9 @@
       <div class="layout">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h3 class="text-2xl font-semibold tracking-tight md:text-3xl">Лица и проекты</h3>
+            <h3 class="text-2xl font-semibold tracking-tight md:text-3xl">Практика в кадре</h3>
             <p class="mt-1 max-w-2xl text-sm text-black/60">
-              Знакомьтесь с экспертами и кейсами направления «Аддитивные технологии» — листайте фотографии и подписи, адаптированные для всех устройств.
+              Посмотрите, как проходят занятия: сканирование, работа в CAD и запуск печати. Каждая подпись объясняет, зачем этап важен.
             </p>
           </div>
           <div class="flex gap-2">
@@ -507,9 +598,9 @@
     <div class="section-divider" aria-hidden="true"></div>
     <section id="apply" class="section-gap">
       <div class="layout">
-        <h2 class="reveal section-heading">Поступить на курс</h2>
+        <h2 class="reveal section-heading">Как подать заявку</h2>
         <p class="reveal section-subheading">
-          Оставьте заявку — менеджер свяжется с вами и уточнит детали (наличие мест, график, документы).
+          Заполните форму — мы подтвердим наличие мест, подскажем документы и согласуем удобный старт.
         </p>
         <form id="applyForm" class="mt-8 rounded-3xl border border-black/10 bg-white/90 p-6 shadow-soft" novalidate>
           <div class="grid gap-5 md:grid-cols-2">
@@ -611,22 +702,18 @@
           </section>
         </form>
       <div class="mt-4 space-y-2 text-xs opacity-70">
-        <p>
-          Нажимая кнопку «Отправить заявку», вы даёте
-          <span class="underline">согласие на обработку персональных данных</span> и подтверждаете
-          ознакомление с политикой конфиденциальности.
-        </p>
-        <p>
-          Индустриальный партнёр курса — <span class="font-medium">STEP_3D</span>. По всем вопросам
-          можно
-          <a class="underline" href="https://t.me/step3d_support" target="_blank" rel="noreferrer"
-            >Связаться с нами в Telegram</a
-          >.
-        </p>
-        <p>
-          По предварительной договорённости (<span class="font-medium">от 6 человек</span>) мы можем
-          согласовать и утвердить удобные для вашей команды даты старта и расписания.
-        </p>
+        <ul class="space-y-2">
+          <li>
+            Нажимая кнопку «Отправить заявку», вы подтверждаете согласие на обработку персональных данных и знакомство с политикой конфиденциальности.
+          </li>
+          <li>
+            Индустриальный партнёр курса — <span class="font-medium">STEP_3D</span>. Вопросы можно задать в
+            <a class="underline" href="https://t.me/step3d_support" target="_blank" rel="noreferrer">Telegram</a>.
+          </li>
+          <li>
+            Для корпоративных групп от шести человек согласуем индивидуальные даты старта и расписание.
+          </li>
+        </ul>
       </div>
       <div class="mt-6">
         <div class="text-sm opacity-60">Полезные ссылки</div>
