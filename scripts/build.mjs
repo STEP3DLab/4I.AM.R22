@@ -26,7 +26,23 @@ async function copyIfExists(relativePath) {
   try {
     const stats = await stat(src);
     if (stats.isDirectory()) {
-      await copyDir(src, path.join(distDir, relativePath));
+      if (relativePath === 'public') {
+        const entries = await readdir(src, { withFileTypes: true });
+        await Promise.all(
+          entries.map(async (entry) => {
+            const srcPath = path.join(src, entry.name);
+            const destPath = path.join(distDir, entry.name);
+            if (entry.isDirectory()) {
+              await copyDir(srcPath, destPath);
+            } else if (entry.isFile()) {
+              await mkdir(path.dirname(destPath), { recursive: true });
+              await copyFile(srcPath, destPath);
+            }
+          }),
+        );
+      } else {
+        await copyDir(src, path.join(distDir, relativePath));
+      }
     } else if (stats.isFile()) {
       await mkdir(path.dirname(path.join(distDir, relativePath)), { recursive: true });
       await copyFile(src, path.join(distDir, relativePath));
