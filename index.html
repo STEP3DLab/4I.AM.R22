@@ -44,6 +44,11 @@
       tailwind.config = {
         theme: {
           extend: {
+            maxWidth: {
+              '6xl': '64rem',
+              '7xl': '72rem',
+              '8xl': '88rem',
+            },
             borderRadius: { '2xl': '1rem' },
             boxShadow: {
               soft: '0 6px 24px rgba(0,0,0,.06)',
@@ -172,7 +177,7 @@
       style="transform-origin: left center; transform: scaleX(0)"
     ></div>
     <header class="sticky top-0 z-50 border-b border-black/10 bg-white/70 backdrop-blur">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 xl:max-w-7xl 2xl:max-w-8xl">
         <a href="#top" class="font-semibold tracking-tight">4I.R22.01</a>
         <div class="flex items-center gap-3">
           <button
@@ -236,7 +241,7 @@
       </nav>
     </div>
     <section id="top" class="relative overflow-hidden">
-      <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-4 py-16 md:grid-cols-2">
+      <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-4 py-16 md:grid-cols-2 xl:max-w-7xl 2xl:max-w-8xl">
         <div>
           <h1 class="reveal text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
             Реверсивный инжиниринг<br />и аддитивное производство
@@ -288,7 +293,7 @@
       </div>
     </section>
     <div class="divider"></div>
-    <section id="about" class="mx-auto max-w-6xl px-4 py-16">
+    <section id="about" class="mx-auto max-w-6xl px-4 py-16 xl:max-w-7xl 2xl:max-w-8xl">
       <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">Для кого</h2>
       <p class="reveal mt-2 max-w-3xl text-black/60">
         Курс рассчитан на специалистов, которым нужен прикладной навык — от оцифровки до готовой
@@ -311,7 +316,7 @@
       </div>
     </section>
     <div class="divider"></div>
-    <section id="program" class="mx-auto max-w-6xl px-4 py-16">
+    <section id="program" class="mx-auto max-w-6xl px-4 py-16 xl:max-w-7xl 2xl:max-w-8xl">
       <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">
         Календарно-тематический план
       </h2>
@@ -339,7 +344,7 @@
       </p>
     </section>
     <div class="divider"></div>
-    <section id="team" class="mx-auto max-w-6xl px-4 py-16">
+    <section id="team" class="mx-auto max-w-6xl px-4 py-16 xl:max-w-7xl 2xl:max-w-8xl">
       <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">Команда</h2>
       <p class="reveal mt-2 max-ww-3xl text-black/60">
         РГСУ — один из ведущих центров компетенций по реверсивному инжинирингу. Среди преподавателей
@@ -348,7 +353,7 @@
       <div id="teamCards" class="mt-8 grid gap-4 md:grid-cols-3" aria-label="Команда курса"></div>
       <div id="teamDetail" class="mt-8"></div>
     </section>
-    <section id="team-showcase" class="mx-auto max-w-6xl px-4 pb-16">
+    <section id="team-showcase" class="mx-auto max-w-6xl px-4 pb-16 xl:max-w-7xl 2xl:max-w-8xl">
       <div class="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h3 class="text-2xl font-semibold tracking-tight md:text-3xl">Лица и проекты</h3>
@@ -387,7 +392,7 @@
       </div>
     </section>
     <div class="divider"></div>
-    <section id="apply" class="mx-auto max-w-6xl px-4 py-16">
+    <section id="apply" class="mx-auto max-w-6xl px-4 py-16 xl:max-w-7xl 2xl:max-w-8xl">
       <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">Поступить на курс</h2>
       <p class="reveal mt-2 max-w-3xl text-black/60">
         Оставьте заявку — менеджер свяжется с вами и уточнит детали (наличие мест, график,
@@ -520,7 +525,7 @@
       class="fixed inset-x-0 bottom-3 z-[55] px-3 sm:hidden transition opacity-100"
     >
       <div
-        class="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-black/10 bg-white/90 px-3 py-2 shadow-lg backdrop-blur"
+        class="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-black/10 bg-white/90 px-3 py-2 shadow-lg backdrop-blur xl:max-w-7xl 2xl:max-w-8xl"
       >
         <span class="text-sm"
           >Стоимость: <span class="font-semibold" id="leadPriceMobile"></span
@@ -529,7 +534,7 @@
       </div>
     </div>
     <footer class="border-t border-black/10 py-10">
-      <div class="mx-auto max-w-6xl px-4 text-sm opacity-70">
+      <div class="mx-auto max-w-6xl px-4 text-sm opacity-70 xl:max-w-7xl 2xl:max-w-8xl">
         <a
           href="https://rgsu.net/"
           target="_blank"
