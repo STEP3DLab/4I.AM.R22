@@ -98,21 +98,22 @@ html, body { scroll-behavior: smooth; }
   <section id="team" class="mx-auto max-w-6xl px-4 py-16">
     <h2 class="reveal text-3xl font-semibold tracking-tight md:text-4xl">Команда</h2>
     <p class="reveal mt-2 max-ww-3xl text-black/60">РГСУ — один из ведущих центров компетенций по реверсивному инжинирингу. Среди преподавателей — чемпионы и эксперты WorldSkills/BRICS.</p>
-    <div class="mt-8 grid gap-4 md:grid-cols-3">
-      <div class="relative rounded-2xl border border-black/10 p-4">
-        <div class="text-sm opacity-60">Куратор</div>
-        <div class="mt-1 font-medium">Рекут Алексей Валерьевич</div>
-        <p class="mt-2 text-sm opacity-70">Один из разработчиков первого ФГОС по аддитивным технологиям. Главный эксперт и тренер сборной России (WorldSkills, 2017–2022) по компетенции «Реверсивный инжиниринг».</p>
+    <div id="teamCards" class="mt-8 grid gap-4 md:grid-cols-3" aria-label="Команда курса"></div>
+    <div id="teamDetail" class="mt-8"></div>
+  </section>
+  <section id="team-showcase" class="mx-auto max-w-6xl px-4 pb-16">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h3 class="text-2xl font-semibold tracking-tight md:text-3xl">Лица и проекты</h3>
+        <p class="mt-1 max-w-2xl text-sm text-black/60">Знакомьтесь с экспертами и кейсами направления «Аддитивные технологии» — листайте фотографии и подписи, адаптированные для всех устройств.</p>
       </div>
-      <div class="relative rounded-2xl border border-black/10 p-4">
-        <div class="text-sm opacity-60">Преподаватель</div>
-        <div class="mt-1 font-medium">Ганьшин Владимир Константинович</div>
-        <p class="mt-2 text-sm opacity-70">Практик STEP_3D, автор учебных программ и кейсов обратного инжиниринга.</p>
+      <div class="flex gap-2">
+        <button type="button" aria-label="Предыдущий слайд" data-showcase-prev class="grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white/70 text-black shadow-sm transition hover:bg-white">‹</button>
+        <button type="button" aria-label="Следующий слайд" data-showcase-next class="grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white/70 text-black shadow-sm transition hover:bg-white">›</button>
       </div>
-      <div class="relative rounded-2xl border border-black/10 p-4">
-        <div class="text-sm opacity-60">Преподаватель</div>
-        <div class="mt-1 font-medium">Понкратова Христина</div>
-        <p class="mt-2 text-sm opacity-70">Специалист по 3D-сканированию и аддитивному производству. Ведёт практикумы и наставничество.</p>
+    </div>
+    <div class="mt-6 overflow-hidden">
+      <div id="teamShowcaseRail" class="flex gap-4 overflow-x-auto scroll-smooth pb-4" role="list" aria-label="Фотогалерея команды">
       </div>
     </div>
   </section>
@@ -186,6 +187,176 @@ const audience = [
   'Операторы ЧПУ',
   'Студенты техвузов, молодые учёные, преподаватели',
   'Промышленные дизайнеры',
+];
+const teamMembers = [
+  {
+    id: 'rekut',
+    title: 'Куратор',
+    name: 'Рекут Алексей Валерьевич',
+    summary: 'Создатель компетенций WorldSkills по реверсивному инжинирингу и аддитивному производству.',
+    badges: ['54 года', '9+ лет преподавания', 'Эксперт WorldSkills'],
+    cardPoints: [
+      'Заместитель руководителя технопарка РГСУ (2022—н.в.)',
+      'Разработчик федеральных программ и стандартов по аддитивным технологиям'
+    ],
+    highlights: [
+      'Создал компетенции WorldSkills по реверсивному инжинирингу и аддитивному производству',
+      'Менеджер компетенции «Реверсивный инжиниринг» (WorldSkills/АРПН, 2014—н.в.)'
+    ],
+    education: [
+      'ГАУ им. Серго Орджоникидзе, Экономическая кибернетика (1994)',
+      'АНХ при правительстве РФ, Управление в маркетинге (ПК, 2004)',
+      'СКФУ, Преподаватель высшей школы (ПК, 2017)'
+    ],
+    experience: [
+      'Технопарк РГСУ — заместитель руководителя (2022—н.в.)',
+      'Колледж предпринимательства №11 — мастер и методист (2009—2020)',
+      'Разработчик программ ДПО по спортивно-боевому роботостроению'
+    ],
+    competencies: [
+      'Аддитивное производство: FDM, DLP, SLA',
+      'Реверсивный инжиниринг и контроль качества',
+      'Промышленный дизайн и прототипирование на станках с ЧПУ'
+    ],
+    software: [
+      'Rhino 3D, Geomagic Design X, GOM Inspect',
+      'Ultimaker Cura, CHITUBOX, Polygon X, Creality Slicer',
+      'Artec Studio 15, RV 3D Studio',
+      'C++'
+    ],
+    achievements: [
+      'Соавтор первого ФГОС СПО «Аддитивные технологии» (2010—2013)',
+      'Создатель стандартов оценки WorldSkills Russia по реверсивному инжинирингу (2014)',
+      'Создатель компетенции Additive Manufacturing WorldSkills (2020)',
+      'Капитан команды «Дезинтегратор» (ТОП‑16 Битвы роботов, 2023)'
+    ],
+    resources: [
+      { label: 'Учебные материалы: «Учебное пособие по Rhinoceros 3D», «Базовый курс Rhinoceros 3D»' },
+      { label: 'Интервью: Россия 24 «Лучший по профессии», «Аддитивная кухня», 4 канал' }
+    ],
+    interests: 'Увлечения: механика, кинетическая скульптура, спортивно-боевые роботы.'
+  },
+  {
+    id: 'ganshin',
+    title: 'Преподаватель',
+    name: 'Ганьшин Владимир Константинович',
+    summary: 'Руководитель технопарка РГСУ и тренер сборной России по реверсивному инжинирингу.',
+    badges: ['34 года', '10+ лет преподавания', 'Тренер сборной'],
+    cardPoints: [
+      'Руководит технопарком РГСУ с 2019 года',
+      'Подготовил чемпионов России и мира по компетенции «Реверсивный инжиниринг»'
+    ],
+    highlights: [
+      'Куратор программ «Промышленный дизайн и инжиниринг», «Реверсивный инжиниринг и АТ»',
+      'Тренер сборной России (WorldSkills, BRICS) — призовые места 2019–2021'
+    ],
+    education: [
+      'МГТУ «Станкин», бакалавр «Технология машиностроения» (2008—2012)',
+      'МГТУ «Станкин», магистр «Конструкторско-технологическое обеспечение» (2012—2014)',
+      'Аспирантура 05.02.07 «Технология и оборудование обработки» (2014—2018)'
+    ],
+    experience: [
+      'Руководитель технопарка РГСУ (2019—н.в.)',
+      'Преподаватель РГСУ и МГТУ «Станкин» (2014—н.в.)',
+      'Политехнический колледж №42 — производственное обучение (2014)',
+      'Западный комплекс непрерывного образования — преподаватель спецдисциплин (2015—2018)'
+    ],
+    competencies: [
+      'Инженерный и промышленный дизайн',
+      'Реверсивный инжиниринг и внедрение ИИ в производстве',
+      'Организация проектной и соревновательной подготовки'
+    ],
+    software: [
+      'Autodesk Inventor, Fusion 360, T-FLEX CAD, КОМПАС-3D',
+      'Geomagic Design X, GOM Inspect',
+      'RangeVision, Artec Eva, Leica — 3D-сканеры',
+      '3D-принтеры: FDM, DLP, SLA; станки с ЧПУ'
+    ],
+    achievements: [
+      'Тренер сборной России: 3 место (WorldSkills Kazan 2019), 1 место (BRICS Shanghai 2020)',
+      'Подготовил четырёх чемпионов России (WorldSkills, 2018—2021)',
+      'Подготовил призёров движения «Профессионалы» и «Абилимпикс» (2023—2025)',
+      'Команда «Дезинтегратор» — ¼ финала Битвы роботов (2023, 2024)'
+    ],
+    resources: [
+      { label: 'Видео-лекции по методологии ДПО (курс из 6 занятий)', href: 'https://surl.lu/xcfxzz' },
+      { label: 'Telegram: t.me/step_3d_mngr', href: 'https://t.me/step_3d_mngr' },
+      { label: 'E-mail: projects.step3d@gmail.com', href: 'mailto:projects.step3d@gmail.com' }
+    ],
+    interests: 'Увлекается шахматами, футболом и искусственным интеллектом.'
+  },
+  {
+    id: 'ponkratova',
+    title: 'Преподаватель',
+    name: 'Понкратова Христина Анатольевна',
+    summary: 'Практик STEP_3D по биопротезированию, реверсивному инжинирингу и аддитивному производству.',
+    badges: ['23 года', '5+ лет преподавания', 'Чемпион WorldSkills & BRICS'],
+    cardPoints: [
+      'Учебный мастер технопарка РГСУ, ведёт практикумы по 3D-сканированию',
+      'Наставник Московских мастеров и корпоративных команд по АТ'
+    ],
+    highlights: [
+      'Специализируется на изготовлении индивидуальных имплантов и биопротезов',
+      'Подготовила десятки призёров чемпионатов профессионального мастерства'
+    ],
+    education: [
+      'РУДН, бакалавр «Прикладная математика и информатика» (2020—2024)',
+      'Университет «Синергия», магистратура «Дизайн и продвижение цифрового продукта» (2024—н.в.)'
+    ],
+    experience: [
+      'Технопарк РГСУ — учебный мастер (2024—н.в.)',
+      'Первый МОК — мастер производственного обучения по АТ (2023—2025)',
+      'ЗКНО — лаборатория широкополосных систем радиосвязи, кружок 3D-моделирования (2019—2020)',
+      'Школы 1287 и «Марьина Роща им. Орлова» — ДО по 3D-моделированию (2021—2024)'
+    ],
+    competencies: [
+      'Реверсивный инжиниринг и биопротезирование',
+      'Аддитивное производство и подготовка печати',
+      'Инженерный дизайн САПР и наставничество команд'
+    ],
+    software: [
+      'КОМПАС-3D, Autodesk Inventor, Fusion 360',
+      'Geomagic Design X, Geomagic Control X, GOM Inspect',
+      'Materialise 3-matic, Blender',
+      'Ultimaker Cura, Polygon X, Creality Slicer; Artec Studio 15'
+    ],
+    achievements: [
+      'Чемпион WorldSkills Russia 2019 (реверсивный инжиниринг, Казань)',
+      'Чемпион BRICS Skills Challenge 2019 (Китай, Фошань)',
+      'Призёр WorldSkills Hi-Tech 2018/2019 (Екатеринбург)',
+      'Лауреат гранта Правительства Москвы в сфере образования (2024)'
+    ],
+    resources: [
+      { label: 'Опыт подготовки корпоративных и школьных команд по АТ (Ростех, Сибур, Роскосмос, Северсталь)' }
+    ],
+    interests: 'Увлечения: музыка, программирование, спорт.'
+  }
+];
+const teamShowcase = [
+  {
+    id: 'showcase-ponkratova',
+    tag: 'Эксперт',
+    title: 'Христина Понкратова',
+    caption: 'Практикум по 3D-сканированию: от калибровки до высокоточной цифровки деталей для биопротезирования.',
+    src: 'images/gallery/scan-station.svg',
+    alt: 'Христина Понкратова демонстрирует 3D-сканирование детали'
+  },
+  {
+    id: 'showcase-project',
+    tag: 'Кейс STEP_3D',
+    title: 'Индивидуальные импланты',
+    caption: 'Команда STEP_3D разрабатывает CAD-модели имплантов и медицинской оснастки по результатам реверсивного инжиниринга.',
+    src: 'images/gallery/cad-model.svg',
+    alt: 'Цифровая модель импланта в CAD после реверсивного инжиниринга'
+  },
+  {
+    id: 'showcase-rekut',
+    tag: 'Эксперт',
+    title: 'Алексей Рекут',
+    caption: 'Наставник WorldSkills сопровождает этап аддитивного производства: подбор технологии и контроль печати мастер-моделей.',
+    src: 'images/gallery/printing.svg',
+    alt: 'Алексей Рекут контролирует 3D-печать детали'
+  }
 ];
 const modules = [
   { day: '01 (Пн)', blocks: [
@@ -308,6 +479,121 @@ function renderStats(){
     `;
     root.appendChild(card);
   });
+}
+function renderInfoSection(title, items){
+  if (!items?.length) return '';
+  const list = items.map(item => {
+    if (!item) return '';
+    if (typeof item === 'string'){
+      return `<li class="relative pl-4 text-sm leading-snug text-black/70"><span class="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-black/20"></span>${item}</li>`;
+    }
+    const label = item.label || '';
+    const href = item.href || '';
+    const content = href ? `<a href="${href}" target="_blank" rel="noreferrer" class="underline decoration-black/20 underline-offset-2 transition hover:decoration-black">${label}</a>` : label;
+    return `<li class="relative pl-4 text-sm leading-snug text-black/70"><span class="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-black/20"></span>${content}</li>`;
+  }).join('');
+  return `
+    <div class="rounded-2xl border border-black/10 bg-white/60 p-4">
+      <div class="text-[11px] uppercase tracking-[.15em] text-black/50">${title}</div>
+      <ul class="mt-2 space-y-1">${list}</ul>
+    </div>
+  `;
+}
+function renderTeam(){
+  const cardsRoot = document.getElementById('teamCards');
+  const detailRoot = document.getElementById('teamDetail');
+  if (!cardsRoot || !detailRoot || !teamMembers.length) return;
+  let activeId = teamMembers[0].id;
+  cardsRoot.innerHTML = '';
+  teamMembers.forEach(member => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.person = member.id;
+    btn.className = 'group flex h-full flex-col rounded-2xl border border-black/10 bg-white/70 p-5 text-left transition hover:-translate-y-1 hover:shadow-soft';
+    btn.innerHTML = `
+      <div class="text-sm opacity-60">${member.title}</div>
+      <div class="mt-1 text-lg font-semibold leading-snug">${member.name}</div>
+      <p class="mt-3 text-sm text-black/70">${member.summary}</p>
+      <ul class="mt-4 space-y-1 text-xs text-black/60">
+        ${(member.cardPoints || []).map(point => `<li class="relative pl-3 leading-snug before:absolute before:left-0 before:top-1.5 before:h-1 before:w-1 before:rounded-full before:bg-black/30">${point}</li>`).join('')}
+      </ul>
+      <span class="mt-5 inline-flex items-center gap-2 text-sm font-medium text-black/70 transition group-hover:text-black">Подробнее<span aria-hidden>→</span></span>
+    `;
+    btn.addEventListener('click', () => {
+      activeId = member.id;
+      update();
+      btn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+    cardsRoot.appendChild(btn);
+  });
+  function update(){
+    const member = teamMembers.find(p => p.id === activeId) || teamMembers[0];
+    $$('#teamCards button').forEach(btn => {
+      const isActive = btn.dataset.person === member.id;
+      btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      btn.classList.toggle('ring-1', isActive);
+      btn.classList.toggle('ring-black/20', isActive);
+    });
+    if (!member) return;
+    const badges = (member.badges || []).map(text => `<span class="inline-flex items-center rounded-full border border-black/10 bg-white/80 px-3 py-1 text-xs font-medium text-black/70">${text}</span>`).join('');
+    const highlightChips = (member.highlights || []).map(text => `<span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs text-emerald-900">${text}</span>`).join('');
+    detailRoot.innerHTML = `
+      <article class="rounded-3xl border border-black/10 bg-white/80 p-6 shadow-soft-md">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h3 class="text-2xl font-semibold tracking-tight">${member.name}</h3>
+            <div class="mt-1 text-sm text-black/60">${member.title} · ${member.summary}</div>
+          </div>
+          <div class="flex flex-wrap gap-2">${badges}</div>
+        </div>
+        ${highlightChips ? `<div class="mt-4 flex flex-wrap gap-2">${highlightChips}</div>` : ''}
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          ${renderInfoSection('Образование', member.education)}
+          ${renderInfoSection('Опыт и роли', member.experience)}
+          ${renderInfoSection('Компетенции', member.competencies)}
+          ${renderInfoSection('Инструменты и ПО', member.software)}
+          ${renderInfoSection('Достижения', member.achievements)}
+          ${renderInfoSection('Материалы и контакты', member.resources)}
+        </div>
+        ${member.interests ? `<p class="mt-6 text-sm text-black/60">${member.interests}</p>` : ''}
+      </article>
+    `;
+  }
+  update();
+}
+function renderTeamShowcase(){
+  const rail = document.getElementById('teamShowcaseRail');
+  if (!rail) return;
+  rail.innerHTML = '';
+  teamShowcase.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'showcase-card flex min-w-[260px] max-w-xs flex-col overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-soft backdrop-blur';
+    card.setAttribute('role', 'listitem');
+    card.innerHTML = `
+      <div class="relative aspect-[4/3] w-full overflow-hidden bg-neutral-100">
+        <img src="${item.src}" alt="${item.alt || ''}" class="h-full w-full object-cover" loading="lazy"/>
+        ${item.tag ? `<span class="absolute left-3 top-3 inline-flex rounded-full bg-black/80 px-3 py-1 text-xs font-medium text-white/90">${item.tag}</span>` : ''}
+      </div>
+      <div class="flex flex-1 flex-col p-4">
+        <div class="text-sm font-semibold text-black">${item.title}</div>
+        <p class="mt-2 text-sm text-black/60">${item.caption}</p>
+      </div>
+    `;
+    rail.appendChild(card);
+  });
+  const prev = document.querySelector('[data-showcase-prev]');
+  const next = document.querySelector('[data-showcase-next]');
+  const scrollByAmount = () => {
+    const card = rail.querySelector('.showcase-card');
+    if (!card) return 320;
+    const style = getComputedStyle(card);
+    return card.offsetWidth + parseInt(style.marginRight || '0', 10);
+  };
+  function scroll(dir){
+    rail.scrollBy({ left: scrollByAmount() * dir, behavior: 'smooth' });
+  }
+  prev?.addEventListener('click', () => scroll(-1));
+  next?.addEventListener('click', () => scroll(1));
 }
 async function loadGallery(){
   try {
@@ -668,6 +954,8 @@ loadGallery().then(initCarousel).catch(()=> initCarousel([]));
 renderAudience();
 renderStartCalendar();
 renderProgram();
+renderTeam();
+renderTeamShowcase();
 initCountdown();
 initForm();
 initObservers();
