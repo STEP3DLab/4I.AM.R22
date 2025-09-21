@@ -6,6 +6,7 @@ import {
   getBlocksSummary,
   getCountdownStatus,
 } from './utils/course-utils.js';
+import { getAssistantRecommendations } from './utils/assistant.js';
 
 const benefits = [
   'Разработка КД и 3D-моделей по существующим деталям',
@@ -1502,10 +1503,35 @@ function initCountdown() {
   tick();
   setInterval(tick, 1000);
 }
+const FEEDBACK_HIDE_DELAY = 6000;
+function buildApplicationSummary({ name, email, comment }) {
+  const trimmedName = name.trim();
+  const firstName = trimmedName ? trimmedName.split(/\s+/)[0] : 'Коллега';
+  const emailPart = email.trim();
+  const commentPart = comment.trim();
+  const details = [];
+  if (commentPart) {
+    details.push(`Мы учтём ваш запрос: «${commentPart}».`);
+  }
+  if (emailPart) {
+    details.push(`Подтверждение отправим на ${emailPart}.`);
+  }
+  return {
+    title: `${firstName}, заявка отправлена!`,
+    body:
+      details.join(' ') ||
+      'Спасибо за интерес к интенсиву. Менеджер свяжется с вами и расскажет про свободные места.',
+  };
+}
 function initForm() {
   const form = document.getElementById('applyForm');
   const submitBtn = document.getElementById('submitBtn');
+  const feedbackHost = document.getElementById('applyFeedback');
+  const assistantInput = document.getElementById('assistantComment');
+  const assistantBtn = document.getElementById('assistantSuggest');
+  const assistantOutput = document.getElementById('assistantOutput');
   const storageKey = 'applyForm';
+  let feedbackTimer = null;
   try {
     const raw = localStorage.getItem(storageKey);
     if (raw) {
@@ -1519,6 +1545,83 @@ function initForm() {
     }
   } catch (error) {
     console.warn('Не удалось загрузить сохранённые данные формы', error);
+  }
+  function hideFeedback() {
+    if (!feedbackHost) return;
+    const card = feedbackHost.querySelector('.feedback-card');
+    if (!card) return;
+    if (feedbackTimer) {
+      clearTimeout(feedbackTimer);
+      feedbackTimer = null;
+    }
+    card.setAttribute('data-state', 'hidden');
+    window.setTimeout(() => {
+      if (feedbackHost.contains(card)) {
+        feedbackHost.innerHTML = '';
+      }
+    }, 250);
+  }
+  function showFeedback(summary) {
+    if (!feedbackHost) return;
+    if (feedbackTimer) {
+      clearTimeout(feedbackTimer);
+      feedbackTimer = null;
+    }
+    feedbackHost.innerHTML = `
+      <div class="feedback-card rounded-2xl border border-black/10 bg-white p-4 shadow-soft-md" data-state="hidden" role="status">
+        <div class="flex items-start gap-3">
+          <div>
+            <p class="text-sm font-semibold text-black">${summary.title}</p>
+            <p class="mt-1 text-sm text-black/70">${summary.body}</p>
+          </div>
+          <button
+            type="button"
+            class="ml-auto inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border border-black/10 text-xs text-black/60 transition hover:bg-black hover:text-white"
+            aria-label="Скрыть уведомление"
+            data-feedback-close
+          >
+            ×
+          </button>
+        </div>
+      </div>
+    `;
+    const card = feedbackHost.querySelector('.feedback-card');
+    const closeBtn = feedbackHost.querySelector('[data-feedback-close]');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', hideFeedback, { once: true });
+    }
+    window.requestAnimationFrame(() => {
+      card?.setAttribute('data-state', 'visible');
+    });
+    feedbackTimer = window.setTimeout(hideFeedback, FEEDBACK_HIDE_DELAY);
+  }
+  function renderAssistant(result) {
+    if (!assistantOutput) return;
+    if (!result) {
+      assistantOutput.innerHTML =
+        '<p class="rounded-xl bg-white p-3 text-black/70 shadow-soft">Помощник временно недоступен. Попробуйте позже.</p>';
+      return;
+    }
+    const pieces = [];
+    if (result.message) {
+      pieces.push(`<p class="text-black/70">${result.message}</p>`);
+    }
+    if (Array.isArray(result.modules) && result.modules.length > 0) {
+      const list = result.modules
+        .map(
+          (item) => `
+            <li class="rounded-xl bg-white p-3 shadow-soft" role="listitem">
+              <p class="font-medium text-black">${item.title}</p>
+              <p class="mt-1 text-sm text-black/70">${item.description}</p>
+            </li>
+          `,
+        )
+        .join('');
+      pieces.push(`<ul class="space-y-2" role="list">${list}</ul>`);
+    }
+    assistantOutput.innerHTML =
+      pieces.join('') ||
+      '<p class="text-black/60">Поделитесь интересами, чтобы получить персональные рекомендации.</p>';
   }
   function showError(name, msg) {
     const err = form.querySelector(`[data-err="${name}"]`);
@@ -1583,15 +1686,45 @@ function initForm() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!validate(false)) return;
-    alert('Заявка отправлена! Мы свяжемся с вами.');
+    const summary = buildApplicationSummary({
+      name: form.elements.name.value,
+      email: form.elements.email.value,
+      comment: form.elements.comment.value,
+    });
+    showFeedback(summary);
     form.reset();
     try {
-      localStorage.removeItem(storageKey);
+      const clearedState = { name: '', email: '', comment: '', agree: false };
+      localStorage.setItem(storageKey, JSON.stringify(clearedState));
     } catch (error) {
       console.warn('Не удалось очистить сохранённые данные формы', error);
     }
     validate(true);
   });
+  if (assistantBtn) {
+    assistantBtn.addEventListener('click', () => {
+      if (assistantOutput) {
+        assistantOutput.innerHTML =
+          '<p class="text-black/60">Ищем подходящие модули…</p>';
+      }
+      assistantBtn.disabled = true;
+      assistantBtn.classList.add('opacity-60', 'cursor-wait');
+      try {
+        const commentSource = assistantInput?.value.trim() || form.elements.comment.value.trim();
+        const result = getAssistantRecommendations(commentSource);
+        renderAssistant(result);
+      } catch (error) {
+        console.warn('Не удалось получить рекомендации помощника', error);
+        renderAssistant({
+          message: 'Помощник временно недоступен. Попробуйте ещё раз позже.',
+          modules: [],
+        });
+      } finally {
+        assistantBtn.disabled = false;
+        assistantBtn.classList.remove('opacity-60', 'cursor-wait');
+      }
+    });
+  }
   validate(true);
 }
 function initObservers() {
