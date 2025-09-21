@@ -1116,6 +1116,7 @@ function renderTeamShowcase() {
 
   function handleOverlayKeydown(event) {
     if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
+    if (!overlay.matches(':focus-within')) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       closeLightbox();
@@ -1458,10 +1459,24 @@ function initCarousel(gallery) {
   }
   prevBtn.onclick = () => go(-1);
   nextBtn.onclick = () => go(1);
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') go(-1);
-    if (e.key === 'ArrowRight') go(1);
-  });
+
+  const handleKeydown = (event) => {
+    const lightboxActive =
+      document.getElementById('showcaseLightbox')?.getAttribute('aria-hidden') === 'false';
+    if (!lightboxActive && !root.matches(':focus-within')) {
+      return;
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      go(-1);
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      go(1);
+    }
+  };
+
+  root.addEventListener('keydown', handleKeydown);
   root.addEventListener('dblclick', (e) => {
     const rect = root.getBoundingClientRect();
     const x = (((e.clientX ?? rect.width / 2) - rect.left) / rect.width) * 100;
