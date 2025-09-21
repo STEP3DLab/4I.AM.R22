@@ -1421,6 +1421,8 @@ function initCarousel(gallery) {
   const img = document.createElement('img');
   img.draggable = false;
   img.className = 'absolute inset-0 h-full w-full object-cover transition-opacity duration-300';
+  img.loading = 'eager';
+  img.decoding = 'async';
   root.appendChild(img);
   const prevBtn = document.createElement('button');
   prevBtn.setAttribute('aria-label', 'Предыдущее фото');
@@ -2080,8 +2082,14 @@ function initObservers() {
         if (entry.isIntersecting) {
           const id = entry.target.id;
           links.forEach((a) => {
-            a.classList.toggle('text-black', a.dataset.nav === id);
-            a.classList.toggle('opacity-70', a.dataset.nav !== id);
+            const isActive = a.dataset.nav === id;
+            a.classList.toggle('text-black', isActive);
+            a.classList.toggle('opacity-70', !isActive);
+            if (isActive) {
+              a.setAttribute('aria-current', 'page');
+            } else {
+              a.removeAttribute('aria-current');
+            }
           });
           if (id === 'apply') {
             cta.style.opacity = '0';
