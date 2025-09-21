@@ -1,0 +1,42 @@
+:root {
+  --a11y-focus-color: #2563eb;
+  --a11y-focus-background: rgba(37, 99, 235, 0.12);
+  --a11y-focus-offset: 4px;
+}
+
+:where(
+    a,
+    button,
+    [role='button'],
+    input,
+    textarea,
+    select,
+    summary,
+    details[role='button']
+  ):focus-visible {
+  outline: 3px solid var(--a11y-focus-color);
+  outline-offset: var(--a11y-focus-offset);
+  box-shadow: 0 0 0 4px var(--a11y-focus-background);
+  border-radius: 0.75rem;
+}
+
+.skip-link {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #0f172a;
+  color: #f8fafc;
+  border-radius: 0.75rem;
+  transform: translateY(-150%);
+  transition: transform 0.2s ease;
+  z-index: 100;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+:where(body):focus-visible {
+  outline: none;
+}
