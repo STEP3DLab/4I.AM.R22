@@ -435,23 +435,190 @@ function renderIcon(name) {
       return '';
   }
 }
+function formatSessions(count) {
+  const value = Math.abs(count) % 100;
+  const lastDigit = value % 10;
+  if (value > 10 && value < 20) return 'занятий';
+  if (lastDigit === 1) return 'занятие';
+  if (lastDigit >= 2 && lastDigit <= 4) return 'занятия';
+  return 'занятий';
+}
+
+function formatHoursValue(hours) {
+  if (!Number.isFinite(hours)) return '0';
+  const options = Number.isInteger(hours)
+    ? { maximumFractionDigits: 0 }
+    : { minimumFractionDigits: 1, maximumFractionDigits: 1 };
+  return hours.toLocaleString('ru-RU', options);
+}
+
+function createRadialChart({ percent, id, ariaLabel, accentClass, centerText }) {
+  const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
+  const radius = 18;
+  const circumference = Math.round(2 * Math.PI * radius * 100) / 100;
+  const offset = Math.round((circumference - (circumference * safePercent) / 100) * 100) / 100;
+  const text = centerText || `${safePercent}%`;
+  return {
+    id,
+    markup: `
+      <div class="mt-4 flex justify-center">
+        <span id="${id}" class="sr-only">${ariaLabel}</span>
+        <svg viewBox="0 0 48 48" class="h-14 w-14 ${accentClass}" aria-hidden="true">
+          <circle cx="24" cy="24" r="${radius}" class="fill-none stroke-black/10" stroke-width="4"></circle>
+          <circle
+            cx="24"
+            cy="24"
+            r="${radius}"
+            class="fill-none stroke-current"
+            stroke-width="4"
+            stroke-linecap="round"
+            style="stroke-dasharray:${circumference};stroke-dashoffset:${offset};transform:rotate(-90deg);transform-origin:50% 50%;"
+          ></circle>
+          <text x="24" y="26" text-anchor="middle" class="fill-current text-[10px] font-semibold">${text}</text>
+        </svg>
+      </div>
+    `,
+  };
+}
+
+function createLinearChart({ percent, id, ariaLabel, accentClass }) {
+  const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
+  return {
+    id,
+    markup: `
+      <div class="mt-4">
+        <span id="${id}" class="sr-only">${ariaLabel}</span>
+        <div class="h-2 w-full overflow-hidden rounded-full bg-black/10">
+          <div class="h-full rounded-full ${accentClass}" style="width: ${safePercent}%;" aria-hidden="true"></div>
+        </div>
+        <div class="mt-1 text-xs text-black/50">${safePercent}% программы</div>
+      </div>
+    `,
+  };
+}
+
 function renderStats() {
+  const typeConfig = {
+    lecture: {
+      label: 'Лекции',
+      icon: 'lecture',
+      accentClass: 'bg-sky-400',
+      caption: 'теория и вводные блоки',
+    },
+    practice: {
+      label: 'Практика',
+      icon: 'practice',
+      accentClass: 'bg-emerald-400',
+      caption: 'отработка навыков',
+    },
+    workshop: {
+      label: 'Мастер-классы',
+      icon: 'workshop',
+      accentClass: 'bg-amber-400',
+      caption: 'экспертные демонстрации',
+    },
+    exam: {
+      label: 'Экзамен',
+      icon: 'exam',
+      accentClass: 'bg-rose-400',
+      caption: 'итоговая аттестация',
+    },
+  };
+
+  const totalHoursRaw = calculateProgramHours(modules);
+  const totalHours = Math.round(totalHoursRaw * 10) / 10;
+  const activeDays = modules.filter((module) => (module.blocks?.length ?? 0) > 0).length;
+  const averageHoursPerDay = activeDays
+    ? Math.round((totalHours / activeDays) * 10) / 10
+    : 0;
+
+  const aggregated = modules.reduce(
+    (acc, module) => {
+      const summary = getBlocksSummary(module?.blocks ?? []);
+      acc.totalBlocks += Object.values(summary.typeCounts).reduce(
+        (total, current) => total + current,
+        0,
+      );
+      Object.entries(summary.typeCounts).forEach(([type, count]) => {
+        acc.typeCounts[type] += count;
+      });
+      return acc;
+    },
+    {
+      totalBlocks: 0,
+      typeCounts: { lecture: 0, practice: 0, workshop: 0, exam: 0 },
+    },
+  );
+
+  const intensityPercent = activeDays
+    ? Math.round(Math.min(1, averageHoursPerDay / 8) * 100)
+    : 0;
+  const formattedTotalHours = formatHoursValue(totalHours);
+  const formattedAverage = formatHoursValue(averageHoursPerDay);
+  const radialChart = createRadialChart({
+    percent: intensityPercent,
+    id: 'stat-program-hours-chart',
+    ariaLabel: `Средняя нагрузка ${formattedAverage} часа в день — ${intensityPercent}% от ориентировочных 8 часов обучения`,
+    accentClass: 'text-emerald-500',
+    centerText: `${formattedAverage}ч/д`,
+  });
+
   const stats = [
-    { k: '48 ч', v: 'интенсив', icon: 'clock' },
-    { k: '6–12', v: 'в группе', icon: 'group' },
-    { k: '4', v: 'мастер-класса', icon: 'workshop' },
-    { k: '3D', v: 'скан/реверс/печать', icon: 'scan3d' },
+    {
+      id: 'program-hours',
+      icon: 'clock',
+      value: `${formattedTotalHours} ч`,
+      label: 'суммарная нагрузка',
+      detail: activeDays ? `≈ ${formattedAverage} ч в день, ${activeDays} учебн. дней` : '',
+      chart: radialChart,
+      ariaLabel: `Всего ${formattedTotalHours} часов обучения. ${activeDays} учебных дней с средней нагрузкой ${formattedAverage} часа.`,
+    },
   ];
+
+  Object.entries(aggregated.typeCounts).forEach(([type, count]) => {
+    const config = typeConfig[type];
+    if (!config) return;
+    const percent = aggregated.totalBlocks
+      ? Math.round((count / aggregated.totalBlocks) * 100)
+      : 0;
+    const chart = createLinearChart({
+      percent,
+      id: `stat-${type}-chart`,
+      ariaLabel: `${config.label}: ${percent}% программы (${count} ${formatSessions(count)})`,
+      accentClass: config.accentClass,
+    });
+    stats.push({
+      id: `stat-${type}`,
+      icon: config.icon,
+      value: `${count} ${formatSessions(count)}`,
+      label: config.label,
+      detail: config.caption,
+      chart,
+      ariaLabel: `${config.label}. ${count} ${formatSessions(count)} — ${percent}% программы.`,
+    });
+  });
+
   const root = $('#stats');
-  stats.forEach((s) => {
+  if (!root) return;
+  root.innerHTML = '';
+  stats.forEach((stat) => {
     const card = document.createElement('div');
     card.className =
       'group relative overflow-hidden rounded-2xl border border-black/10 p-4 text-center hover:shadow-md';
+    card.setAttribute('role', 'group');
+    if (stat.ariaLabel) {
+      card.setAttribute('aria-label', stat.ariaLabel);
+    }
+    if (stat.chart?.id) {
+      card.setAttribute('aria-describedby', stat.chart.id);
+    }
     card.innerHTML = `
-      <div class="mx-auto h-7 w-7 text-black/80">${renderIcon(s.icon)}</div>
-      <div class="mt-2 text-2xl font-semibold tracking-tight">${s.k}</div>
-      <div class="text-[10px] uppercase tracking-[.15em] text-black/50">${s.v}</div>
-      <span aria-hidden class="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full border border-black/10"></span>
+      <div class="mx-auto h-7 w-7 text-black/80">${renderIcon(stat.icon)}</div>
+      <div class="mt-2 text-2xl font-semibold tracking-tight">${stat.value}</div>
+      <div class="text-[10px] uppercase tracking-[.15em] text-black/50">${stat.label}</div>
+      ${stat.detail ? `<div class="mt-1 text-xs text-black/60">${stat.detail}</div>` : ''}
+      ${stat.chart?.markup ?? ''}
+      <span aria-hidden="true" class="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full border border-black/10"></span>
     `;
     root.appendChild(card);
   });
