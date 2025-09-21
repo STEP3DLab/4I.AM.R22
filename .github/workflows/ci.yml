@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Prettier check
+        run: npm run format:check
+      - name: Unit tests
+        run: npm test
+      - name: Build
+        run: npm run build
+      - name: E2E tests
+        run: npm run test:e2e -- --reporter=line
+      - name: Lighthouse CI
+        run: npx lhci autorun --upload.target=filesystem --collect.staticDistDir=dist
+      - name: Upload LHCI artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lhci-reports
+          path: lhci_reports
+          if-no-files-found: warn
