@@ -26,7 +26,6 @@ const teamMembers = [
     name: 'Рекут Алексей Валерьевич',
     summary:
       'Создатель компетенций WorldSkills по реверсивному инжинирингу и аддитивному производству.',
-    photo: 'assets/img/team/rekut.svg',
     badges: ['54 года', '9+ лет преподавания', 'Эксперт WorldSkills'],
     cardPoints: [
       'Заместитель руководителя технопарка РГСУ (2022—н.в.)',
@@ -77,7 +76,6 @@ const teamMembers = [
     title: 'Преподаватель',
     name: 'Ганьшин Владимир Константинович',
     summary: 'Руководитель технопарка РГСУ и тренер сборной России по реверсивному инжинирингу.',
-    photo: 'assets/img/team/ganshin.svg',
     badges: ['34 года', '10+ лет преподавания', 'Тренер сборной'],
     cardPoints: [
       'Руководит технопарком РГСУ с 2019 года',
@@ -131,7 +129,6 @@ const teamMembers = [
     name: 'Понкратова Христина Анатольевна',
     summary:
       'Практик STEP_3D по биопротезированию, реверсивному инжинирингу и аддитивному производству.',
-    photo: 'assets/img/team/ponkratova.svg',
     badges: ['23 года', '5+ лет преподавания', 'Чемпион WorldSkills & BRICS'],
     cardPoints: [
       'Учебный мастер технопарка РГСУ, ведёт практикумы по 3D-сканированию',
@@ -315,9 +312,9 @@ const modules = [
   { day: '06 (Сб)', blocks: [] },
 ];
 const lead = {
-  price: '35\u202f000\u202fруб.',
-  schedule: '4 недели, занятия по вечерам',
-  seats: 'Максимум 15 человек',
+  price: '68\u202f000 ₽',
+  schedule: '1 неделя, пн-сб 09:00—18:00',
+  seats: '6–12 человек в группе',
   venue:
     'Москва, ул. Беговая, д. 12 (лаборатория промдизайна); итоговое занятие (суббота) — Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)',
 };
@@ -339,15 +336,30 @@ const applyLocations = [
     mapQuery: 'Москва, ул. Вильгельма Пика, 4к8',
   },
 ];
+const helpfulLinks = [
+  {
+    title: 'Сайт технопарка РГСУ',
+    subtitle: 'Официальный портал и проекты',
+    href: 'https://technopark-rgsu.ru/',
+    icon: 'campus',
+  },
+  {
+    title: 'Портфолио и новости',
+    subtitle: 'Telegram-канал STEP_3D Lab',
+    href: 'https://t.me/STEP_3D_Lab',
+    icon: 'telegram',
+  },
+  {
+    title: 'Связаться с нами в Telegram',
+    subtitle: 'Ответим на вопросы и согласуем детали',
+    href: 'https://t.me/step_3d_mngr',
+    icon: 'chat',
+  },
+];
 const GALLERY_FOLDER = 'images/gallery';
 const APP_VERSION = (import.meta.env && import.meta.env.VITE_APP_VERSION) || 'dev';
 const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json?v=${encodeURIComponent(APP_VERSION)}`;
 const COURSE_START = new Date('2025-10-20T09:00:00+03:00');
-const COURSE_START_FORMATTER = new Intl.DateTimeFormat('ru-RU', {
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-});
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 function createPill(text, tone = 'neutral') {
@@ -824,80 +836,6 @@ function renderTeam() {
       ?.addEventListener('click', (event) => openModal(member, event.currentTarget));
     cardsRoot.appendChild(card);
   });
-}
-function renderTeamSlider() {
-  const slider = document.querySelector('[data-team-slider]');
-  if (!(slider instanceof HTMLElement)) return;
-  const track = slider.querySelector('[data-team-slider-track]');
-  const status = slider.querySelector('[data-team-slider-status]');
-  const prev = slider.querySelector('[data-team-slider-prev]');
-  const next = slider.querySelector('[data-team-slider-next]');
-  if (!(track instanceof HTMLElement) || !(prev instanceof HTMLButtonElement) || !(next instanceof HTMLButtonElement)) {
-    slider.setAttribute('hidden', 'true');
-    return;
-  }
-  track.innerHTML = '';
-  const slides = teamMembers
-    .filter((member) => member.photo)
-    .map((member, index) => {
-      const slide = document.createElement('article');
-      slide.className = 'team-slide';
-      slide.setAttribute('data-index', String(index));
-      slide.setAttribute('role', 'group');
-      slide.setAttribute('aria-label', `${member.name} — ${member.title}`);
-      slide.innerHTML = `
-        <figure>
-          <img src="${member.photo}" alt="${member.name}" loading="lazy" decoding="async" />
-          <figcaption class="text-sm text-black/70">
-            <span class="font-semibold text-black">${member.name}</span><br />${member.summary}
-          </figcaption>
-        </figure>
-      `;
-      track.appendChild(slide);
-      return slide;
-    });
-  if (!slides.length) {
-    slider.setAttribute('hidden', 'true');
-    return;
-  }
-  slider.removeAttribute('hidden');
-  slider.setAttribute('tabindex', '0');
-  if (status instanceof HTMLElement) {
-    status.setAttribute('aria-live', 'polite');
-  }
-  let activeIndex = 0;
-  const total = slides.length;
-  const controlsDisabled = total <= 1;
-  prev.disabled = controlsDisabled;
-  next.disabled = controlsDisabled;
-  const update = () => {
-    slides.forEach((slide, idx) => {
-      const isActive = idx === activeIndex;
-      slide.classList.toggle('is-active', isActive);
-      slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
-    });
-    if (status instanceof HTMLElement) {
-      status.textContent = `${activeIndex + 1} / ${total}`;
-    }
-  };
-  const step = (delta) => {
-    activeIndex = clampIndex(activeIndex, delta, total);
-    update();
-  };
-  if (!controlsDisabled) {
-    prev.addEventListener('click', () => step(-1));
-    next.addEventListener('click', () => step(1));
-    slider.addEventListener('keydown', (event) => {
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        step(-1);
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        step(1);
-      }
-    });
-  }
-  update();
 }
 function renderTeamShowcase() {
   const rail = document.getElementById('teamShowcaseRail');
@@ -1390,6 +1328,34 @@ function renderApplyLocations() {
   }
 }
 
+function renderHelpfulLinks() {
+  const root = document.getElementById('helpfulLinks');
+  if (!root) return;
+  root.innerHTML = '';
+  helpfulLinks.forEach((link) => {
+    const card = document.createElement('a');
+    card.href = link.href;
+    card.target = '_blank';
+    card.rel = 'noreferrer';
+    card.className =
+      'group relative flex flex-col justify-between gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
+    card.innerHTML = `
+      <div class="flex items-start gap-3">
+        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">
+          ${renderIcon(link.icon)}
+        </span>
+        <div>
+          <div class="font-semibold text-black">${link.title}</div>
+          ${link.subtitle ? `<p class="mt-1 text-xs text-black/60">${link.subtitle}</p>` : ''}
+        </div>
+      </div>
+      <span aria-hidden class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 text-black/40 transition group-hover:translate-x-1 group-hover:text-black">
+        ${renderIcon('external')}
+      </span>
+    `;
+    root.appendChild(card);
+  });
+}
 async function loadGallery() {
   try {
     const response = await fetch(GALLERY_MANIFEST);
@@ -1875,16 +1841,6 @@ function initCountdown() {
   tick();
   timerId = setInterval(tick, 60000);
 }
-function renderCourseStartDate() {
-  const host = document.getElementById('courseStart');
-  if (!host) return;
-  try {
-    const formatted = COURSE_START_FORMATTER.format(COURSE_START).replace(/\s*г\.$/, '');
-    host.textContent = formatted;
-  } catch (error) {
-    console.warn('Не удалось отформатировать дату старта курса', error);
-  }
-}
 const FEEDBACK_HIDE_DELAY = 6000;
 function buildApplicationSummary({ name, email, comment }) {
   const trimmedName = name.trim();
@@ -2113,24 +2069,6 @@ function initForm() {
   }
   validate(true);
 }
-function initInfoCards() {
-  const cards = Array.from(document.querySelectorAll('[data-info-card]'));
-  cards.forEach((card) => {
-    const toggle = card.querySelector('[data-info-toggle]');
-    const indicator = toggle?.querySelector('[aria-hidden="true"]');
-    if (!(toggle instanceof HTMLButtonElement)) return;
-    if (indicator instanceof HTMLElement) {
-      indicator.textContent = '+';
-    }
-    toggle.addEventListener('click', () => {
-      const isOpen = card.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', String(isOpen));
-      if (indicator instanceof HTMLElement) {
-        indicator.textContent = isOpen ? '–' : '+';
-      }
-    });
-  });
-}
 function initObservers() {
   const links = Array.from(document.querySelectorAll('#navLinks a'));
   const ids = ['top', 'about', 'program', 'team', 'apply'];
@@ -2142,19 +2080,15 @@ function initObservers() {
         if (entry.isIntersecting) {
           const id = entry.target.id;
           links.forEach((a) => {
-            const isActive = a.dataset.nav === id;
-            a.classList.toggle('active', isActive);
-            a.classList.toggle('text-black', isActive);
-            a.classList.toggle('opacity-70', !isActive);
+            a.classList.toggle('text-black', a.dataset.nav === id);
+            a.classList.toggle('opacity-70', a.dataset.nav !== id);
           });
-          if (cta instanceof HTMLElement) {
-            if (id === 'apply') {
-              cta.style.opacity = '0';
-              cta.style.pointerEvents = 'none';
-            } else {
-              cta.style.opacity = '1';
-              cta.style.pointerEvents = 'auto';
-            }
+          if (id === 'apply') {
+            cta.style.opacity = '0';
+            cta.style.pointerEvents = 'none';
+          } else {
+            cta.style.opacity = '1';
+            cta.style.pointerEvents = 'auto';
           }
         }
       });
@@ -2318,11 +2252,12 @@ function renderLead() {
   const totalHours = Math.round(calculateProgramHours(modules));
   const durationEl = document.getElementById('leadDuration');
   if (durationEl) {
-    durationEl.textContent = `${totalHours} часов — ${lead.schedule}`;
+    durationEl.textContent = `${totalHours} часов · ${lead.schedule}`;
   } else {
     console.warn('Элемент #leadDuration не найден, длительность курса не обновлена.');
   }
   setText('leadSeats', lead.seats);
+  setText('leadPriceInline', lead.price);
   setText('leadPriceMobile', lead.price);
 }
 renderBenefits();
@@ -2334,13 +2269,11 @@ renderAudience();
 renderStartCalendar();
 renderProgram();
 renderTeam();
-renderTeamSlider();
 renderTeamShowcase();
 renderApplyLocations();
-renderCourseStartDate();
+renderHelpfulLinks();
 initCountdown();
 initForm();
-initInfoCards();
 initObservers();
 initMobileNav();
 initScrollBar();
