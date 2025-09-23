@@ -3,11 +3,30 @@ const DATE_FORMATTER = new Intl.DateTimeFormat('ru-RU', {
   month: 'short',
 });
 
+const LONG_DATE_FORMATTER = new Intl.DateTimeFormat('ru-RU', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
 export function formatShortDateRu(date) {
   if (!(date instanceof Date) || Number.isNaN(date.valueOf())) {
     throw new TypeError('formatShortDateRu expects a valid Date instance');
   }
   return DATE_FORMATTER.format(date).replace('.', '');
+}
+
+export function formatLongDateRu(date) {
+  if (!(date instanceof Date) || Number.isNaN(date.valueOf())) {
+    throw new TypeError('formatLongDateRu expects a valid Date instance');
+  }
+  const parts = LONG_DATE_FORMATTER.formatToParts(date);
+  const cleaned = parts.filter((part) => part.type !== 'literal' || part.value.trim() !== 'г.');
+  return cleaned
+    .map((part) => part.value)
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 export function parseHours(input) {
