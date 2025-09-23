@@ -1844,6 +1844,16 @@ function initCountdown() {
   timerId = setInterval(tick, 60000);
 }
 const FEEDBACK_HIDE_DELAY = 6000;
+const DEFAULT_FORM_ENDPOINT = 'https://api.example.com/forms/apply';
+const RUNTIME_CONFIG =
+  typeof globalThis !== 'undefined' && globalThis.__APP_CONFIG__ ? globalThis.__APP_CONFIG__ : {};
+const FORM_ENDPOINT =
+  (import.meta.env && import.meta.env.VITE_FORM_ENDPOINT) ||
+  (RUNTIME_CONFIG && RUNTIME_CONFIG.VITE_FORM_ENDPOINT) ||
+  DEFAULT_FORM_ENDPOINT;
+const FORM_REQUEST_TIMEOUT = 10_000;
+const FORM_MAX_ATTEMPTS = 2;
+const FORM_RETRY_DELAY = 800;
 function buildApplicationSummary({ name, email, comment }) {
   const trimmedName = name.trim();
   const firstName = trimmedName ? trimmedName.split(/\s+/)[0] : 'Коллега';
@@ -1861,6 +1871,7 @@ function buildApplicationSummary({ name, email, comment }) {
     body:
       details.join(' ') ||
       'Спасибо за интерес к интенсиву. Менеджер свяжется с вами и расскажет про свободные места.',
+    variant: 'success',
   };
 }
 function initForm() {
@@ -1876,6 +1887,8 @@ function initForm() {
     console.warn('Форма заявки недоступна, инициализация пропущена.');
     return;
   }
+  const submitBtnInitialText = (submitBtn.textContent || 'Отправить заявку').trim();
+  const submitBtnBusyText = 'Отправка…';
   try {
     const raw = localStorage.getItem(storageKey);
     if (raw) {
@@ -1889,6 +1902,78 @@ function initForm() {
     }
   } catch (error) {
     console.warn('Не удалось загрузить сохранённые данные формы', error);
+  }
+  function setSubmittingState(isLoading) {
+    submitBtn.dataset.state = isLoading ? 'loading' : 'idle';
+    if (isLoading) {
+      submitBtn.setAttribute('aria-busy', 'true');
+      submitBtn.disabled = true;
+      submitBtn.textContent = submitBtnBusyText;
+      submitBtn.className =
+        'rounded-xl px-4 py-2 text-white outline-none transition focus-visible:ring-2 focus-visible:ring-black/30 bg-black/30 cursor-not-allowed';
+    } else {
+      submitBtn.removeAttribute('aria-busy');
+      submitBtn.textContent = submitBtnInitialText;
+    }
+  }
+  async function submitApplication(payload) {
+    let lastError = new Error('Не удалось отправить заявку. Попробуйте ещё раз позже.');
+    for (let attempt = 0; attempt < FORM_MAX_ATTEMPTS; attempt += 1) {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), FORM_REQUEST_TIMEOUT);
+      try {
+        const response = await fetch(FORM_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          mode: 'cors',
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          let description = `Сервер вернул статус ${response.status}.`;
+          try {
+            const raw = await response.text();
+            if (raw) {
+              try {
+                const parsed = JSON.parse(raw);
+                if (parsed && typeof parsed.message === 'string' && parsed.message.trim()) {
+                  description = parsed.message.trim();
+                } else if (raw.trim()) {
+                  description = raw.trim();
+                }
+              } catch {
+                if (raw.trim()) {
+                  description = raw.trim();
+                }
+              }
+            }
+          } catch (readError) {
+            console.warn('Не удалось прочитать ответ сервера', readError);
+          }
+          throw new Error(description);
+        }
+        return response;
+      } catch (error) {
+        let failure =
+          error instanceof Error
+            ? error
+            : new Error('Не удалось отправить заявку. Попробуйте ещё раз позже.');
+        const isAbort = error && error.name === 'AbortError';
+        const isNetwork = error instanceof TypeError;
+        if (isAbort) {
+          failure = new Error('Превышено время ожидания ответа сервера. Попробуйте ещё раз.');
+        }
+        lastError = failure;
+        if ((isAbort || isNetwork) && attempt < FORM_MAX_ATTEMPTS - 1) {
+          await new Promise((resolve) => window.setTimeout(resolve, FORM_RETRY_DELAY));
+          continue;
+        }
+        throw failure;
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+    }
+    throw lastError;
   }
   function hideFeedback() {
     if (!feedbackHost) return;
@@ -1911,12 +1996,43 @@ function initForm() {
       clearTimeout(feedbackTimer);
       feedbackTimer = null;
     }
+    const variant =
+      summary.variant === 'error' ? 'error' : summary.variant === 'success' ? 'success' : 'info';
+    const palette = {
+      success: {
+        border: 'border-emerald-200',
+        background: 'bg-emerald-50',
+        title: 'text-emerald-900',
+        body: 'text-emerald-700',
+      },
+      error: {
+        border: 'border-red-200',
+        background: 'bg-red-50',
+        title: 'text-red-900',
+        body: 'text-red-700',
+      },
+      info: {
+        border: 'border-black/10',
+        background: 'bg-white',
+        title: 'text-black',
+        body: 'text-black/70',
+      },
+    };
+    const colors = palette[variant];
+    const titleText = summary.title || 'Статус заявки';
+    const bodyText = summary.body || '';
+    const role = variant === 'error' ? 'alert' : 'status';
     feedbackHost.innerHTML = `
-      <div class="feedback-card rounded-2xl border border-black/10 bg-white p-4 shadow-soft-md" data-state="hidden" role="status">
+      <div
+        class="feedback-card rounded-2xl border ${colors.border} ${colors.background} p-4 shadow-soft-md"
+        data-state="hidden"
+        data-variant="${variant}"
+        role="${role}"
+      >
         <div class="flex items-start gap-3">
           <div>
-            <p class="text-sm font-semibold text-black">${summary.title}</p>
-            <p class="mt-1 text-sm text-black/70">${summary.body}</p>
+            <p class="text-sm font-semibold ${colors.title}">${titleText}</p>
+            <p class="mt-1 text-sm ${colors.body}">${bodyText}</p>
           </div>
           <button
             type="button"
@@ -2000,10 +2116,11 @@ function initForm() {
       ok = false;
       if (!silent) showError('agree', 'Нужно согласие на обработку данных');
     } else if (!silent) showError('agree', '');
-    submitBtn.disabled = !ok;
+    const isLoading = submitBtn.dataset.state === 'loading';
+    submitBtn.disabled = isLoading || !ok;
     submitBtn.className =
       'rounded-xl px-4 py-2 text-white outline-none transition focus-visible:ring-2 focus-visible:ring-black/30 ' +
-      (ok ? 'bg-black hover:opacity-90' : 'bg-black/30 cursor-not-allowed');
+      (isLoading || !ok ? 'bg-black/30 cursor-not-allowed' : 'bg-black hover:opacity-90');
     return ok;
   }
   form.addEventListener('input', () => {
@@ -2027,23 +2144,64 @@ function initForm() {
     },
     true,
   );
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!validate(false)) return;
-    const summary = buildApplicationSummary({
-      name: form.elements.name.value,
-      email: form.elements.email.value,
-      comment: form.elements.comment.value,
-    });
-    showFeedback(summary);
-    form.reset();
-    try {
-      const clearedState = { name: '', email: '', comment: '', agree: false };
-      localStorage.setItem(storageKey, JSON.stringify(clearedState));
-    } catch (error) {
-      console.warn('Не удалось очистить сохранённые данные формы', error);
+    if (!FORM_ENDPOINT || !FORM_ENDPOINT.trim()) {
+      showFeedback({
+        title: 'Не настроен сервер заявок',
+        body: 'Укажите VITE_FORM_ENDPOINT в файле .env, чтобы включить отправку формы.',
+        variant: 'error',
+      });
+      return;
     }
-    validate(true);
+    const payload = {
+      name: form.elements.name.value.trim(),
+      email: form.elements.email.value.trim(),
+      comment: form.elements.comment.value.trim(),
+      agree: form.elements.agree.checked,
+    };
+    setSubmittingState(true);
+    let submissionSucceeded = false;
+    try {
+      await submitApplication(payload);
+      submissionSucceeded = true;
+      const summary = buildApplicationSummary(payload);
+      showFeedback(summary);
+      form.reset();
+      try {
+        const clearedState = { name: '', email: '', comment: '', agree: false };
+        localStorage.setItem(storageKey, JSON.stringify(clearedState));
+      } catch (error) {
+        console.warn('Не удалось очистить сохранённые данные формы', error);
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : 'Не удалось отправить заявку. Попробуйте ещё раз позже.';
+      showFeedback({
+        title: 'Не удалось отправить заявку',
+        body: message,
+        variant: 'error',
+      });
+    } finally {
+      setSubmittingState(false);
+      validate(true);
+      if (!submissionSucceeded) {
+        try {
+          const state = {
+            name: form.elements.name.value,
+            email: form.elements.email.value,
+            comment: form.elements.comment.value,
+            agree: form.elements.agree.checked,
+          };
+          localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (error) {
+          console.warn('Не удалось сохранить данные формы после ошибки отправки', error);
+        }
+      }
+    }
   });
   if (assistantBtn) {
     assistantBtn.addEventListener('click', () => {
