@@ -1,5 +1,6 @@
 import { mkdir, rm, stat, readdir, copyFile } from 'node:fs/promises';
 import path from 'node:path';
+import { validateContent } from '../src/utils/content.js';
 import { generateSitemap } from './generate-sitemap.mjs';
 
 const rootDir = process.cwd();
@@ -55,6 +56,7 @@ async function copyIfExists(relativePath) {
 }
 
 async function build() {
+  validateContent();
   await rm(distDir, { recursive: true, force: true });
   await mkdir(distDir, { recursive: true });
   await generateSitemap();

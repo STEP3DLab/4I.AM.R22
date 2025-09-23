@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  parser: '@babel/eslint-parser',
   env: {
     browser: true,
     es2022: true,
@@ -11,8 +12,11 @@ module.exports = {
     'prettier',
   ],
   parserOptions: {
-    ecmaVersion: 'latest',
+    requireConfigFile: false,
     sourceType: 'module',
+    babelOptions: {
+      plugins: ['@babel/plugin-syntax-import-attributes'],
+    },
   },
   plugins: ['html'],
   settings: {

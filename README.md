@@ -36,6 +36,16 @@ npm test               # unit-тесты Vitest
 npm run test:e2e       # e2e Playwright (поднимает http-server)
 ```
 
+## Редактирование контента
+
+- Статические данные вынесены в JSON-файлы в `src/data/`:
+  - `benefits.json`, `audience.json` — плашки преимуществ и целевой аудитории;
+  - `team.json` — карточки преподавателей (`members`) и витрина (`showcase`);
+  - `modules.json` — расписание программы по дням и блокам;
+  - `lead.json`, `apply-locations.json`, `helpful-links.json` — лид-блок, площадки и полезные ссылки.
+- Схема данных описана в `src/utils/content-schema.js` (Zod). После изменения файлов запустите `npm test`, чтобы Vitest проверил соответствие схемам.
+- Перед публикацией выполните `npm run build` — скрипт `scripts/build.mjs` валидирует контент и собирает статику в `dist/`.
+
 ## Качество
 
 - Lighthouse CI настроен на целевые показатели: производительность ≥ 90, доступность ≥ 90, SEO ≥ 95 (`.lighthouserc.json`).

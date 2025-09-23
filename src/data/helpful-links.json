@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Сайт технопарка РГСУ",
+    "subtitle": "Официальный портал и проекты",
+    "href": "https://technopark-rgsu.ru/",
+    "icon": "campus"
+  },
+  {
+    "title": "Портфолио и новости",
+    "subtitle": "Telegram-канал STEP_3D Lab",
+    "href": "https://t.me/STEP_3D_Lab",
+    "icon": "telegram"
+  },
+  {
+    "title": "Связаться с нами в Telegram",
+    "subtitle": "Ответим на вопросы и согласуем детали",
+    "href": "https://t.me/step_3d_mngr",
+    "icon": "chat"
+  }
+]
