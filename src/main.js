@@ -8,6 +8,7 @@ import {
   getCountdownStatus,
 } from './utils/course-utils.js';
 import { getAssistantRecommendations } from './utils/assistant.js';
+import { readPersistentJSON, writePersistentJSON } from './utils/storage.js';
 import { COURSE_START, COURSE_START_ISO } from './data/course.js';
 
 const courseStartLabel = formatLongDateRu(COURSE_START);
@@ -1758,25 +1759,34 @@ function initForm() {
   const assistantBtn = document.getElementById('assistantSuggest');
   const assistantOutput = document.getElementById('assistantOutput');
   const storageKey = 'applyForm';
+  const initialState = { name: '', email: '', comment: '', agree: false };
   let feedbackTimer = null;
   if (!(form instanceof HTMLFormElement) || !(submitBtn instanceof HTMLButtonElement)) {
     console.warn('Форма заявки недоступна, инициализация пропущена.');
     return;
   }
-  try {
-    const raw = localStorage.getItem(storageKey);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      ['name', 'email', 'comment', 'agree'].forEach((k) => {
-        if (k in parsed && form.elements[k]) {
-          if (k === 'agree') form.elements[k].checked = !!parsed[k];
-          else form.elements[k].value = parsed[k];
-        }
-      });
-    }
-  } catch (error) {
-    console.warn('Не удалось загрузить сохранённые данные формы', error);
-  }
+
+  const persistedState = readPersistentJSON(storageKey, null, { logger: console });
+  const stateFromStorage =
+    persistedState && typeof persistedState === 'object'
+      ? { ...initialState, ...persistedState }
+      : { ...initialState };
+
+  if (form.elements.name) form.elements.name.value = stateFromStorage.name ?? '';
+  if (form.elements.email) form.elements.email.value = stateFromStorage.email ?? '';
+  if (form.elements.comment) form.elements.comment.value = stateFromStorage.comment ?? '';
+  if (form.elements.agree) form.elements.agree.checked = !!stateFromStorage.agree;
+
+  const collectState = () => ({
+    name: form.elements.name?.value ?? '',
+    email: form.elements.email?.value ?? '',
+    comment: form.elements.comment?.value ?? '',
+    agree: !!form.elements.agree?.checked,
+  });
+
+  const persistState = (nextState) => {
+    writePersistentJSON(storageKey, nextState, { logger: console });
+  };
   function hideFeedback() {
     if (!feedbackHost) return;
     const card = feedbackHost.querySelector('.feedback-card');
@@ -1894,17 +1904,7 @@ function initForm() {
     return ok;
   }
   form.addEventListener('input', () => {
-    const state = {
-      name: form.elements.name.value,
-      email: form.elements.email.value,
-      comment: form.elements.comment.value,
-      agree: form.elements.agree.checked,
-    };
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(state));
-    } catch (error) {
-      console.warn('Не удалось сохранить данные формы', error);
-    }
+    persistState(collectState());
     validate(true);
   });
   form.addEventListener(
@@ -1924,12 +1924,7 @@ function initForm() {
     });
     showFeedback(summary);
     form.reset();
-    try {
-      const clearedState = { name: '', email: '', comment: '', agree: false };
-      localStorage.setItem(storageKey, JSON.stringify(clearedState));
-    } catch (error) {
-      console.warn('Не удалось очистить сохранённые данные формы', error);
-    }
+    persistState({ ...initialState });
     validate(true);
   });
   if (assistantBtn) {
@@ -2006,6 +2001,10 @@ function initObservers() {
 }
 function initScrollBar() {
   const bar = document.getElementById('scrollbar');
+  if (!(bar instanceof HTMLElement)) {
+    console.warn('Индикатор прокрутки (#scrollbar) не найден, инициализация пропущена.');
+    return;
+  }
   function onScroll() {
     const h = document.documentElement;
     const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
