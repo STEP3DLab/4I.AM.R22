@@ -7,7 +7,6 @@ import {
   getBlocksSummary,
   getCountdownStatus,
 } from './utils/course-utils.js';
-import { getAssistantRecommendations } from './utils/assistant.js';
 import { COURSE_START, COURSE_START_ISO } from './data/course.js';
 
 const courseStartLabel = formatLongDateRu(COURSE_START);
@@ -315,6 +314,7 @@ const modules = [
   },
   { day: '06 (Сб)', blocks: [] },
 ];
+const totalProgramHours = Math.round(calculateProgramHours(modules));
 const lead = {
   price: '68\u202f000 ₽',
   schedule: '1 неделя, пн-сб 09:00—18:00',
@@ -339,6 +339,32 @@ const applyLocations = [
     address: 'Москва, ул. Вильгельма Пика, д. 4, к. 8',
     caption: 'Технопарк РГСУ, пространство STEP_3D',
     mapQuery: 'Москва, ул. Вильгельма Пика, 4к8',
+  },
+];
+const faqItems = [
+  {
+    question: 'Как устроено расписание курса?',
+    answer: `<p>Интенсив проходит в формате ${lead.schedule}. За неделю мы проходим ${totalProgramHours} академических часов: совмещаем лекции, практикумы, мастер-классы и консультации.</p>
+<p class="mt-2">Пятый день полностью посвящён экзамену и защите проекта в формате International High-Tech Competition.</p>`,
+  },
+  {
+    question: 'Какие навыки нужны для участия?',
+    answer: `<p>Программа рассчитана на специалистов, которые развивают компетенции в реверсивном инжиниринге и аддитивном производстве. Особенно полезна она для:</p>
+<ul class="mt-2 list-disc space-y-1 pl-5">
+  ${audience.map((item) => `<li>${item}</li>`).join('')}
+</ul>
+<p class="mt-2">Опыт в CAD и 3D-сканировании приветствуется, но наставники помогают выровнять стартовый уровень на первых занятиях.</p>`,
+  },
+  {
+    question: 'Где проходят занятия?',
+    answer: `<p>${lead.venue}.</p>
+<ul class="mt-2 list-disc space-y-1 pl-5">
+  ${applyLocations.map((loc) => `<li>${loc.address} — ${loc.caption}</li>`).join('')}
+</ul>`,
+  },
+  {
+    question: 'Что происходит на экзамене?',
+    answer: '<p>Итоговый модуль — 16 академических часов практики. Участники выполняют задание компетенции «Реверсивный инжиниринг»: оцифровывают деталь, строят CAD-модель и подготавливают её к аддитивному производству.</p><p class="mt-2">Экзамен завершает программу сертификацией навыков и обратной связью от экспертов.</p>',
   },
 ];
 const helpfulLinks = [
@@ -378,11 +404,11 @@ function renderHeroStart() {
 }
 function createPill(text, tone = 'neutral') {
   const tones = {
-    neutral: 'border-black/10 bg-white/80 text-ink-800 shadow-soft',
-    lecture: 'border-sky-200/60 bg-sky-50 text-sky-900 shadow-soft',
-    practice: 'border-emerald-200/60 bg-emerald-50 text-emerald-900 shadow-soft',
-    workshop: 'border-amber-200/60 bg-amber-50 text-amber-900 shadow-soft',
-    exam: 'border-rose-200/60 bg-rose-50 text-rose-900 shadow-soft',
+    neutral: 'border-black/10 bg-white text-ink-800 shadow-soft',
+    lecture: 'border-sky-200 bg-sky-50 text-sky-900 shadow-soft',
+    practice: 'border-emerald-200 bg-emerald-50 text-emerald-900 shadow-soft',
+    workshop: 'border-amber-200 bg-amber-50 text-amber-900 shadow-soft',
+    exam: 'border-rose-200 bg-rose-50 text-rose-900 shadow-soft',
   };
   const span = document.createElement('span');
   span.className = `inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
@@ -723,398 +749,187 @@ function renderTeam() {
   });
 }
 function renderTeamShowcase() {
-  const rail = document.getElementById('teamShowcaseRail');
+  const figure = document.getElementById('teamShowcaseFigure');
   const status = document.getElementById('teamShowcaseStatus');
-  if (!rail) return;
-  rail.innerHTML = '';
-  const total = teamShowcase.length;
-  if (!total) {
-    if (status) status.textContent = 'Галерея пока пуста.';
-    return;
-  }
-  const cards = [];
-  let activeIndex = 0;
-  let lightboxIndex = 0;
-  let scrollRaf = 0;
-  let restoreFocusTo = null;
-  let focusTrapHandler = null;
-  let focusableElements = [];
-  let overlayKeydownAttached = false;
-  let previousBodyOverflow = '';
-  const focusableSelector =
-    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
-  const overlayTitleId = 'showcaseLightboxTitle';
-  const overlayCaptionId = 'showcaseLightboxCaption';
+  const prev = document.querySelector('[data-showcase-prev]');
+  const next = document.querySelector('[data-showcase-next]');
+  if (!figure) return;
 
-  const createOverlay = () => {
-    const el = document.createElement('div');
-    el.id = 'showcaseLightbox';
-    el.className =
-      'pointer-events-none fixed inset-0 z-[70] hidden items-center justify-center bg-neutral-950/80 px-4 py-8 opacity-0 transition-opacity duration-200';
-    el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = `
-      <div class="relative flex w-full max-w-5xl flex-col gap-5 rounded-3xl border border-white/10 bg-neutral-900/85 p-5 text-white shadow-[0_35px_90px_rgba(0,0,0,0.45)] backdrop-blur" role="dialog" aria-modal="true" aria-labelledby="${overlayTitleId}" aria-describedby="${overlayCaptionId}" tabindex="-1" data-showcase-panel>
-        <button type="button" data-showcase-close class="absolute right-5 top-5 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="Закрыть галерею">
-          ${renderIcon('close')}
-        </button>
-        <div class="relative overflow-hidden rounded-2xl bg-black/40">
-          <img data-showcase-image alt="" class="max-h-[70vh] w-full object-contain" loading="lazy" decoding="async" />
-          <button type="button" data-showcase-nav="prev" class="absolute left-4 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="Предыдущее фото">
-            ${renderIcon('chevron-left')}
-          </button>
-          <button type="button" data-showcase-nav="next" class="absolute right-4 top-1/2 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/15 text-white transition hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="Следующее фото">
-            ${renderIcon('chevron-right')}
-          </button>
-          <div class="pointer-events-none absolute left-0 right-0 top-0 flex justify-between px-5 py-3 text-xs uppercase tracking-[.3em] text-white/50">
-            <span data-showcase-counter></span>
-          </div>
-        </div>
-        <div class="space-y-2 text-left">
-          <div id="${overlayTitleId}" data-showcase-title class="text-lg font-semibold leading-tight"></div>
-          <p id="${overlayCaptionId}" data-showcase-caption class="text-sm text-white/80"></p>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(el);
-    return el;
+  const pictureHost = figure.querySelector('[data-showcase-picture]');
+  const titleEl = figure.querySelector('[data-showcase-title]');
+  const captionEl = figure.querySelector('[data-showcase-caption]');
+  const counterEl = figure.querySelector('[data-showcase-counter]');
+  const tagEl = figure.querySelector('[data-showcase-tag]');
+  const total = teamShowcase.length;
+  let activeIndex = 0;
+
+  figure.setAttribute('aria-describedby', 'teamShowcaseStatus');
+
+  const disableNavigation = total <= 1;
+
+  const updateNavigationState = () => {
+    [prev, next].forEach((btn) => {
+      if (!btn) return;
+      btn.disabled = disableNavigation;
+      btn.setAttribute('aria-disabled', String(disableNavigation));
+      btn.classList.toggle('pointer-events-none', disableNavigation);
+      btn.classList.toggle('opacity-50', disableNavigation);
+    });
   };
 
-  let overlay = document.getElementById('showcaseLightbox');
-  if (!overlay) {
-    overlay = createOverlay();
-  }
-  const overlayPanel = overlay.querySelector('[data-showcase-panel]');
-  const overlayImage = overlay.querySelector('[data-showcase-image]');
-  const overlayTitle = overlay.querySelector('[data-showcase-title]');
-  const overlayCaption = overlay.querySelector('[data-showcase-caption]');
-  const overlayCounter = overlay.querySelector('[data-showcase-counter]');
-  const prevControl = overlay.querySelector('[data-showcase-nav="prev"]');
-  const nextControl = overlay.querySelector('[data-showcase-nav="next"]');
-  const closeControl = overlay.querySelector('[data-showcase-close]');
+  const formatLabel = (item) => item?.title || item?.caption || 'без названия';
 
-  if (overlayTitle) {
-    overlayTitle.id = overlayTitleId;
-  }
-  if (overlayCaption) {
-    overlayCaption.id = overlayCaptionId;
-  }
-  if (overlayPanel) {
-    overlayPanel.setAttribute('role', 'dialog');
-    overlayPanel.setAttribute('aria-modal', 'true');
-    overlayPanel.setAttribute('aria-labelledby', overlayTitleId);
-    overlayPanel.setAttribute('aria-describedby', overlayCaptionId);
-    if (!overlayPanel.hasAttribute('tabindex')) {
-      overlayPanel.setAttribute('tabindex', '-1');
-    }
-  }
-  overlay.setAttribute('aria-labelledby', overlayTitleId);
-  overlay.setAttribute('aria-describedby', overlayCaptionId);
-
-  function bindFocusTrap() {
-    if (!overlayPanel) return;
-    focusableElements = Array.from(overlayPanel.querySelectorAll(focusableSelector)).filter(
-      (el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true',
-    );
-    if (focusTrapHandler) {
-      overlayPanel.removeEventListener('keydown', focusTrapHandler);
-    }
-    focusTrapHandler = (event) => {
-      if (event.key !== 'Tab') return;
-      if (!focusableElements.length) {
-        event.preventDefault();
-        overlayPanel.focus({ preventScroll: true });
-        return;
-      }
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-      const activeElement = document.activeElement;
-      if (event.shiftKey) {
-        if (activeElement === firstElement || !overlayPanel.contains(activeElement)) {
-          event.preventDefault();
-          lastElement.focus({ preventScroll: true });
-        }
-      } else if (activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus({ preventScroll: true });
-      }
-    };
-    overlayPanel.addEventListener('keydown', focusTrapHandler);
-  }
-
-  function unbindFocusTrap() {
-    if (overlayPanel && focusTrapHandler) {
-      overlayPanel.removeEventListener('keydown', focusTrapHandler);
-    }
-    focusTrapHandler = null;
-    focusableElements = [];
-  }
-
-  function attachOverlayKeydown() {
-    if (!overlay || overlayKeydownAttached) return;
-    overlay.addEventListener('keydown', handleOverlayKeydown);
-    overlayKeydownAttached = true;
-  }
-
-  function detachOverlayKeydown() {
-    if (!overlay || !overlayKeydownAttached) return;
-    overlay.removeEventListener('keydown', handleOverlayKeydown);
-    overlayKeydownAttached = false;
-  }
-
-  function updateStatus() {
-    if (!status || !cards.length) return;
-    const currentCard = cards[activeIndex];
-    const title = currentCard?.querySelector('[data-showcase-title]');
-    const titleText = title?.textContent?.trim();
-    status.textContent = `Элемент ${activeIndex + 1} из ${total}${titleText ? `: ${titleText}` : ''}. Нажмите на фото, чтобы открыть полноэкранный просмотр.`;
-  }
-
-  function setActiveCard(nextIndex, options = {}) {
-    if (!cards.length) return;
-    const { scroll = true, focus = false, announce = true, force = false } = options;
-    const clamped = Math.max(0, Math.min(cards.length - 1, nextIndex));
-    if (!force && clamped === activeIndex) {
-      if (announce) updateStatus();
+  const setControlLabels = () => {
+    if (disableNavigation) {
+      if (prev) prev.setAttribute('aria-label', 'Предыдущее фото недоступно');
+      if (next) next.setAttribute('aria-label', 'Следующее фото недоступно');
       return;
     }
-    cards.forEach((card, idx) => {
-      const isActive = idx === clamped;
-      card.setAttribute('aria-current', isActive ? 'true' : 'false');
-      card.dataset.active = isActive ? 'true' : 'false';
-    });
-    activeIndex = clamped;
-    if (scroll) {
-      cards[clamped].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    }
-    if (focus) {
-      cards[clamped].focus();
-    }
-    if (announce) {
-      updateStatus();
-    }
-  }
+    const prevItem = teamShowcase[clampIndex(activeIndex, -1, total)];
+    const nextItem = teamShowcase[clampIndex(activeIndex, 1, total)];
+    if (prev) prev.setAttribute('aria-label', `Предыдущее фото: ${formatLabel(prevItem)}`);
+    if (next) next.setAttribute('aria-label', `Следующее фото: ${formatLabel(nextItem)}`);
+  };
 
-  function moveBy(delta, options = {}) {
-    if (!cards.length) return;
-    const target = clampIndex(activeIndex, delta, cards.length);
-    setActiveCard(target, options);
-  }
+  const updateStatus = (item, announce = true) => {
+    if (!status || !announce) return;
+    const base = `Фото ${activeIndex + 1} из ${total}`;
+    const details = [];
+    if (item.title) details.push(item.title);
+    if (item.caption) details.push(item.caption);
+    let message = details.length ? `${base} — ${details.join('. ')}` : base;
+    if (!/[.!?]$/.test(message)) {
+      message += '.';
+    }
+    const hint = total > 1 ? ' Используйте стрелки на клавиатуре или кнопки рядом с галереей.' : '';
+    status.textContent = `${message}${hint}`;
+  };
 
-  function updateLightbox() {
-    const item = teamShowcase[lightboxIndex];
+  const updateFigure = (options = {}) => {
+    if (!total) return;
+    const item = teamShowcase[activeIndex];
     if (!item) return;
-    const picture = item.picture || { fallback: item.src };
-    const fallback = picture.fallback || picture.webp || picture.avif || item.src || '';
-    if (overlayImage) {
-      overlayImage.src = fallback;
-      overlayImage.alt = item.alt || item.title || 'Фотография из галереи';
-    }
-    if (overlayTitle) {
-      overlayTitle.textContent = item.title || '';
-    }
-    if (overlayCaption) {
-      overlayCaption.textContent = item.caption || '';
-    }
-    if (overlayCounter) {
-      overlayCounter.textContent = `${String(lightboxIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
-    }
-  }
-
-  function openLightbox(index, trigger) {
-    if (!overlay) return;
-    lightboxIndex = Math.max(0, Math.min(total - 1, index));
-    restoreFocusTo =
-      trigger instanceof HTMLElement
-        ? trigger
-        : document.activeElement instanceof HTMLElement
-          ? document.activeElement
-          : null;
-    updateLightbox();
-    if (overlay.getAttribute('aria-hidden') !== 'false') {
-      previousBodyOverflow = document.body.style.overflow;
-    }
-    document.body.style.overflow = 'hidden';
-    attachOverlayKeydown();
-    bindFocusTrap();
-    overlay.classList.remove('hidden');
-    overlay.classList.remove('pointer-events-none');
-    overlay.setAttribute('aria-hidden', 'false');
-    requestAnimationFrame(() => {
-      overlay.classList.add('opacity-100', 'pointer-events-auto');
-      if (closeControl) {
-        closeControl.focus({ preventScroll: true });
-      } else if (overlayPanel) {
-        overlayPanel.focus({ preventScroll: true });
+    if (pictureHost) {
+      pictureHost.innerHTML = '';
+      const sources = item.picture || { fallback: item.src };
+      if (sources?.avif) {
+        const source = document.createElement('source');
+        source.srcset = sources.avif;
+        source.type = 'image/avif';
+        pictureHost.appendChild(source);
       }
-    });
-    setActiveCard(lightboxIndex, { scroll: true, announce: false, force: true });
-  }
-
-  function closeLightbox() {
-    if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
-    overlay.setAttribute('aria-hidden', 'true');
-    overlay.classList.remove('opacity-100', 'pointer-events-auto');
-    overlay.classList.add('pointer-events-none');
-    detachOverlayKeydown();
-    unbindFocusTrap();
-    document.body.style.overflow = previousBodyOverflow;
-    previousBodyOverflow = '';
-    const handleTransitionEnd = (event) => {
-      if (event.target !== overlay) return;
-      overlay.classList.add('hidden');
-      overlay.removeEventListener('transitionend', handleTransitionEnd);
-    };
-    overlay.addEventListener('transitionend', handleTransitionEnd);
-    if (restoreFocusTo && typeof restoreFocusTo.focus === 'function') {
-      restoreFocusTo.focus({ preventScroll: true });
+      if (sources?.webp) {
+        const source = document.createElement('source');
+        source.srcset = sources.webp;
+        source.type = 'image/webp';
+        pictureHost.appendChild(source);
+      }
+      const img = document.createElement('img');
+      const fallback = sources?.fallback || sources?.webp || sources?.avif || item.src || '';
+      img.src = fallback;
+      img.alt = item.alt || item.title || 'Фотография из галереи';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.className =
+        'h-full w-full object-cover transition duration-300 group-focus-visible:scale-[1.01] group-hover:scale-[1.01]';
+      img.setAttribute('data-showcase-img', '');
+      pictureHost.appendChild(img);
     }
+    if (titleEl) {
+      titleEl.textContent = item.title || item.tag || 'Без названия';
+    }
+    if (captionEl) {
+      captionEl.textContent = item.caption || '';
+    }
+    if (counterEl) {
+      counterEl.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+    }
+    if (tagEl) {
+      if (item.tag) {
+        tagEl.textContent = item.tag;
+        tagEl.classList.remove('hidden');
+        tagEl.classList.add('inline-flex');
+      } else {
+        tagEl.textContent = '';
+        tagEl.classList.add('hidden');
+        tagEl.classList.remove('inline-flex');
+      }
+    }
+    figure.setAttribute('data-active-index', String(activeIndex));
+    figure.setAttribute('aria-label', item.title ? `Фото: ${item.title}` : 'Фото из галереи');
+    updateStatus(item, options.announce !== false);
+    setControlLabels();
+  };
+
+  updateNavigationState();
+
+  if (!total) {
+    if (status) status.textContent = 'Галерея пока пуста.';
+    if (titleEl) titleEl.textContent = '';
+    if (captionEl) captionEl.textContent = '';
+    if (counterEl) counterEl.textContent = '';
+    if (tagEl) {
+      tagEl.textContent = '';
+      tagEl.classList.add('hidden');
+      tagEl.classList.remove('inline-flex');
+    }
+    if (pictureHost) {
+      pictureHost.innerHTML = '';
+    }
+    setControlLabels();
+    return;
   }
 
-  function step(delta) {
-    lightboxIndex = (lightboxIndex + delta + total) % total;
-    updateLightbox();
-    setActiveCard(lightboxIndex, { scroll: true, announce: false, force: true });
+  updateFigure();
+
+  const setActive = (nextIndex, options = {}) => {
+    const clamped = Math.max(0, Math.min(total - 1, nextIndex));
+    if (clamped === activeIndex && !options.force) {
+      updateStatus(teamShowcase[activeIndex], options.announce !== false);
+      return;
+    }
+    activeIndex = clamped;
+    updateFigure(options);
+  };
+
+  const moveBy = (delta, options = {}) => {
+    if (total <= 1) return;
+    activeIndex = clampIndex(activeIndex, delta, total);
+    updateFigure(options);
+  };
+
+  if (prev && !disableNavigation) {
+    prev.addEventListener('click', () => moveBy(-1));
+  }
+  if (next && !disableNavigation) {
+    next.addEventListener('click', () => moveBy(1));
   }
 
-  function handleKeydownNavigation(event) {
-    const targetCard = event.currentTarget.closest('.showcase-card');
-    if (!targetCard) return;
-    const current = cards.indexOf(targetCard);
-    if (current === -1) return;
+  const handleKeydown = (event) => {
+    if (!total) return;
     switch (event.key) {
-      case 'ArrowRight':
-        event.preventDefault();
-        moveBy(1, { focus: true });
-        return;
       case 'ArrowLeft':
         event.preventDefault();
-        moveBy(-1, { focus: true });
-        return;
+        moveBy(-1);
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        moveBy(1);
+        break;
       case 'Home':
         event.preventDefault();
-        setActiveCard(0, { focus: true });
-        return;
+        setActive(0);
+        break;
       case 'End':
         event.preventDefault();
-        setActiveCard(cards.length - 1, { focus: true });
-        return;
-      case 'Enter':
-      case ' ':
-        event.preventDefault();
-        openLightbox(current, event.currentTarget);
-        return;
+        setActive(total - 1);
+        break;
       default:
         break;
     }
-  }
+  };
 
-  function handleOverlayKeydown(event) {
-    if (!overlay || overlay.getAttribute('aria-hidden') === 'true') return;
-    if (!overlay.matches(':focus-within')) return;
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      closeLightbox();
-    } else if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      step(-1);
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      step(1);
-    }
-  }
-
-  if (!overlay.dataset.bound) {
-    prevControl?.addEventListener('click', () => step(-1));
-    nextControl?.addEventListener('click', () => step(1));
-    closeControl?.addEventListener('click', () => closeLightbox());
-    overlay.addEventListener('click', (event) => {
-      if (event.target === overlay) closeLightbox();
-    });
-    overlayImage?.addEventListener('click', () => step(1));
-    overlay.dataset.bound = 'true';
-  }
-
-  teamShowcase.forEach((item, index) => {
-    const card = document.createElement('article');
-    const titleId = `${item.id || `showcase-${index + 1}`}-title`;
-    const captionId = `${item.id || `showcase-${index + 1}`}-caption`;
-    card.className =
-      'showcase-card group flex min-w-[260px] max-w-xs flex-col overflow-hidden rounded-2xl border border-black/10 bg-white/80 shadow-soft backdrop-blur outline-none transition hover:-translate-y-0.5 hover:shadow-soft-md focus-visible:ring-2 focus-visible:ring-black/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
-    card.setAttribute('role', 'listitem');
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-labelledby', titleId);
-    card.setAttribute('aria-describedby', captionId);
-    card.setAttribute('aria-setsize', total);
-    card.setAttribute('aria-posinset', index + 1);
-    card.dataset.index = String(index);
-    const picture = item.picture || { fallback: item.src };
-    card.innerHTML = `
-      <button type="button" data-showcase-open class="group/image relative block aspect-[4/3] w-full overflow-hidden rounded-2xl bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
-        <picture>
-          ${picture.avif ? `<source srcset="${picture.avif}" type="image/avif" />` : ''}
-          ${picture.webp ? `<source srcset="${picture.webp}" type="image/webp" />` : ''}
-          <img src="${picture.fallback || picture.webp || picture.avif || ''}" alt="${item.alt || ''}" class="h-full w-full object-cover transition duration-300 group-hover/image:scale-[1.02]" loading="lazy" decoding="async" />
-        </picture>
-        ${item.tag ? `<span class="absolute left-3 top-3 inline-flex rounded-full bg-black/80 px-3 py-1 text-xs font-medium text-white/90">${item.tag}</span>` : ''}
-        <span aria-hidden class="pointer-events-none absolute inset-0 border border-black/10 opacity-0 transition duration-300 group-hover/image:opacity-100"></span>
-      </button>
-      <div class="flex flex-1 flex-col p-4">
-        <div id="${titleId}" data-showcase-title class="text-sm font-semibold text-ink-950">${item.title}</div>
-        <p id="${captionId}" class="mt-2 text-sm text-ink-700">${item.caption}</p>
-        <div class="mt-4 flex items-center justify-between text-xs text-ink-500">
-          <span>Нажмите на фото</span>
-          <span class="inline-flex items-center gap-1 text-ink-700">
-            <span class="h-3 w-3 text-current">${renderIcon('chevron-right')}</span>
-            <span class="translate-y-[1px]">Листайте</span>
-          </span>
-        </div>
-      </div>
-    `;
-    card.addEventListener('focus', () => setActiveCard(index, { announce: false, force: true }));
-    card.addEventListener('click', () => setActiveCard(index, { announce: false, force: true }));
-    card.addEventListener('keydown', handleKeydownNavigation);
-    const openButton = card.querySelector('[data-showcase-open]');
-    openButton?.addEventListener('focus', () =>
-      setActiveCard(index, { announce: false, force: true }),
-    );
-    openButton?.addEventListener('click', (event) => {
-      event.stopPropagation();
-      setActiveCard(index, { announce: false, force: true });
-      openLightbox(index, event.currentTarget);
-    });
-    rail.appendChild(card);
-    cards.push(card);
-  });
-
-  setActiveCard(activeIndex, { scroll: false, announce: true, force: true });
-
-  const prev = document.querySelector('[data-showcase-prev]');
-  const next = document.querySelector('[data-showcase-next]');
-  prev?.addEventListener('click', () => moveBy(-1, { focus: true }));
-  next?.addEventListener('click', () => moveBy(1, { focus: true }));
-
-  rail.addEventListener(
-    'scroll',
-    () => {
-      if (!cards.length) return;
-      cancelAnimationFrame(scrollRaf);
-      scrollRaf = requestAnimationFrame(() => {
-        const center = rail.scrollLeft + rail.clientWidth / 2;
-        let closestIndex = activeIndex;
-        let minDistance = Infinity;
-        cards.forEach((card, idx) => {
-          const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-          const distance = Math.abs(cardCenter - center);
-          if (distance < minDistance) {
-            minDistance = distance;
-            closestIndex = idx;
-          }
-        });
-        setActiveCard(closestIndex, { scroll: false, announce: false, force: true });
-      });
-    },
-    { passive: true },
-  );
+  figure.addEventListener('keydown', handleKeydown);
 }
 
 function renderApplyLocations() {
@@ -1211,6 +1026,67 @@ function renderApplyLocations() {
   if (applyLocations.length > 0) {
     setActive(activeIndex);
   }
+}
+
+function renderFaq() {
+  const root = document.getElementById('faqList');
+  if (!root) return;
+  root.innerHTML = '';
+  if (!faqItems.length) {
+    root.innerHTML =
+      '<p class="rounded-2xl border border-black/10 bg-white/90 p-4 text-sm text-ink-700 shadow-sm">Ответы появятся позже — вы также можете задать вопрос в поле комментария формы.</p>';
+    return;
+  }
+  faqItems.forEach((item, index) => {
+    const article = document.createElement('article');
+    article.className = 'overflow-hidden rounded-2xl border border-black/10 bg-white shadow-sm';
+    article.setAttribute('role', 'listitem');
+    const controlId = `faq-control-${index + 1}`;
+    const panelId = `faq-panel-${index + 1}`;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.id = controlId;
+    button.className =
+      'flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-semibold text-ink-950 transition hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
+    button.setAttribute('aria-controls', panelId);
+    const expanded = index === 0;
+    button.setAttribute('aria-expanded', String(expanded));
+    button.innerHTML = `
+      <span>${item.question}</span>
+      <span aria-hidden class="inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border border-black/10 bg-white text-ink-700 transition-transform duration-200 transform" data-faq-icon>${renderIcon('chevron-down')}</span>
+    `;
+    const panel = document.createElement('div');
+    panel.id = panelId;
+    panel.className = 'faq-answer overflow-hidden px-4 text-sm text-ink-800 transition-[max-height] duration-200 ease-out';
+    panel.setAttribute('role', 'region');
+    panel.setAttribute('aria-labelledby', controlId);
+    panel.setAttribute('aria-hidden', String(!expanded));
+    const panelInner = document.createElement('div');
+    panelInner.className = 'pb-4 leading-relaxed';
+    panelInner.innerHTML = item.answer;
+    panel.appendChild(panelInner);
+    article.appendChild(button);
+    article.appendChild(panel);
+    root.appendChild(article);
+    const icon = article.querySelector('[data-faq-icon]');
+    if (icon && expanded) {
+      icon.classList.add('rotate-180');
+    }
+    requestAnimationFrame(() => {
+      panel.style.maxHeight = expanded ? `${panel.scrollHeight}px` : '0px';
+    });
+    button.addEventListener('click', () => {
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+      const nextState = !isExpanded;
+      button.setAttribute('aria-expanded', String(nextState));
+      panel.setAttribute('aria-hidden', String(!nextState));
+      const targetHeight = panel.scrollHeight;
+      panel.style.maxHeight = nextState ? `${targetHeight}px` : '0px';
+      if (icon) {
+        icon.classList.toggle('rotate-180', nextState);
+      }
+    });
+  });
 }
 
 function renderHelpfulLinks() {
@@ -1464,7 +1340,7 @@ function renderProgram() {
   };
   const head = document.createElement('div');
   head.className =
-    'flex flex-col gap-4 border-b border-black/10 bg-white/60 p-4 md:flex-row md:items-center md:justify-between';
+    'flex flex-col gap-4 rounded-t-3xl border-b border-black/10 bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between';
   head.innerHTML = `
     <div class="flex items-center gap-3">
       <span aria-hidden class="grid h-11 w-11 place-items-center rounded-xl bg-black/5 text-ink-800">${renderIcon('calendar')}</span>
@@ -1473,12 +1349,12 @@ function renderProgram() {
         <div class="text-sm text-ink-800">Выберите формат расписания под ваше устройство</div>
       </div>
     </div>
-    <div class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 p-1 shadow-sm">
-      <button type="button" data-view="full" class="group/view flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-ink-800 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
+    <div class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white p-1 shadow-sm">
+      <button type="button" data-view="full" class="group/view flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-ink-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
         <span class="h-4 w-4 text-current">${renderIcon('view-detailed')}</span>
         <span>Подробно</span>
       </button>
-      <button type="button" data-view="compact" class="group/view flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-ink-800 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
+      <button type="button" data-view="compact" class="group/view flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-ink-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
         <span class="h-4 w-4 text-current">${renderIcon('view-compact')}</span>
         <span>Кратко</span>
       </button>
@@ -1488,13 +1364,18 @@ function renderProgram() {
   const updateViewButtons = (active) => {
     head.querySelectorAll('button[data-view]').forEach((btn) => {
       const isActive = btn.getAttribute('data-view') === active;
-      btn.classList.toggle('bg-black', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+      btn.classList.toggle('bg-ink-950', isActive);
       btn.classList.toggle('text-white', isActive);
+      btn.classList.toggle('border-ink-900', isActive);
       btn.classList.toggle('shadow-soft-md', isActive);
+      btn.classList.toggle('bg-white', !isActive);
+      btn.classList.toggle('text-ink-700', !isActive);
+      btn.classList.toggle('border-black/10', !isActive);
     });
   };
   const tabsWrap = document.createElement('div');
-  tabsWrap.className = 'relative border-b border-black/10 bg-white/80 backdrop-blur md:sticky md:top-16';
+  tabsWrap.className = 'relative border-b border-black/10 bg-white md:sticky md:top-16 md:shadow-sm';
   tabsWrap.innerHTML =
     '<div class="overflow-x-auto px-3 py-2"><div class="flex items-stretch gap-3" id="dayTabs"></div></div>';
   root.appendChild(tabsWrap);
@@ -1530,7 +1411,7 @@ function renderProgram() {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className =
-        'group relative flex min-w-[220px] flex-col gap-3 rounded-2xl border border-black/10 bg-white/80 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30';
+        'group relative flex min-w-[220px] flex-col gap-3 rounded-2xl border border-black/10 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30';
       if (isActive) {
         btn.classList.add('border-black/30', 'shadow-soft-md');
       }
@@ -1571,7 +1452,7 @@ function renderProgram() {
       const chevron = expanded ? renderIcon('chevron-up') : renderIcon('chevron-down');
       const displayDate = formatShortDateRu(new Date(COURSE_START.getTime() + i * 86400000));
       const buttonClasses =
-        'group flex w-full flex-col gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-left transition hover:bg-white md:flex-row md:items-center md:justify-between' +
+        'group flex w-full flex-col gap-3 rounded-2xl border border-black/10 bg-white p-4 text-left transition hover:bg-black/5 md:flex-row md:items-center md:justify-between' +
         (expanded ? ' border-black/20 shadow-soft-md' : '');
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -1754,9 +1635,6 @@ function initForm() {
   const form = document.getElementById('applyForm');
   const submitBtn = document.getElementById('submitBtn');
   const feedbackHost = document.getElementById('applyFeedback');
-  const assistantInput = document.getElementById('assistantComment');
-  const assistantBtn = document.getElementById('assistantSuggest');
-  const assistantOutput = document.getElementById('assistantOutput');
   const storageKey = 'applyForm';
   let feedbackTimer = null;
   if (!(form instanceof HTMLFormElement) || !(submitBtn instanceof HTMLButtonElement)) {
@@ -1825,34 +1703,6 @@ function initForm() {
       card?.setAttribute('data-state', 'visible');
     });
     feedbackTimer = window.setTimeout(hideFeedback, FEEDBACK_HIDE_DELAY);
-  }
-  function renderAssistant(result) {
-    if (!assistantOutput) return;
-    if (!result) {
-      assistantOutput.innerHTML =
-        '<p class="rounded-xl bg-white p-3 text-ink-800 shadow-soft">Помощник временно недоступен. Попробуйте позже.</p>';
-      return;
-    }
-    const pieces = [];
-    if (result.message) {
-      pieces.push(`<p class="text-ink-800">${result.message}</p>`);
-    }
-    if (Array.isArray(result.modules) && result.modules.length > 0) {
-      const list = result.modules
-        .map(
-          (item) => `
-            <li class="rounded-xl bg-white p-3 shadow-soft" role="listitem">
-              <p class="font-medium text-ink-950">${item.title}</p>
-              <p class="mt-1 text-sm text-ink-800">${item.description}</p>
-            </li>
-          `,
-        )
-        .join('');
-      pieces.push(`<ul class="space-y-2" role="list">${list}</ul>`);
-    }
-    assistantOutput.innerHTML =
-      pieces.join('') ||
-      '<p class="text-ink-700">Поделитесь интересами, чтобы получить персональные рекомендации.</p>';
   }
   function showError(name, msg) {
     const err = form.querySelector(`[data-err="${name}"]`);
@@ -1932,30 +1782,6 @@ function initForm() {
     }
     validate(true);
   });
-  if (assistantBtn) {
-    assistantBtn.addEventListener('click', () => {
-      if (assistantOutput) {
-        assistantOutput.innerHTML =
-          '<p class="text-ink-700">Ищем подходящие модули…</p>';
-      }
-      assistantBtn.disabled = true;
-      assistantBtn.classList.add('opacity-60', 'cursor-wait');
-      try {
-        const commentSource = assistantInput?.value.trim() || form.elements.comment.value.trim();
-        const result = getAssistantRecommendations(commentSource);
-        renderAssistant(result);
-      } catch (error) {
-        console.warn('Не удалось получить рекомендации помощника', error);
-        renderAssistant({
-          message: 'Помощник временно недоступен. Попробуйте ещё раз позже.',
-          modules: [],
-        });
-      } finally {
-        assistantBtn.disabled = false;
-        assistantBtn.classList.remove('opacity-60', 'cursor-wait');
-      }
-    });
-  }
   validate(true);
 }
 function initObservers() {
@@ -2144,10 +1970,9 @@ function renderLead() {
     el.textContent = value;
   };
   setText('leadPrice', lead.price);
-  const totalHours = Math.round(calculateProgramHours(modules));
   const durationEl = document.getElementById('leadDuration');
   if (durationEl) {
-    durationEl.textContent = `${totalHours} часов · ${lead.schedule}`;
+    durationEl.textContent = `${totalProgramHours} часов · ${lead.schedule}`;
   } else {
     console.warn('Элемент #leadDuration не найден, длительность курса не обновлена.');
   }
@@ -2174,6 +1999,7 @@ renderProgram();
 renderTeam();
 renderTeamShowcase();
 renderApplyLocations();
+renderFaq();
 renderHelpfulLinks();
 initCountdown();
 initForm();

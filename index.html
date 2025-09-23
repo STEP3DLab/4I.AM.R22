@@ -205,8 +205,8 @@
       <div class="layout">
         <h2 id="section-program-heading" class="reveal section-heading">Календарно-тематический план</h2>
         <p class="reveal section-subheading">48 часов. Теория ровно столько, сколько нужно для практики.</p>
-        <div id="startCalendar" class="mt-8 mb-6 overflow-hidden rounded-3xl border border-black/10 bg-white/80 shadow-soft"></div>
-        <div id="programRoot" class="relative rounded-3xl border border-black/10 bg-white/85 shadow-soft"></div>
+        <div id="startCalendar" class="mt-8 mb-6 overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft"></div>
+        <div id="programRoot" class="relative rounded-3xl border border-black/10 bg-white shadow-soft"></div>
         <div class="mt-6 grid gap-4 md:grid-cols-3">
           <div class="rounded-3xl border border-black/10 bg-white/80 p-5 shadow-soft">
             <div class="text-xs uppercase tracking-[.2em] text-ink-400">Стоимость</div>
@@ -248,9 +248,9 @@
       <div class="layout">
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h3 id="section-showcase-heading" class="text-2xl font-semibold tracking-tight md:text-3xl">Лица и проекты</h3>
+            <h3 id="section-showcase-heading" class="text-2xl font-semibold tracking-tight md:text-3xl">Фотогалерея</h3>
             <p class="mt-1 max-w-2xl text-sm text-ink-700">
-              Знакомьтесь с экспертами и кейсами направления «Аддитивные технологии» — листайте фотографии и подписи, адаптированные для всех устройств.
+              Листайте истории экспертов и проектов направления «Аддитивные технологии» — на экране всегда одно фото с развернутой подписью.
             </p>
           </div>
           <div class="flex gap-2">
@@ -258,7 +258,8 @@
               type="button"
               aria-label="Предыдущий слайд"
               data-showcase-prev
-              class="grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white/80 text-ink-950 shadow-sm transition hover:bg-white"
+              aria-controls="teamShowcaseFigure"
+              class="grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white text-ink-950 shadow-sm transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
             >
               ‹
             </button>
@@ -266,20 +267,46 @@
               type="button"
               aria-label="Следующий слайд"
               data-showcase-next
-              class="grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white/80 text-ink-950 shadow-sm transition hover:bg-white"
+              aria-controls="teamShowcaseFigure"
+              class="grid h-10 w-10 place-items-center rounded-full border border-black/10 bg-white text-ink-950 shadow-sm transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
             >
               ›
             </button>
           </div>
         </div>
-        <div class="mt-6 overflow-hidden">
-          <div
-            id="teamShowcaseRail"
-            class="flex gap-4 overflow-x-auto scroll-smooth pb-4"
-            role="list"
-            aria-label="Фотогалерея команды"
-          ></div>
-          <p id="teamShowcaseStatus" class="sr-only" aria-live="polite"></p>
+        <div class="mt-6 flex flex-col gap-3">
+          <figure
+            id="teamShowcaseFigure"
+            class="group relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft"
+            role="group"
+            aria-roledescription="галерея"
+            tabindex="0"
+          >
+            <div class="relative aspect-[4/3] overflow-hidden">
+              <picture data-showcase-picture class="block h-full w-full">
+                <img
+                  data-showcase-img
+                  alt=""
+                  class="h-full w-full object-cover transition duration-300 group-focus-visible:scale-[1.01] group-hover:scale-[1.01]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+              <span
+                data-showcase-tag
+                class="absolute left-4 top-4 hidden items-center rounded-full bg-black/75 px-3 py-1 text-xs font-medium text-white shadow-sm"
+              ></span>
+              <span
+                data-showcase-counter
+                class="absolute right-4 top-4 inline-flex items-center rounded-full bg-black/75 px-3 py-1 text-xs font-medium text-white shadow-sm"
+              ></span>
+            </div>
+            <figcaption class="border-t border-black/10 bg-white/95 px-5 py-4">
+              <div class="text-sm font-semibold text-ink-950" data-showcase-title></div>
+              <p class="mt-1 text-sm text-ink-700" data-showcase-caption></p>
+            </figcaption>
+          </figure>
+          <p id="teamShowcaseStatus" class="text-xs text-ink-600" aria-live="polite"></p>
         </div>
       </div>
     </section>
@@ -357,36 +384,19 @@
             <div id="applyMap" class="min-h-[18rem]"></div>
           </div>
           <section
-            id="assistantPanel"
-            class="mt-6 rounded-3xl border border-dashed border-black/10 bg-black/5 p-4 text-sm md:p-5"
-            aria-live="polite"
+            id="faqPanel"
+            class="mt-6 rounded-3xl border border-black/10 bg-white/90 p-4 text-sm md:p-5"
+            aria-labelledby="faqPanelHeading"
           >
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div>
-                <h3 class="text-base font-semibold">AI-помощник</h3>
+                <h3 id="faqPanelHeading" class="text-base font-semibold">Часто задаваемые вопросы</h3>
                 <p class="text-ink-800">
-                  Опишите задачи или интересы — помощник предложит модули курса.
+                  Раскрывайте ответы, чтобы узнать про формат, расписание и организационные детали интенсива.
                 </p>
               </div>
-              <button
-                type="button"
-                id="assistantSuggest"
-                class="mt-2 inline-flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-medium text-ink-950 shadow-soft transition hover:bg-black hover:text-white md:mt-0"
-              >
-                <span aria-hidden="true">🤖</span>
-                Подобрать модули
-              </button>
             </div>
-            <label class="mt-3 flex flex-col gap-2">
-              <span class="text-xs uppercase tracking-wide text-ink-700">Комментарий для помощника</span>
-              <textarea
-                id="assistantComment"
-                rows="3"
-                class="rounded-2xl border border-black/10 bg-white px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-black/30"
-                placeholder="Например: интересуюсь 3D-сканированием и медицинскими кейсами"
-              ></textarea>
-            </label>
-            <div id="assistantOutput" class="mt-4 space-y-3 text-sm"></div>
+            <div id="faqList" class="mt-4 space-y-3" role="list"></div>
           </section>
         </form>
       <div class="mt-4 space-y-2 text-xs opacity-70">
