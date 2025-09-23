@@ -3,6 +3,7 @@ import {
   activityTypeFromTitle,
   calculateProgramHours,
   clampIndex,
+  formatLongDateRu,
   formatShortDateRu,
   getBlocksSummary,
   getCountdownStatus,
@@ -14,6 +15,11 @@ describe('course utils', () => {
     const date = new Date('2025-10-20T00:00:00Z');
     expect(formatShortDateRu(date)).toMatch(/\d{2}\s[а-я]+/i);
     expect(formatShortDateRu(date).includes('.')).toBe(false);
+  });
+
+  it('formats long Russian dates without year abbreviation', () => {
+    const date = new Date('2025-10-20T09:00:00+03:00');
+    expect(formatLongDateRu(date)).toBe('20 октября 2025');
   });
 
   it('parses hour strings with decimal commas', () => {

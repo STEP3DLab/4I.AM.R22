@@ -2,11 +2,15 @@ import {
   activityTypeFromTitle,
   calculateProgramHours,
   clampIndex,
+  formatLongDateRu,
   formatShortDateRu,
   getBlocksSummary,
   getCountdownStatus,
 } from './utils/course-utils.js';
 import { getAssistantRecommendations } from './utils/assistant.js';
+import { COURSE_START, COURSE_START_ISO } from './data/course.js';
+
+const courseStartLabel = formatLongDateRu(COURSE_START);
 
 const benefits = [
   'Разработка КД и 3D-моделей по существующим деталям',
@@ -315,6 +319,7 @@ const lead = {
   price: '68\u202f000 ₽',
   schedule: '1 неделя, пн-сб 09:00—18:00',
   seats: '6–12 человек в группе',
+  startLabel: courseStartLabel,
   venue:
     'Москва, ул. Беговая, д. 12 (лаборатория промдизайна); итоговое занятие (суббота) — Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)',
 };
@@ -359,9 +364,18 @@ const helpfulLinks = [
 const GALLERY_FOLDER = 'images/gallery';
 const APP_VERSION = (import.meta.env && import.meta.env.VITE_APP_VERSION) || 'dev';
 const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json?v=${encodeURIComponent(APP_VERSION)}`;
-const COURSE_START = new Date('2025-10-20T09:00:00+03:00');
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
+
+function renderHeroStart() {
+  const heroStartEl = document.getElementById('heroStartDate');
+  if (!heroStartEl) {
+    console.warn('Элемент #heroStartDate не найден, дата старта в герое не обновлена.');
+    return;
+  }
+  heroStartEl.textContent = courseStartLabel;
+  heroStartEl.setAttribute('data-start', COURSE_START_ISO);
+}
 function createPill(text, tone = 'neutral') {
   const tones = {
     neutral: 'border-black/10 bg-white/80 text-black/70 shadow-soft',
@@ -1799,6 +1813,8 @@ function initCountdown() {
   const el = document.getElementById('countdown');
   if (!el) return;
 
+  el.setAttribute('data-start', COURSE_START_ISO);
+
   let lastContent = '';
   let liveMode = '';
   let timerId = null;
@@ -2264,10 +2280,18 @@ function renderLead() {
   } else {
     console.warn('Элемент #leadDuration не найден, длительность курса не обновлена.');
   }
+  const startEl = document.getElementById('leadStart');
+  if (startEl) {
+    startEl.textContent = `Старт: ${lead.startLabel}`;
+    startEl.setAttribute('data-start', COURSE_START_ISO);
+  } else {
+    console.warn('Элемент #leadStart не найден, дата старта лида не обновлена.');
+  }
   setText('leadSeats', lead.seats);
   setText('leadPriceInline', lead.price);
   setText('leadPriceMobile', lead.price);
 }
+renderHeroStart();
 renderBenefits();
 renderStats();
 loadGallery()

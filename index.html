@@ -164,7 +164,15 @@
             <div
               class="inline-flex flex-wrap items-center gap-3 rounded-full border border-black/10 bg-white/80 px-4 py-2 text-sm shadow-soft"
             >
-              <span>Старт: <span class="font-semibold">25 октября 2025</span></span>
+              <span>
+                Старт:
+                <span
+                  class="font-semibold"
+                  id="heroStartDate"
+                  data-start="2025-10-20T09:00:00+03:00"
+                  >20 октября 2025</span
+                >
+              </span>
               <span class="opacity-70"
                 >Осталось: <span class="font-medium" id="countdown" aria-live="off">—</span></span
               >
@@ -225,6 +233,13 @@
           <div class="rounded-3xl border border-black/10 bg-white/80 p-5 shadow-soft">
             <div class="text-xs uppercase tracking-[.2em] text-black/40">Сроки и режим</div>
             <div class="mt-2 font-medium" id="leadDuration"></div>
+            <div
+              class="mt-1 text-sm text-black/60"
+              id="leadStart"
+              data-start="2025-10-20T09:00:00+03:00"
+            >
+              Старт: 20 октября 2025
+            </div>
           </div>
           <div class="rounded-3xl border border-black/10 bg-white/80 p-5 shadow-soft">
             <div class="text-xs uppercase tracking-[.2em] text-black/40">Группа</div>

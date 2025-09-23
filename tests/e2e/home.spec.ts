@@ -23,4 +23,36 @@ test.describe('Landing page smoke', () => {
     await expect(page.getByText(/Проверьте формат e-mail/i)).toBeVisible();
     await expect(page.locator('form#applyForm button[type="submit"]')).toBeDisabled();
   });
+
+  test('hero start date matches countdown origin', async ({ page }) => {
+    await page.goto('/');
+    const heroText = await page.locator('#heroStartDate').textContent();
+    const countdownIso = await page.locator('#countdown').getAttribute('data-start');
+    expect(countdownIso).toBeTruthy();
+
+    const formattedFromCountdown = await page.evaluate((iso) => {
+      if (!iso) return null;
+      const date = new Date(iso);
+      if (Number.isNaN(date.valueOf())) return null;
+      const formatter = new Intl.DateTimeFormat('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+      const cleaned = formatter
+        .formatToParts(date)
+        .filter((part) => part.type !== 'literal' || part.value.trim() !== 'г.');
+      return cleaned
+        .map((part) => part.value)
+        .join('')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }, countdownIso);
+
+    expect(formattedFromCountdown).not.toBeNull();
+    expect(heroText?.trim()).toBe(formattedFromCountdown ?? undefined);
+
+    const { COURSE_START_ISO } = await import('../../src/data/course.js');
+    expect(countdownIso).toBe(COURSE_START_ISO);
+  });
 });
