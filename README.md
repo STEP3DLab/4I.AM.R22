@@ -5,6 +5,7 @@
 ## Стек
 
 - **Клиент**: статические HTML/CSS, Tailwind CDN, модульный JS (`src/main.js`).
+- **Сборка**: Vite (ESM-бандл JS + статический CSS).
 - **Инфраструктура**: GitHub Pages, GitHub Actions, Lighthouse CI.
 - **Тестирование**: Vitest (unit), Playwright (e2e).
 - **Код-стиль**: ESLint, Prettier, EditorConfig.
@@ -18,13 +19,13 @@ npm install
 ## Локальная разработка
 
 ```bash
-npm run dev            # http://localhost:8080 (http-server)
+npm run dev            # http://localhost:5173 (Vite dev server)
 ```
 
 ## Сборка
 
 ```bash
-npm run build          # dist/ + sitemap.xml
+npm run build          # Vite build + копирование статических ресурсов в dist/
 ```
 
 ## Тестирование
@@ -33,7 +34,7 @@ npm run build          # dist/ + sitemap.xml
 npm run lint           # проверка ESLint
 npm run format:check   # проверка форматирования Prettier
 npm test               # unit-тесты Vitest
-npm run test:e2e       # e2e Playwright (поднимает http-server)
+npm run test:e2e       # e2e Playwright (собранный бандл через Vite preview)
 ```
 
 ## Качество
@@ -54,7 +55,7 @@ npm run deploy         # публикация содержимого dist/ че�
 
 ## Lighthouse CI
 
-Запуск из Actions: используйте workflow **Lighthouse CI** (`.github/workflows/lhci.yml`). Он собирает проект, поднимает локальный http-server и сохраняет отчёты в артефактах.
+Запуск из Actions: используйте workflow **Lighthouse CI** (`.github/workflows/lhci.yml`). Он собирает проект, поднимает Vite preview и сохраняет отчёты в артефактах.
 
 ## SEO
 

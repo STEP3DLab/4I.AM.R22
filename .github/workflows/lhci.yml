@@ -27,9 +27,9 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Start static server
+      - name: Start preview server
         run: |
-          npx http-server dist -p 4173 -s &
+          npm run preview &
           echo $! > server.pid
           sleep 5
 
