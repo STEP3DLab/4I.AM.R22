@@ -1,6 +1,7 @@
 import { mkdir, rm, stat, readdir, copyFile } from 'node:fs/promises';
 import path from 'node:path';
 import { generateSitemap } from './generate-sitemap.mjs';
+import { prebuildHtml } from './prebuild-html.mjs';
 
 const rootDir = process.cwd();
 const distDir = path.join(rootDir, 'dist');
@@ -62,6 +63,7 @@ async function build() {
   for (const asset of assetsToCopy) {
     await copyIfExists(asset);
   }
+  await prebuildHtml({ input: 'index.html', output: path.join('dist', 'index.html') });
   console.info('[build] static assets prepared in dist');
 }
 
