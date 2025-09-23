@@ -1285,24 +1285,66 @@ async function loadGallery() {
     return validItems;
   } catch (err) {
     console.error('Ошибка чтения галереи:', err);
-    return [];
+    throw err;
   }
 }
-function initCarousel(gallery) {
+function initCarousel(payload) {
   const root = $('#carousel');
   if (!root) return;
+  const gallery = Array.isArray(payload)
+    ? payload
+    : Array.isArray(payload?.gallery)
+      ? payload.gallery
+      : [];
+  const status = Array.isArray(payload) ? 'success' : payload?.status || 'success';
+  const isError = status === 'error';
+  const linkHref = 'https://github.com/step3dlab/4I.AM.R22/tree/main/images/gallery';
+  root.innerHTML = '';
+  root.setAttribute('aria-busy', 'false');
+  const renderFallback = (type) => {
+    const meta =
+      type === 'error'
+        ? {
+            icon: '⚠️',
+            title: 'Не удалось загрузить галерею',
+            description:
+              'Проверьте подключение и попробуйте снова. Можно добавить статичные фото курса, чтобы посетители увидели содержание без ожидания.',
+            cta: 'Добавить медиа',
+          }
+        : {
+            icon: '🗂️',
+            title: 'Галерея пока пуста',
+            description:
+              'Добавьте изображения в папку images/gallery — после обновления страницы они появятся здесь автоматически.',
+            cta: 'Открыть папку курса',
+          };
+    const fallback = document.createElement('div');
+    fallback.className = 'carousel-fallback';
+    fallback.setAttribute('role', 'status');
+    fallback.setAttribute('aria-live', 'polite');
+    fallback.innerHTML = `
+      <div class="carousel-fallback__icon" aria-hidden="true">${meta.icon}</div>
+      <div class="carousel-fallback__title">${meta.title}</div>
+      <p class="carousel-fallback__description">${meta.description}</p>
+      <a class="carousel-fallback__cta" href="${linkHref}" target="_blank" rel="noreferrer">${meta.cta}</a>
+      <img class="carousel-fallback__image" src="images/gallery/printing.webp" alt="Превью интенсива по реверсивному инжинирингу" loading="lazy" decoding="async" />
+    `;
+    root.appendChild(fallback);
+    root.setAttribute('data-state', type);
+  };
+  if (isError) {
+    renderFallback('error');
+    return;
+  }
+  if (!gallery?.length) {
+    renderFallback('empty');
+    return;
+  }
+  root.setAttribute('data-state', 'ready');
   let idx = 0,
     zoom = 1,
     origin = '50% 50%',
     touchStartX = null;
-  if (!gallery?.length) {
-    const empty = document.createElement('div');
-    empty.className =
-      'flex h-full w-full items-center justify-center rounded-2xl bg-white/60 text-center text-sm text-black/60';
-    empty.textContent = 'Галерея пока пуста. Добавьте изображения в папку images/gallery.';
-    root.appendChild(empty);
-    return;
-  }
   const img = document.createElement('img');
   img.draggable = false;
   img.className = 'absolute inset-0 h-full w-full object-cover transition-opacity duration-300';
@@ -2166,8 +2208,11 @@ renderHeroStart();
 renderBenefits();
 renderStats();
 loadGallery()
-  .then(initCarousel)
-  .catch(() => initCarousel([]));
+  .then((gallery) => initCarousel({ status: 'success', gallery }))
+  .catch((error) => {
+    console.error('Не удалось инициализировать карусель:', error);
+    initCarousel({ status: 'error', gallery: [], error });
+  });
 renderAudience();
 renderStartCalendar();
 renderProgram();
@@ -2181,3 +2226,5 @@ initObservers();
 initMobileNav();
 initScrollBar();
 renderLead();
+
+export { loadGallery, initCarousel };

@@ -164,11 +164,20 @@
           <div
             class="relative aspect-square overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-b from-neutral-50 to-neutral-100 p-2"
           >
-            <div
-              id="carousel"
-              class="relative h-full w-full overflow-hidden rounded-2xl select-none"
-              aria-roledescription="карусель"
-            ></div>
+          <div
+            id="carousel"
+            class="relative h-full w-full overflow-hidden rounded-2xl select-none"
+            aria-roledescription="карусель"
+            aria-busy="true"
+          >
+            <div class="carousel-skeleton" data-carousel-skeleton>
+              <div class="carousel-skeleton__photo" aria-hidden="true"></div>
+              <div class="carousel-skeleton__status" role="status">
+                <span class="carousel-skeleton__spinner" aria-hidden="true"></span>
+                <span class="carousel-skeleton__text">Загружаем галерею курса…</span>
+              </div>
+            </div>
+          </div>
             <div class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/10"></div>
           </div>
         </div>
