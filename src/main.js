@@ -378,16 +378,14 @@ function renderHeroStart() {
 }
 function createPill(text, tone = 'neutral') {
   const tones = {
-    neutral: 'border-black/10 bg-white/80 text-black/70 shadow-soft',
-    lecture: 'border-sky-200/60 bg-sky-50 text-sky-900 shadow-soft',
-    practice: 'border-emerald-200/60 bg-emerald-50 text-emerald-900 shadow-soft',
-    workshop: 'border-amber-200/60 bg-amber-50 text-amber-900 shadow-soft',
-    exam: 'border-rose-200/60 bg-rose-50 text-rose-900 shadow-soft',
+    neutral: 'chip chip--pill chip--tone-neutral',
+    lecture: 'chip chip--pill chip--tone-lecture',
+    practice: 'chip chip--pill chip--tone-practice',
+    workshop: 'chip chip--pill chip--tone-workshop',
+    exam: 'chip chip--pill chip--tone-exam',
   };
   const span = document.createElement('span');
-  span.className = `inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
-    tones[tone] || tones.neutral
-  }`;
+  span.className = tones[tone] || tones.neutral;
   span.textContent = text;
   return span;
 }
@@ -700,8 +698,7 @@ function renderTeam() {
   }
   teamMembers.forEach((member) => {
     const card = document.createElement('article');
-    card.className =
-      'group flex h-full flex-col justify-between gap-5 rounded-2xl border border-black/10 bg-white/70 p-5 transition hover:-translate-y-1 hover:shadow-soft';
+    card.className = 'group card card--surface card--hover flex h-full flex-col justify-between gap-5';
     card.innerHTML = `
       <div>
         <div class="text-sm opacity-60">${member.title}</div>
@@ -1128,7 +1125,7 @@ function renderApplyLocations() {
   let mapTitle = null;
   if (mapContainer) {
     mapContainer.innerHTML = `
-      <div class="relative h-full overflow-hidden rounded-2xl border border-black/10 bg-white shadow-soft">
+      <div class="card card--solid card--flush card--raised relative h-full overflow-hidden">
         <div class="flex items-center justify-between border-b border-black/10 bg-white/70 px-4 py-3 text-xs text-black/60">
           <div class="flex items-center gap-2 text-sm font-medium text-black">
             <span class="h-4 w-4 text-black/60">${renderIcon('map-pin')}</span>
@@ -1151,8 +1148,7 @@ function renderApplyLocations() {
     cards.forEach((card, idx) => {
       const isActive = idx === index;
       card.dataset.active = isActive ? 'true' : 'false';
-      card.classList.toggle('border-black/30', isActive);
-      card.classList.toggle('shadow-soft-md', isActive);
+      card.classList.toggle('card--active', isActive);
     });
     const loc = applyLocations[index];
     if (!loc) return;
@@ -1167,17 +1163,17 @@ function renderApplyLocations() {
   applyLocations.forEach((loc, index) => {
     const card = document.createElement('article');
     card.className =
-      'group relative overflow-hidden rounded-2xl border border-black/10 bg-white/70 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-within:ring-2 focus-within:ring-black/20';
+      'group card card--surface card--compact card--hover-sm card--focusable relative overflow-hidden';
     const mapLink = getMapLink(loc);
     card.innerHTML = `
       <div class="flex items-start gap-3">
-        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">
+        <span aria-hidden class="icon-circle">
           ${renderIcon('map-pin')}
         </span>
         <div class="flex-1">
           <div class="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[.2em] text-black/40">
             <span>${loc.kind}</span>
-            ${loc.badge ? `<span class="rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-black/60">${loc.badge}</span>` : ''}
+            ${loc.badge ? `<span class="chip chip--muted">${loc.badge}</span>` : ''}
           </div>
           <a href="${mapLink}" target="_blank" rel="noreferrer" class="mt-2 inline-flex items-center gap-2 text-left text-sm font-semibold text-black underline-offset-4 transition hover:underline">
             <span>${loc.address}</span>
@@ -1222,11 +1218,10 @@ function renderHelpfulLinks() {
     card.href = link.href;
     card.target = '_blank';
     card.rel = 'noreferrer';
-    card.className =
-      'group relative flex flex-col justify-between gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
+    card.className = 'group card card--surface card--compact card--hover-sm relative flex flex-col justify-between gap-3 text-sm';
     card.innerHTML = `
       <div class="flex items-start gap-3">
-        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">
+        <span aria-hidden class="icon-circle">
           ${renderIcon(link.icon)}
         </span>
         <div>
@@ -1399,11 +1394,10 @@ function renderAudience() {
   const icons = ['engineer', 'cnc', 'student', 'designer'];
   audience.forEach((a, i) => {
     const card = document.createElement('article');
-    card.className =
-      'group relative overflow-hidden rounded-2xl border border-black/10 bg-white/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft';
+    card.className = 'group card card--surface card--hover-sm relative overflow-hidden';
     card.innerHTML = `
       <div class="flex items-start gap-3">
-        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">${renderIcon(icons[i % icons.length])}</span>
+        <span aria-hidden class="icon-circle">${renderIcon(icons[i % icons.length])}</span>
         <div>
           <div class="text-[10px] uppercase tracking-[.18em] text-black/40">Аудитория</div>
           <div class="mt-2 text-base font-medium leading-snug text-black">${a}</div>
@@ -1445,22 +1439,10 @@ function renderProgram() {
       exam: 'from-rose-400/40',
     })[t] || 'from-black/20';
   const typeChipMeta = {
-    lecture: { label: 'Лекции', dot: 'bg-sky-400', badge: 'border-sky-200 bg-sky-50 text-sky-800' },
-    practice: {
-      label: 'Практика',
-      dot: 'bg-emerald-400',
-      badge: 'border-emerald-200 bg-emerald-50 text-emerald-800',
-    },
-    workshop: {
-      label: 'Мастер-класс',
-      dot: 'bg-amber-400',
-      badge: 'border-amber-200 bg-amber-50 text-amber-800',
-    },
-    exam: {
-      label: 'Экзамен',
-      dot: 'bg-rose-400',
-      badge: 'border-rose-200 bg-rose-50 text-rose-800',
-    },
+    lecture: { label: 'Лекции', dot: 'chip__dot--lecture', tone: 'chip--tone-lecture' },
+    practice: { label: 'Практика', dot: 'chip__dot--practice', tone: 'chip--tone-practice' },
+    workshop: { label: 'Мастер-класс', dot: 'chip__dot--workshop', tone: 'chip--tone-workshop' },
+    exam: { label: 'Экзамен', dot: 'chip__dot--exam', tone: 'chip--tone-exam' },
   };
   const head = document.createElement('div');
   head.className =
@@ -1502,7 +1484,7 @@ function renderProgram() {
   body.id = 'programDays';
   root.appendChild(body);
   const formatHoursChip = (hours) =>
-    `<span class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[11px] font-medium text-black/70"><span class="h-3 w-3 text-current">${renderIcon(
+    `<span class="chip chip--tone-hours"><span class="h-3 w-3 text-current">${renderIcon(
       'clock',
     )}</span>${hours} ч</span>`;
   const renderTypeChips = (counts, variant = 'full') =>
@@ -1511,9 +1493,9 @@ function renderProgram() {
         const value = counts?.[type] ?? 0;
         if (!value) return '';
         if (variant === 'compact') {
-          return `<span class="inline-flex items-center gap-1 rounded-full bg-black/5 px-2 py-0.5 text-[11px] font-medium text-black/70"><span class="h-2.5 w-2.5 rounded-full ${meta.dot}"></span>${value}</span>`;
+          return `<span class="chip chip--muted"><span class="chip__dot ${meta.dot}"></span>${value}</span>`;
         }
-        return `<span class="inline-flex items-center gap-1 rounded-full border ${meta.badge} px-2 py-0.5 text-[11px] font-medium"><span class="h-3.5 w-3.5 text-current">${renderIcon(
+        return `<span class="chip ${meta.tone}"><span class="h-3.5 w-3.5 text-current">${renderIcon(
           type,
         )}</span>${meta.label} · ${value}</span>`;
       })
@@ -1530,15 +1512,15 @@ function renderProgram() {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className =
-        'group relative flex min-w-[220px] flex-col gap-3 rounded-2xl border border-black/10 bg-white/80 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30';
+        'group card card--frosted card--compact card--hover-sm relative flex min-w-[220px] flex-col gap-3 text-left';
       if (isActive) {
-        btn.classList.add('border-black/30', 'shadow-soft-md');
+        btn.classList.add('card--active');
       }
       const hoursChip = summary.hours > 0 ? formatHoursChip(summary.hours) : '';
       const typeChips = renderTypeChips(summary.typeCounts, 'compact');
       btn.innerHTML = `
         <div class="flex items-center gap-3">
-          <span class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-sm font-semibold text-black/80">${String(i + 1).padStart(2, '0')}</span>
+          <span class="badge badge--ghost">${String(i + 1).padStart(2, '0')}</span>
           <div>
             <div class="text-sm font-semibold text-black">${m.day}</div>
             <div class="text-xs text-black/60">${formatShortDateRu(d)}</div>
@@ -1571,8 +1553,8 @@ function renderProgram() {
       const chevron = expanded ? renderIcon('chevron-up') : renderIcon('chevron-down');
       const displayDate = formatShortDateRu(new Date(COURSE_START.getTime() + i * 86400000));
       const buttonClasses =
-        'group flex w-full flex-col gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-left transition hover:bg-white md:flex-row md:items-center md:justify-between' +
-        (expanded ? ' border-black/20 shadow-soft-md' : '');
+        'group card card--surface card--compact card--flat card--hover-bright flex w-full flex-col gap-3 text-left md:flex-row md:items-center md:justify-between' +
+        (expanded ? ' card--active' : '');
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = buttonClasses;
@@ -1580,7 +1562,7 @@ function renderProgram() {
       btn.setAttribute('aria-expanded', String(expanded));
       btn.innerHTML = `
         <div class="flex items-center gap-3">
-          <span class="grid h-10 w-10 place-items-center rounded-xl border border-black/10 bg-white text-sm font-semibold text-black/80">${String(i + 1).padStart(2, '0')}</span>
+          <span class="badge badge--outlined">${String(i + 1).padStart(2, '0')}</span>
           <div>
             <div class="font-medium text-black">${m.day}</div>
             <div class="text-xs text-black/60">${displayDate}</div>
