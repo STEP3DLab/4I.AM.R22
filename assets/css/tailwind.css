@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply min-h-dvh text-neutral-900 antialiased;
+    @apply min-h-dvh text-ink-900 antialiased;
   }
 
   ::selection {

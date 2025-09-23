@@ -378,7 +378,7 @@ function renderHeroStart() {
 }
 function createPill(text, tone = 'neutral') {
   const tones = {
-    neutral: 'border-black/10 bg-white/80 text-black/70 shadow-soft',
+    neutral: 'border-black/10 bg-white/80 text-ink-800 shadow-soft',
     lecture: 'border-sky-200/60 bg-sky-50 text-sky-900 shadow-soft',
     practice: 'border-emerald-200/60 bg-emerald-50 text-emerald-900 shadow-soft',
     workshop: 'border-amber-200/60 bg-amber-50 text-amber-900 shadow-soft',
@@ -505,13 +505,13 @@ function renderStats() {
     }
     card.innerHTML = `
       <div class="flex items-center gap-3">
-        <div class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/80">${renderIcon(stat.icon)}</div>
+        <div class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-ink-900">${renderIcon(stat.icon)}</div>
         <div>
           <div class="text-xl font-semibold tracking-tight">${stat.value}</div>
-          <div class="text-[11px] uppercase tracking-[.2em] text-black/45">${stat.label}</div>
+          <div class="text-[11px] uppercase tracking-[.2em] text-ink-500">${stat.label}</div>
         </div>
       </div>
-      ${stat.detail ? `<div class="mt-3 text-xs text-black/60">${stat.detail}</div>` : ''}
+      ${stat.detail ? `<div class="mt-3 text-xs text-ink-700">${stat.detail}</div>` : ''}
       ${stat.chart?.markup ? `<div class="mt-4">${stat.chart.markup}</div>` : ''}
     `;
     root.appendChild(card);
@@ -523,19 +523,19 @@ function renderInfoSection(title, items) {
     .map((item) => {
       if (!item) return '';
       if (typeof item === 'string') {
-        return `<li class="relative pl-4 text-sm leading-snug text-black/70"><span class="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-black/20"></span>${item}</li>`;
+        return `<li class="relative pl-4 text-sm leading-snug text-ink-800"><span class="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-black/20"></span>${item}</li>`;
       }
       const label = item.label || '';
       const href = item.href || '';
       const content = href
         ? `<a href="${href}" target="_blank" rel="noreferrer" class="underline decoration-black/20 underline-offset-2 transition hover:decoration-black">${label}</a>`
         : label;
-      return `<li class="relative pl-4 text-sm leading-snug text-black/70"><span class="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-black/20"></span>${content}</li>`;
+      return `<li class="relative pl-4 text-sm leading-snug text-ink-800"><span class="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-black/20"></span>${content}</li>`;
     })
     .join('');
   return `
     <div class="rounded-3xl border border-black/10 bg-white/85 p-5 shadow-soft">
-      <div class="text-[11px] uppercase tracking-[.15em] text-black/45">${title}</div>
+      <div class="text-[11px] uppercase tracking-[.15em] text-ink-500">${title}</div>
       <ul class="mt-2 space-y-1">${list}</ul>
     </div>
   `;
@@ -551,7 +551,7 @@ function renderMemberDetail(member) {
   const badges = (member.badges || [])
     .map(
       (text) =>
-        `<span class="inline-flex items-center rounded-full border border-black/10 bg-white/80 px-3 py-1 text-xs font-medium text-black/70">${text}</span>`,
+        `<span class="inline-flex items-center rounded-full border border-black/10 bg-white/80 px-3 py-1 text-xs font-medium text-ink-800">${text}</span>`,
     )
     .join('');
   const highlightChips = (member.highlights || [])
@@ -566,7 +566,7 @@ function renderMemberDetail(member) {
       <header class="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h3 id="${headingId}" class="text-2xl font-semibold tracking-tight">${member.name}</h3>
-          <div class="mt-1 text-sm text-black/60">${member.title} · ${member.summary}</div>
+          <div class="mt-1 text-sm text-ink-700">${member.title} · ${member.summary}</div>
         </div>
         ${badges ? `<div class="flex flex-wrap gap-2">${badges}</div>` : ''}
       </header>
@@ -579,7 +579,7 @@ function renderMemberDetail(member) {
         ${renderInfoSection('Достижения', member.achievements)}
         ${renderInfoSection('Материалы и контакты', member.resources)}
       </div>
-      ${member.interests ? `<p class="text-sm text-black/60">${member.interests}</p>` : ''}
+      ${member.interests ? `<p class="text-sm text-ink-700">${member.interests}</p>` : ''}
     </article>
   `;
 }
@@ -592,7 +592,7 @@ function renderTeam() {
     <div data-team-overlay class="team-modal pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-4 py-8 opacity-0" aria-hidden="true">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-team-dismiss></div>
       <div class="team-modal__panel relative w-full max-w-4xl overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft-md transition duration-300" role="dialog" aria-modal="true" aria-labelledby="" tabindex="-1" data-team-dialog>
-        <button type="button" class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/80 text-black/60 transition hover:border-black/20 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20" aria-label="Закрыть" data-team-dismiss data-team-close>
+        <button type="button" class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/80 text-ink-700 transition hover:border-black/20 hover:text-ink-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20" aria-label="Закрыть" data-team-dismiss data-team-close>
           <svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5"><path d="M7 7l10 10m0-10L7 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         </button>
         <div data-team-modal-content class="max-h-[80vh] overflow-y-auto px-6 py-6 sm:max-h-[75vh] sm:px-8 sm:py-8"></div>
@@ -706,12 +706,12 @@ function renderTeam() {
       <div>
         <div class="text-sm opacity-60">${member.title}</div>
         <div class="mt-1 text-lg font-semibold leading-snug">${member.name}</div>
-        <p class="mt-3 text-sm text-black/70">${member.summary}</p>
-        <ul class="mt-4 space-y-1 text-xs text-black/60">
+        <p class="mt-3 text-sm text-ink-800">${member.summary}</p>
+        <ul class="mt-4 space-y-1 text-xs text-ink-700">
           ${(member.cardPoints || []).map((point) => `<li class="relative pl-3 leading-snug before:absolute before:left-0 before:top-1.5 before:h-1 before:w-1 before:rounded-full before:bg-black/30">${point}</li>`).join('')}
         </ul>
       </div>
-      <button type="button" class="mt-5 inline-flex w-full items-center justify-between gap-2 rounded-xl border border-black/10 px-4 py-2 text-sm font-medium text-black/70 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20" data-team-open>
+      <button type="button" class="mt-5 inline-flex w-full items-center justify-between gap-2 rounded-xl border border-black/10 px-4 py-2 text-sm font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20" data-team-open>
         <span>Подробнее</span>
         <span aria-hidden class="transition group-hover:translate-x-0.5">→</span>
       </button>
@@ -1059,11 +1059,11 @@ function renderTeamShowcase() {
         <span aria-hidden class="pointer-events-none absolute inset-0 border border-black/10 opacity-0 transition duration-300 group-hover/image:opacity-100"></span>
       </button>
       <div class="flex flex-1 flex-col p-4">
-        <div id="${titleId}" data-showcase-title class="text-sm font-semibold text-black">${item.title}</div>
-        <p id="${captionId}" class="mt-2 text-sm text-black/60">${item.caption}</p>
-        <div class="mt-4 flex items-center justify-between text-xs text-black/45">
+        <div id="${titleId}" data-showcase-title class="text-sm font-semibold text-ink-950">${item.title}</div>
+        <p id="${captionId}" class="mt-2 text-sm text-ink-700">${item.caption}</p>
+        <div class="mt-4 flex items-center justify-between text-xs text-ink-500">
           <span>Нажмите на фото</span>
-          <span class="inline-flex items-center gap-1 text-black/60">
+          <span class="inline-flex items-center gap-1 text-ink-700">
             <span class="h-3 w-3 text-current">${renderIcon('chevron-right')}</span>
             <span class="translate-y-[1px]">Листайте</span>
           </span>
@@ -1129,12 +1129,12 @@ function renderApplyLocations() {
   if (mapContainer) {
     mapContainer.innerHTML = `
       <div class="relative h-full overflow-hidden rounded-2xl border border-black/10 bg-white shadow-soft">
-        <div class="flex items-center justify-between border-b border-black/10 bg-white/70 px-4 py-3 text-xs text-black/60">
-          <div class="flex items-center gap-2 text-sm font-medium text-black">
-            <span class="h-4 w-4 text-black/60">${renderIcon('map-pin')}</span>
+        <div class="flex items-center justify-between border-b border-black/10 bg-white/70 px-4 py-3 text-xs text-ink-700">
+          <div class="flex items-center gap-2 text-sm font-medium text-ink-950">
+            <span class="h-4 w-4 text-ink-700">${renderIcon('map-pin')}</span>
             <span data-map-address></span>
           </div>
-          <span class="hidden text-xs text-black/40 sm:inline">Выберите площадку, чтобы обновить карту</span>
+          <span class="hidden text-xs text-ink-400 sm:inline">Выберите площадку, чтобы обновить карту</span>
         </div>
         <iframe data-map-frame title="Карта площадки курса" class="h-64 w-full border-0" src="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
       </div>
@@ -1171,21 +1171,21 @@ function renderApplyLocations() {
     const mapLink = getMapLink(loc);
     card.innerHTML = `
       <div class="flex items-start gap-3">
-        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">
+        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-ink-800 transition group-hover:bg-black group-hover:text-white">
           ${renderIcon('map-pin')}
         </span>
         <div class="flex-1">
-          <div class="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[.2em] text-black/40">
+          <div class="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[.2em] text-ink-400">
             <span>${loc.kind}</span>
-            ${loc.badge ? `<span class="rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-black/60">${loc.badge}</span>` : ''}
+            ${loc.badge ? `<span class="rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[10px] font-medium normal-case tracking-normal text-ink-700">${loc.badge}</span>` : ''}
           </div>
-          <a href="${mapLink}" target="_blank" rel="noreferrer" class="mt-2 inline-flex items-center gap-2 text-left text-sm font-semibold text-black underline-offset-4 transition hover:underline">
+          <a href="${mapLink}" target="_blank" rel="noreferrer" class="mt-2 inline-flex items-center gap-2 text-left text-sm font-semibold text-ink-950 underline-offset-4 transition hover:underline">
             <span>${loc.address}</span>
-            <span aria-hidden class="h-4 w-4 text-black/40 transition group-hover:text-black">${renderIcon('external')}</span>
+            <span aria-hidden class="h-4 w-4 text-ink-400 transition group-hover:text-ink-950">${renderIcon('external')}</span>
           </a>
-          ${loc.caption ? `<p class="mt-1 text-xs text-black/60">${loc.caption}</p>` : ''}
-          <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-black/60">
-            <button type="button" data-location-activate class="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1 font-medium text-black/70 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30">
+          ${loc.caption ? `<p class="mt-1 text-xs text-ink-700">${loc.caption}</p>` : ''}
+          <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-ink-700">
+            <button type="button" data-location-activate class="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1 font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30">
               <span class="h-3 w-3 text-current">${renderIcon('focus')}</span>
               <span>Показать на карте</span>
             </button>
@@ -1226,15 +1226,15 @@ function renderHelpfulLinks() {
       'group relative flex flex-col justify-between gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
     card.innerHTML = `
       <div class="flex items-start gap-3">
-        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">
+        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-ink-800 transition group-hover:bg-black group-hover:text-white">
           ${renderIcon(link.icon)}
         </span>
         <div>
-          <div class="font-semibold text-black">${link.title}</div>
-          ${link.subtitle ? `<p class="mt-1 text-xs text-black/60">${link.subtitle}</p>` : ''}
+          <div class="font-semibold text-ink-950">${link.title}</div>
+          ${link.subtitle ? `<p class="mt-1 text-xs text-ink-700">${link.subtitle}</p>` : ''}
         </div>
       </div>
-      <span aria-hidden class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 text-black/40 transition group-hover:translate-x-1 group-hover:text-black">
+      <span aria-hidden class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 text-ink-400 transition group-hover:translate-x-1 group-hover:text-ink-950">
         ${renderIcon('external')}
       </span>
     `;
@@ -1298,7 +1298,7 @@ function initCarousel(gallery) {
   if (!gallery?.length) {
     const empty = document.createElement('div');
     empty.className =
-      'flex h-full w-full items-center justify-center rounded-2xl bg-white/60 text-center text-sm text-black/60';
+      'flex h-full w-full items-center justify-center rounded-2xl bg-white/60 text-center text-sm text-ink-700';
     empty.textContent = 'Галерея пока пуста. Добавьте изображения в папку images/gallery.';
     root.appendChild(empty);
     return;
@@ -1312,12 +1312,12 @@ function initCarousel(gallery) {
   const prevBtn = document.createElement('button');
   prevBtn.setAttribute('aria-label', 'Предыдущее фото');
   prevBtn.className =
-    'pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/70 text-black shadow transition hover:bg-white absolute left-2 top-1/2 -translate-y-1/2';
+    'pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white absolute left-2 top-1/2 -translate-y-1/2';
   prevBtn.textContent = '‹';
   const nextBtn = document.createElement('button');
   nextBtn.setAttribute('aria-label', 'Следующее фото');
   nextBtn.className =
-    'pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/70 text-black shadow transition hover:bg-white absolute right-2 top-1/2 -translate-y-1/2';
+    'pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white absolute right-2 top-1/2 -translate-y-1/2';
   nextBtn.textContent = '›';
   root.appendChild(prevBtn);
   root.appendChild(nextBtn);
@@ -1403,10 +1403,10 @@ function renderAudience() {
       'group relative overflow-hidden rounded-2xl border border-black/10 bg-white/70 p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft';
     card.innerHTML = `
       <div class="flex items-start gap-3">
-        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-black/70 transition group-hover:bg-black group-hover:text-white">${renderIcon(icons[i % icons.length])}</span>
+        <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-ink-800 transition group-hover:bg-black group-hover:text-white">${renderIcon(icons[i % icons.length])}</span>
         <div>
-          <div class="text-[10px] uppercase tracking-[.18em] text-black/40">Аудитория</div>
-          <div class="mt-2 text-base font-medium leading-snug text-black">${a}</div>
+          <div class="text-[10px] uppercase tracking-[.18em] text-ink-400">Аудитория</div>
+          <div class="mt-2 text-base font-medium leading-snug text-ink-950">${a}</div>
         </div>
       </div>
       <span aria-hidden class="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full border border-black/5 opacity-0 transition group-hover:opacity-100"></span>
@@ -1425,7 +1425,7 @@ function renderStartCalendar() {
     console.warn('Контейнер стартового календаря не найден, блок пропущен.');
     return;
   }
-  const head = `<div class="grid grid-cols-6 bg-white/60 text-xs">${labels.map((l) => `<div class="px-3 py-2 text-center font-medium text-black/60">${l}</div>`).join('')}</div>`;
+  const head = `<div class="grid grid-cols-6 bg-white/60 text-xs">${labels.map((l) => `<div class="px-3 py-2 text-center font-medium text-ink-700">${l}</div>`).join('')}</div>`;
   const body = `<div class="grid grid-cols-6 bg-white/30 text-sm">${arr.map((d) => `<div class="px-3 py-3 text-center"><div class="inline-flex min-w-[3rem] items-center justify-center rounded-full border border-black/10 px-3 py-1">${formatShortDateRu(d)}</div></div>`).join('')}</div>`;
   root.innerHTML = head + body;
 }
@@ -1467,18 +1467,18 @@ function renderProgram() {
     'flex flex-col gap-4 border-b border-black/10 bg-white/60 p-4 md:flex-row md:items-center md:justify-between';
   head.innerHTML = `
     <div class="flex items-center gap-3">
-      <span aria-hidden class="grid h-11 w-11 place-items-center rounded-xl bg-black/5 text-black/70">${renderIcon('calendar')}</span>
+      <span aria-hidden class="grid h-11 w-11 place-items-center rounded-xl bg-black/5 text-ink-800">${renderIcon('calendar')}</span>
       <div>
-        <div class="text-[11px] uppercase tracking-[.2em] text-black/40">Режим просмотра</div>
-        <div class="text-sm text-black/70">Выберите формат расписания под ваше устройство</div>
+        <div class="text-[11px] uppercase tracking-[.2em] text-ink-400">Режим просмотра</div>
+        <div class="text-sm text-ink-800">Выберите формат расписания под ваше устройство</div>
       </div>
     </div>
     <div class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/70 p-1 shadow-sm">
-      <button type="button" data-view="full" class="group/view flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-black/70 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
+      <button type="button" data-view="full" class="group/view flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-ink-800 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
         <span class="h-4 w-4 text-current">${renderIcon('view-detailed')}</span>
         <span>Подробно</span>
       </button>
-      <button type="button" data-view="compact" class="group/view flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-black/70 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
+      <button type="button" data-view="compact" class="group/view flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium text-ink-800 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
         <span class="h-4 w-4 text-current">${renderIcon('view-compact')}</span>
         <span>Кратко</span>
       </button>
@@ -1502,7 +1502,7 @@ function renderProgram() {
   body.id = 'programDays';
   root.appendChild(body);
   const formatHoursChip = (hours) =>
-    `<span class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[11px] font-medium text-black/70"><span class="h-3 w-3 text-current">${renderIcon(
+    `<span class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-black/5 px-2 py-0.5 text-[11px] font-medium text-ink-800"><span class="h-3 w-3 text-current">${renderIcon(
       'clock',
     )}</span>${hours} ч</span>`;
   const renderTypeChips = (counts, variant = 'full') =>
@@ -1511,7 +1511,7 @@ function renderProgram() {
         const value = counts?.[type] ?? 0;
         if (!value) return '';
         if (variant === 'compact') {
-          return `<span class="inline-flex items-center gap-1 rounded-full bg-black/5 px-2 py-0.5 text-[11px] font-medium text-black/70"><span class="h-2.5 w-2.5 rounded-full ${meta.dot}"></span>${value}</span>`;
+          return `<span class="inline-flex items-center gap-1 rounded-full bg-black/5 px-2 py-0.5 text-[11px] font-medium text-ink-800"><span class="h-2.5 w-2.5 rounded-full ${meta.dot}"></span>${value}</span>`;
         }
         return `<span class="inline-flex items-center gap-1 rounded-full border ${meta.badge} px-2 py-0.5 text-[11px] font-medium"><span class="h-3.5 w-3.5 text-current">${renderIcon(
           type,
@@ -1538,13 +1538,13 @@ function renderProgram() {
       const typeChips = renderTypeChips(summary.typeCounts, 'compact');
       btn.innerHTML = `
         <div class="flex items-center gap-3">
-          <span class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-sm font-semibold text-black/80">${String(i + 1).padStart(2, '0')}</span>
+          <span class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-sm font-semibold text-ink-900">${String(i + 1).padStart(2, '0')}</span>
           <div>
-            <div class="text-sm font-semibold text-black">${m.day}</div>
-            <div class="text-xs text-black/60">${formatShortDateRu(d)}</div>
+            <div class="text-sm font-semibold text-ink-950">${m.day}</div>
+            <div class="text-xs text-ink-700">${formatShortDateRu(d)}</div>
           </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2 text-xs text-black/60">
+        <div class="flex flex-wrap items-center gap-2 text-xs text-ink-700">
           ${hoursChip}
           ${typeChips}
         </div>
@@ -1580,13 +1580,13 @@ function renderProgram() {
       btn.setAttribute('aria-expanded', String(expanded));
       btn.innerHTML = `
         <div class="flex items-center gap-3">
-          <span class="grid h-10 w-10 place-items-center rounded-xl border border-black/10 bg-white text-sm font-semibold text-black/80">${String(i + 1).padStart(2, '0')}</span>
+          <span class="grid h-10 w-10 place-items-center rounded-xl border border-black/10 bg-white text-sm font-semibold text-ink-900">${String(i + 1).padStart(2, '0')}</span>
           <div>
-            <div class="font-medium text-black">${m.day}</div>
-            <div class="text-xs text-black/60">${displayDate}</div>
+            <div class="font-medium text-ink-950">${m.day}</div>
+            <div class="text-xs text-ink-700">${displayDate}</div>
           </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2 text-xs text-black/60 md:hidden">
+        <div class="flex flex-wrap items-center gap-2 text-xs text-ink-700 md:hidden">
           ${hoursChip}
           ${compactChips}
         </div>
@@ -1594,7 +1594,7 @@ function renderProgram() {
           ${hoursChip}
           ${fullChips}
         </div>
-        <span class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 bg-white text-black/50 md:self-auto">${chevron}</span>
+        <span class="inline-flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/10 bg-white text-ink-600 md:self-auto">${chevron}</span>
       `;
       btn.addEventListener('click', () => {
         openDay = openDay === m.day ? '' : m.day;
@@ -1636,7 +1636,7 @@ function renderProgram() {
               <span aria-hidden class="absolute left-0 top-0 h-full w-0.5 bg-gradient-to-b ${railTone(t)} to-transparent"></span>
               <div class="flex items-start gap-3">
                 <div class="grid h-8 w-8 place-items-center rounded-lg border border-black/10 bg-white">
-                  <span class="h-5 w-5 text-black/80">${renderIcon(icon)}</span>
+                  <span class="h-5 w-5 text-ink-900">${renderIcon(icon)}</span>
                 </div>
                 <div class="flex-1">
                   <div class="font-medium leading-snug ${view === 'compact' ? 'line-clamp-2' : ''}">${b.title}</div>
@@ -1802,12 +1802,12 @@ function initForm() {
       <div class="feedback-card rounded-2xl border border-black/10 bg-white p-4 shadow-soft-md" data-state="hidden" role="status">
         <div class="flex items-start gap-3">
           <div>
-            <p class="text-sm font-semibold text-black">${summary.title}</p>
-            <p class="mt-1 text-sm text-black/70">${summary.body}</p>
+            <p class="text-sm font-semibold text-ink-950">${summary.title}</p>
+            <p class="mt-1 text-sm text-ink-800">${summary.body}</p>
           </div>
           <button
             type="button"
-            class="ml-auto inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border border-black/10 text-xs text-black/60 transition hover:bg-black hover:text-white"
+            class="ml-auto inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border border-black/10 text-xs text-ink-700 transition hover:bg-black hover:text-white"
             aria-label="Скрыть уведомление"
             data-feedback-close
           >
@@ -1830,20 +1830,20 @@ function initForm() {
     if (!assistantOutput) return;
     if (!result) {
       assistantOutput.innerHTML =
-        '<p class="rounded-xl bg-white p-3 text-black/70 shadow-soft">Помощник временно недоступен. Попробуйте позже.</p>';
+        '<p class="rounded-xl bg-white p-3 text-ink-800 shadow-soft">Помощник временно недоступен. Попробуйте позже.</p>';
       return;
     }
     const pieces = [];
     if (result.message) {
-      pieces.push(`<p class="text-black/70">${result.message}</p>`);
+      pieces.push(`<p class="text-ink-800">${result.message}</p>`);
     }
     if (Array.isArray(result.modules) && result.modules.length > 0) {
       const list = result.modules
         .map(
           (item) => `
             <li class="rounded-xl bg-white p-3 shadow-soft" role="listitem">
-              <p class="font-medium text-black">${item.title}</p>
-              <p class="mt-1 text-sm text-black/70">${item.description}</p>
+              <p class="font-medium text-ink-950">${item.title}</p>
+              <p class="mt-1 text-sm text-ink-800">${item.description}</p>
             </li>
           `,
         )
@@ -1852,7 +1852,7 @@ function initForm() {
     }
     assistantOutput.innerHTML =
       pieces.join('') ||
-      '<p class="text-black/60">Поделитесь интересами, чтобы получить персональные рекомендации.</p>';
+      '<p class="text-ink-700">Поделитесь интересами, чтобы получить персональные рекомендации.</p>';
   }
   function showError(name, msg) {
     const err = form.querySelector(`[data-err="${name}"]`);
@@ -1936,7 +1936,7 @@ function initForm() {
     assistantBtn.addEventListener('click', () => {
       if (assistantOutput) {
         assistantOutput.innerHTML =
-          '<p class="text-black/60">Ищем подходящие модули…</p>';
+          '<p class="text-ink-700">Ищем подходящие модули…</p>';
       }
       assistantBtn.disabled = true;
       assistantBtn.classList.add('opacity-60', 'cursor-wait');
@@ -1970,7 +1970,7 @@ function initObservers() {
           const id = entry.target.id;
           links.forEach((a) => {
             const isActive = a.dataset.nav === id;
-            a.classList.toggle('text-black', isActive);
+            a.classList.toggle('text-ink-950', isActive);
             a.classList.toggle('opacity-70', !isActive);
             if (isActive) {
               a.setAttribute('aria-current', 'page');
@@ -2033,7 +2033,7 @@ function initMobileNav() {
     $$('#navLinks a').forEach((link) => {
       const clone = link.cloneNode(true);
       clone.className =
-        'block rounded-xl border border-black/10 px-3 py-2 text-base font-medium text-black transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40';
+        'block rounded-xl border border-black/10 px-3 py-2 text-base font-medium text-ink-950 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40';
       clone.addEventListener('click', () => close());
       linksRoot.appendChild(clone);
     });

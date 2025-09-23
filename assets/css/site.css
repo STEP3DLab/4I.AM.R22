@@ -8,6 +8,14 @@
   --shadow-soft: 0 12px 35px rgba(15, 23, 42, 0.06);
   --shadow-strong: 0 18px 45px rgba(15, 23, 42, 0.08);
   --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.45);
+
+  --neutral-950: #0c111d;
+  --neutral-900: #121a29;
+  --neutral-800: #1b2637;
+  --neutral-700: #253346;
+  --neutral-600: #2f4054;
+  --neutral-500: #3a4d63;
+  --neutral-400: #455a71;
 }
 
 html,
@@ -277,28 +285,6 @@ a.skip-link:focus-visible {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
-}
-
-.text-black\/60,
-.text-black\/65,
-.text-black\/70 {
-  color: #1f2937 !important;
-}
-
-.text-black\/50 {
-  color: #334155 !important;
-}
-
-.text-black\/40 {
-  color: #475569 !important;
-}
-
-.text-black\/30 {
-  color: #64748b !important;
-}
-
-.text-black\/20 {
-  color: #94a3b8 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
