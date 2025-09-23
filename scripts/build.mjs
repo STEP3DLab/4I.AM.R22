@@ -1,9 +1,12 @@
 import { mkdir, rm, stat, readdir, copyFile } from 'node:fs/promises';
 import path from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import { generateSitemap } from './generate-sitemap.mjs';
 
 const rootDir = process.cwd();
 const distDir = path.join(rootDir, 'dist');
+const execFileAsync = promisify(execFile);
 
 async function copyDir(src, dest) {
   await mkdir(dest, { recursive: true });
@@ -54,6 +57,17 @@ async function copyIfExists(relativePath) {
   }
 }
 
+async function buildTailwind() {
+  const inputFile = path.join(rootDir, 'assets/css/tailwind.css');
+  const outputFile = path.join(distDir, 'assets/css/tailwind.css');
+  await mkdir(path.dirname(outputFile), { recursive: true });
+  const executable =
+    process.platform === 'win32'
+      ? path.join(rootDir, 'node_modules', '.bin', 'tailwindcss.cmd')
+      : path.join(rootDir, 'node_modules', '.bin', 'tailwindcss');
+  await execFileAsync(executable, ['-i', inputFile, '-o', outputFile, '--minify', '--postcss'], { cwd: rootDir });
+}
+
 async function build() {
   await rm(distDir, { recursive: true, force: true });
   await mkdir(distDir, { recursive: true });
@@ -62,6 +76,7 @@ async function build() {
   for (const asset of assetsToCopy) {
     await copyIfExists(asset);
   }
+  await buildTailwind();
   console.info('[build] static assets prepared in dist');
 }
 

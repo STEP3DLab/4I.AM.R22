@@ -35,32 +35,14 @@
       name="twitter:image"
       content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp"
     />
+    <link rel="preload" href="assets/css/tailwind.css" as="style" />
+    <link rel="preload" href="assets/css/a11y.css" as="style" />
     <link rel="preload" href="assets/css/site.css" as="style" />
+    <link rel="stylesheet" href="assets/css/tailwind.css" />
+    <link rel="stylesheet" href="assets/css/a11y.css" />
     <link rel="stylesheet" href="assets/css/site.css" />
-    <link rel="dns-prefetch" href="//cdn.tailwindcss.com" />
-    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin />
-    <script src="https://cdn.tailwindcss.com" defer></script>
-    <script>
-      window.tailwind = window.tailwind || {};
-      window.tailwind.config = {
-        theme: {
-          extend: {
-            maxWidth: {
-              '6xl': '64rem',
-              '7xl': '72rem',
-              '8xl': '88rem',
-            },
-            borderRadius: { '2xl': '1rem' },
-            boxShadow: {
-              soft: '0 6px 24px rgba(0,0,0,.06)',
-              'soft-md': '0 10px 30px rgba(0,0,0,.08)',
-            },
-          },
-        },
-      };
-    </script>
   </head>
-  <body class="min-h-dvh text-neutral-900 selection:bg-black selection:text-white antialiased">
+  <body>
     <a class="skip-link" href="#mainContent">Перейти к содержимому</a>
     <div
       id="scrollbar"

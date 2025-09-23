@@ -4,7 +4,7 @@
 
 ## Стек
 
-- **Клиент**: статические HTML/CSS, Tailwind CDN, модульный JS (`src/main.js`).
+- **Клиент**: статические HTML/CSS, Tailwind CSS (CLI + PostCSS), модульный JS (`src/main.js`).
 - **Инфраструктура**: GitHub Pages, GitHub Actions, Lighthouse CI.
 - **Тестирование**: Vitest (unit), Playwright (e2e).
 - **Код-стиль**: ESLint, Prettier, EditorConfig.
