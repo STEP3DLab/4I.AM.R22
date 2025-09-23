@@ -394,6 +394,12 @@ function renderIcon(name) {
       return '<svg viewBox="0 0 24 24" class="h-full w-full"><circle cx="8" cy="10" r="3" stroke="currentColor" fill="none" stroke-width="1.5"/><circle cx="16" cy="10" r="3" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M2 18c1.5-3 4-4 6-4s4.5 1 6 4" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>';
     case 'workshop':
       return '<svg viewBox="0 0 24 24" class="h-full w-full"><rect x="3" y="6" width="18" height="12" rx="2" ry="2" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="14" r="1.5" fill="currentColor"/><circle cx="12" cy="14" r="1.5" fill="currentColor"/><circle cx="16" cy="14" r="1.5" fill="currentColor"/></svg>';
+    case 'handshake':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M2 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M22 9l-4-4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M2 9l4 12h12l4-12" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M7 13l3 3 3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+    case 'trophy':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><path d="M7 4h10v2a5 5 0 0 0 5 5h-2a5 5 0 0 1-5-5H9a5 5 0 0 1-5 5H2a5 5 0 0 0 5-5V4z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 20h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 16v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 20h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    case 'medal':
+      return '<svg viewBox="0 0 24 24" class="h-full w-full"><circle cx="12" cy="14" r="5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M9 3l3 5 3-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M8 3h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
     case 'scan3d':
       return '<svg viewBox="0 0 24 24" class="h-full w-full"><rect x="4" y="4" width="16" height="16" rx="2" ry="2" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M5 9h14" stroke="currentColor" stroke-width="1.5"/><path d="M5 15h14" stroke="currentColor" stroke-width="1.5"/></svg>';
     case 'engineer':
@@ -442,168 +448,33 @@ function renderIcon(name) {
       return '';
   }
 }
-function formatSessions(count) {
-  const value = Math.abs(count) % 100;
-  const lastDigit = value % 10;
-  if (value > 10 && value < 20) return 'занятий';
-  if (lastDigit === 1) return 'занятие';
-  if (lastDigit >= 2 && lastDigit <= 4) return 'занятия';
-  return 'занятий';
-}
-
-function formatHoursValue(hours) {
-  if (!Number.isFinite(hours)) return '0';
-  const options = Number.isInteger(hours)
-    ? { maximumFractionDigits: 0 }
-    : { minimumFractionDigits: 1, maximumFractionDigits: 1 };
-  return hours.toLocaleString('ru-RU', options);
-}
-
-function createRadialChart({ percent, id, ariaLabel, accentClass, centerText }) {
-  const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
-  const radius = 18;
-  const circumference = Math.round(2 * Math.PI * radius * 100) / 100;
-  const offset = Math.round((circumference - (circumference * safePercent) / 100) * 100) / 100;
-  const text = centerText || `${safePercent}%`;
-  return {
-    id,
-    markup: `
-      <div class="mt-4 flex justify-center">
-        <span id="${id}" class="sr-only">${ariaLabel}</span>
-        <svg viewBox="0 0 48 48" class="h-14 w-14 ${accentClass}" aria-hidden="true">
-          <circle cx="24" cy="24" r="${radius}" class="fill-none stroke-black/10" stroke-width="4"></circle>
-          <circle
-            cx="24"
-            cy="24"
-            r="${radius}"
-            class="fill-none stroke-current"
-            stroke-width="4"
-            stroke-linecap="round"
-            style="stroke-dasharray:${circumference};stroke-dashoffset:${offset};transform:rotate(-90deg);transform-origin:50% 50%;"
-          ></circle>
-          <text x="24" y="26" text-anchor="middle" class="fill-current text-[10px] font-semibold">${text}</text>
-        </svg>
-      </div>
-    `,
-  };
-}
-
-function createLinearChart({ percent, id, ariaLabel, accentClass }) {
-  const safePercent = Math.max(0, Math.min(100, Math.round(percent)));
-  return {
-    id,
-    markup: `
-      <div class="mt-4">
-        <span id="${id}" class="sr-only">${ariaLabel}</span>
-        <div class="h-2 w-full overflow-hidden rounded-full bg-black/10">
-          <div class="h-full rounded-full ${accentClass}" style="width: ${safePercent}%;" aria-hidden="true"></div>
-        </div>
-        <div class="mt-1 text-xs text-black/50">${safePercent}% программы</div>
-      </div>
-    `,
-  };
-}
-
 function renderStats() {
-  const typeConfig = {
-    lecture: {
-      label: 'Лекции',
-      icon: 'lecture',
-      accentClass: 'bg-sky-400',
-      caption: 'теория и вводные блоки',
-    },
-    practice: {
-      label: 'Практика',
-      icon: 'practice',
-      accentClass: 'bg-emerald-400',
-      caption: 'отработка навыков',
-    },
-    workshop: {
-      label: 'Мастер-классы',
-      icon: 'workshop',
-      accentClass: 'bg-amber-400',
-      caption: 'экспертные демонстрации',
-    },
-    exam: {
-      label: 'Экзамен',
-      icon: 'exam',
-      accentClass: 'bg-rose-400',
-      caption: 'итоговая аттестация',
-    },
-  };
-
-  const totalHoursRaw = calculateProgramHours(modules);
-  const totalHours = Math.round(totalHoursRaw * 10) / 10;
-  const activeDays = modules.filter((module) => (module.blocks?.length ?? 0) > 0).length;
-  const averageHoursPerDay = activeDays
-    ? Math.round((totalHours / activeDays) * 10) / 10
-    : 0;
-
-  const aggregated = modules.reduce(
-    (acc, module) => {
-      const summary = getBlocksSummary(module?.blocks ?? []);
-      acc.totalBlocks += Object.values(summary.typeCounts).reduce(
-        (total, current) => total + current,
-        0,
-      );
-      Object.entries(summary.typeCounts).forEach(([type, count]) => {
-        acc.typeCounts[type] += count;
-      });
-      return acc;
-    },
-    {
-      totalBlocks: 0,
-      typeCounts: { lecture: 0, practice: 0, workshop: 0, exam: 0 },
-    },
-  );
-
-  const intensityPercent = activeDays
-    ? Math.round(Math.min(1, averageHoursPerDay / 8) * 100)
-    : 0;
-  const formattedTotalHours = formatHoursValue(totalHours);
-  const formattedAverage = formatHoursValue(averageHoursPerDay);
-  const radialChart = createRadialChart({
-    percent: intensityPercent,
-    id: 'stat-program-hours-chart',
-    ariaLabel: `Средняя нагрузка ${formattedAverage} часа в день — ${intensityPercent}% от ориентировочных 8 часов обучения`,
-    accentClass: 'text-emerald-500',
-    centerText: `${formattedAverage}ч/д`,
-  });
-
   const stats = [
     {
-      id: 'program-hours',
-      icon: 'clock',
-      value: `${formattedTotalHours} ч`,
-      label: 'суммарная нагрузка',
-      detail: activeDays ? `≈ ${formattedAverage} ч в день, ${activeDays} учебн. дней` : '',
-      chart: radialChart,
-      ariaLabel: `Всего ${formattedTotalHours} часов обучения. ${activeDays} учебных дней с средней нагрузкой ${formattedAverage} часа.`,
+      id: 'stat-trust',
+      icon: 'handshake',
+      value: '5 корпораций',
+      label: 'нам доверяют',
+      detail: 'Ростех, СИБУР, Роскосмос, Северсталь, ЕВРАЗ',
+      ariaLabel: 'Нам доверяют 5 крупных корпораций: Ростех, СИБУР, Роскосмос, Северсталь и ЕВРАЗ.',
+    },
+    {
+      id: 'stat-hitech',
+      icon: 'trophy',
+      value: '17 призёров',
+      label: 'чемпионат hi-tech',
+      detail: 'Выпускники занимают призовые места на отраслевом чемпионате Hi-Tech.',
+      ariaLabel: '17 выпускников стали призёрами чемпионата Hi-Tech.',
+    },
+    {
+      id: 'stat-worldskills',
+      icon: 'medal',
+      value: '9 чемпионов',
+      label: 'worldskills и brics',
+      detail: 'Российские и международные победители WorldSkills и BRICS.',
+      ariaLabel: '9 выпускников — чемпионы WorldSkills и BRICS России и международных соревнований.',
     },
   ];
-
-  Object.entries(aggregated.typeCounts).forEach(([type, count]) => {
-    const config = typeConfig[type];
-    if (!config) return;
-    const percent = aggregated.totalBlocks
-      ? Math.round((count / aggregated.totalBlocks) * 100)
-      : 0;
-    const chart = createLinearChart({
-      percent,
-      id: `stat-${type}-chart`,
-      ariaLabel: `${config.label}: ${percent}% программы (${count} ${formatSessions(count)})`,
-      accentClass: config.accentClass,
-    });
-    stats.push({
-      id: `stat-${type}`,
-      icon: config.icon,
-      value: `${count} ${formatSessions(count)}`,
-      label: config.label,
-      detail: config.caption,
-      chart,
-      ariaLabel: `${config.label}. ${count} ${formatSessions(count)} — ${percent}% программы.`,
-    });
-  });
 
   const root = $('#stats');
   if (!root) return;
