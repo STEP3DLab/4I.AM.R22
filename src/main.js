@@ -1808,12 +1808,14 @@ function initObservers() {
               a.removeAttribute('aria-current');
             }
           });
-          if (id === 'apply') {
-            cta.style.opacity = '0';
-            cta.style.pointerEvents = 'none';
-          } else {
-            cta.style.opacity = '1';
-            cta.style.pointerEvents = 'auto';
+          if (cta) {
+            if (id === 'apply') {
+              cta.style.opacity = '0';
+              cta.style.pointerEvents = 'none';
+            } else {
+              cta.style.opacity = '1';
+              cta.style.pointerEvents = 'auto';
+            }
           }
         }
       });
