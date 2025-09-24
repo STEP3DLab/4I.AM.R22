@@ -8,6 +8,10 @@
   --shadow-soft: 0 12px 35px rgba(15, 23, 42, 0.06);
   --shadow-strong: 0 18px 45px rgba(15, 23, 42, 0.08);
   --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.45);
+  --page-layer: rgba(255, 255, 255, 0.7);
+  --page-layer-hero: rgba(255, 255, 255, 0.55);
+  --page-layer-shadow: 0 35px 80px -40px rgba(15, 23, 42, 0.38);
+  --page-layout-width: min(100%, 1160px);
 
   --neutral-950: #0c111d;
   --neutral-900: #121a29;
@@ -20,8 +24,13 @@
 
 body {
   font-family: 'Inter', 'SF Pro Text', 'SF Pro Display', 'Segoe UI', sans-serif;
-  background: linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
+  background:
+    radial-gradient(140% 140% at 0% 0%, rgba(99, 102, 241, 0.12), transparent 60%),
+    radial-gradient(120% 120% at 100% 0%, rgba(56, 189, 248, 0.12), transparent 55%),
+    linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
   -webkit-font-smoothing: antialiased;
+  color: var(--neutral-900);
+  min-height: 100vh;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -50,12 +59,54 @@ a.skip-link:focus-visible {
 
 .layout {
   margin: 0 auto;
-  padding: 0 clamp(1.5rem, 4vw, 3rem);
-  width: min(100%, 1120px);
+  padding: 0 clamp(1.25rem, 3.5vw, 3.75rem);
+  width: var(--page-layout-width);
 }
 
 .section-gap {
-  padding: clamp(3.5rem, 5vw, 5.5rem) 0;
+  padding: 0;
+}
+
+.page-main {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  padding-block: clamp(3rem, 7vw, 5rem);
+}
+
+.page-section {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(2.4rem, 5vw, 3.8rem);
+  scroll-margin-top: clamp(5rem, 8vw, 6.5rem);
+}
+
+.page-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin-inline: clamp(0.75rem, 4vw, 3rem);
+  border-radius: clamp(1.75rem, 4vw, 3rem);
+  background: var(--page-layer);
+  box-shadow: var(--page-layer-shadow);
+  backdrop-filter: blur(12px);
+  z-index: -1;
+}
+
+.page-section--hero::before {
+  background: var(--page-layer-hero);
+  box-shadow: 0 30px 70px -40px rgba(56, 79, 165, 0.4);
+}
+
+@media (max-width: 640px) {
+  .page-section {
+    padding-block: clamp(2rem, 7vw, 3rem);
+  }
+
+  .page-section::before {
+    margin-inline: clamp(0.5rem, 6vw, 1.5rem);
+    border-radius: clamp(1.25rem, 6vw, 2rem);
+  }
 }
 
 .surface {
