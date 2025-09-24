@@ -648,7 +648,7 @@ function renderTeam() {
     <div data-team-overlay class="team-modal pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-4 py-8 opacity-0" aria-hidden="true">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-team-dismiss></div>
       <div class="team-modal__panel relative w-full max-w-4xl overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft-md transition duration-300" role="dialog" aria-modal="true" aria-labelledby="" tabindex="-1" data-team-dialog>
-        <button type="button" class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/80 text-ink-700 transition hover:border-black/20 hover:text-ink-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20" aria-label="Закрыть" data-team-dismiss data-team-close>
+        <button type="button" class="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/80 text-ink-700 transition hover:border-black/20 hover:text-ink-950 focus-visible:ring-2 focus-visible:ring-black/20" aria-label="Закрыть" data-team-dismiss data-team-close>
           <svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5"><path d="M7 7l10 10m0-10L7 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         </button>
         <div data-team-modal-content class="max-h-[80vh] overflow-y-auto px-6 py-6 sm:max-h-[75vh] sm:px-8 sm:py-8"></div>
@@ -767,7 +767,7 @@ function renderTeam() {
           ${(member.cardPoints || []).map((point) => `<li class="relative pl-3 leading-snug before:absolute before:left-0 before:top-1.5 before:h-1 before:w-1 before:rounded-full before:bg-black/30">${point}</li>`).join('')}
         </ul>
       </div>
-      <button type="button" class="mt-5 inline-flex w-full items-center justify-between gap-2 rounded-xl border border-black/10 px-4 py-2 text-sm font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20" data-team-open>
+      <button type="button" class="mt-5 inline-flex w-full items-center justify-between gap-2 rounded-xl border border-black/10 px-4 py-2 text-sm font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/20" data-team-open>
         <span>Подробнее</span>
         <span aria-hidden class="transition group-hover:translate-x-0.5">→</span>
       </button>
@@ -1030,7 +1030,7 @@ function renderApplyLocations() {
           </a>
           ${loc.caption ? `<p class="mt-1 text-xs text-ink-700">${loc.caption}</p>` : ''}
           <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-ink-700">
-            <button type="button" data-location-activate class="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1 font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30">
+            <button type="button" data-location-activate class="inline-flex items-center gap-1 rounded-full border border-black/10 px-3 py-1 font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/30">
               <span class="h-3 w-3 text-current">${renderIcon('focus')}</span>
               <span>Показать на карте</span>
             </button>
@@ -1077,7 +1077,7 @@ function renderFaq() {
     button.type = 'button';
     button.id = controlId;
     button.className =
-      'flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-semibold text-ink-950 transition hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
+      'flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm font-semibold text-ink-950 transition hover:bg-black/5 focus-visible:ring-2 focus-visible:ring-black/20';
     button.setAttribute('aria-controls', panelId);
     const expanded = index === 0;
     button.setAttribute('aria-expanded', String(expanded));
@@ -1129,7 +1129,7 @@ function renderHelpfulLinks() {
     card.target = '_blank';
     card.rel = 'noreferrer';
     card.className =
-      'group relative flex flex-col justify-between gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
+      'group relative flex flex-col justify-between gap-3 rounded-2xl border border-black/10 bg-white/70 p-4 text-sm shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:ring-2 focus-visible:ring-black/20';
     card.innerHTML = `
       <div class="flex items-start gap-3">
         <span aria-hidden class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-ink-800 transition group-hover:bg-black group-hover:text-white">
@@ -1166,22 +1166,29 @@ async function loadGallery() {
         'Количество записей в manifest не совпадает с totalFiles. Проверить папку с изображениями.',
       );
     }
-    const results = await Promise.all(
-      normalized.map(
-        (item) =>
-          new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => resolve({ ok: true, item });
-            img.onerror = () => resolve({ ok: false, item });
-            img.src = item.src;
-          }),
-      ),
-    );
-    const validItems = results.filter((r) => r.ok).map((r) => r.item);
-    const failed = results
-      .filter((r) => !r.ok)
-      .map((r) => r.item?.src)
-      .filter(Boolean);
+    const MAX_CONCURRENT_REQUESTS = 4;
+    const loadImage = (item) =>
+      new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve({ ok: true, item });
+        img.onerror = () => resolve({ ok: false, item });
+        img.src = item.src;
+      });
+    const validItems = [];
+    const failed = [];
+    for (let i = 0; i < normalized.length; i += MAX_CONCURRENT_REQUESTS) {
+      const batch = normalized.slice(i, i + MAX_CONCURRENT_REQUESTS);
+      // Загружаем изображения партиями, чтобы не открывать десятки соединений одновременно.
+      // eslint-disable-next-line no-await-in-loop
+      const results = await Promise.all(batch.map((item) => loadImage(item)));
+      results.forEach((result) => {
+        if (result.ok) {
+          validItems.push(result.item);
+        } else if (result.item?.src) {
+          failed.push(result.item.src);
+        }
+      });
+    }
     if (failed.length) {
       console.error('Не удалось загрузить изображения карусели:', failed);
     }
@@ -1197,110 +1204,192 @@ async function loadGallery() {
 function initCarousel(gallery) {
   const root = $('#carousel');
   if (!root) return;
-  let idx = 0,
-    zoom = 1,
-    origin = '50% 50%',
-    touchStartX = null;
-  if (!gallery?.length) {
-    const empty = document.createElement('div');
-    empty.className =
-      'flex h-full w-full items-center justify-center rounded-2xl bg-white/60 text-center text-sm text-ink-700';
-    empty.textContent = 'Галерея пока пуста. Добавьте изображения в папку images/gallery.';
-    root.appendChild(empty);
-    return;
-  }
-  const img = document.createElement('img');
-  img.draggable = false;
-  img.className = 'absolute inset-0 h-full w-full object-cover transition-opacity duration-300';
-  img.loading = 'eager';
-  img.decoding = 'async';
-  root.appendChild(img);
-  if (!root.hasAttribute('tabindex')) {
-    root.setAttribute('tabindex', '0');
-  }
-  root.classList.add('focus:outline-none');
-  root.classList.add('focus-visible:ring-2', 'focus-visible:ring-black/20');
-  const prevBtn = document.createElement('button');
-  prevBtn.setAttribute('aria-label', 'Предыдущее фото');
-  prevBtn.className =
-    'pointer-events-auto absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
-  prevBtn.textContent = '‹';
-  const nextBtn = document.createElement('button');
-  nextBtn.setAttribute('aria-label', 'Следующее фото');
-  nextBtn.className =
-    'pointer-events-auto absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
-  nextBtn.textContent = '›';
-  root.appendChild(prevBtn);
-  root.appendChild(nextBtn);
-  const dots = document.createElement('div');
-  dots.className = 'absolute bottom-2 left-0 right-0 flex items-center justify-center gap-2';
-  root.appendChild(dots);
-  function render() {
-    const item = gallery[idx];
-    img.style.opacity = 0;
-    setTimeout(() => {
-      img.src = item.src;
-      img.alt = item.alt || '';
-      img.style.opacity = 1;
-      img.style.transform = `scale(${zoom})`;
-      img.style.transformOrigin = origin;
-    }, 100);
-    dots.innerHTML = '';
-    gallery.forEach((_, i) => {
-      const b = document.createElement('button');
-      b.className = 'pointer-events-auto dot ' + (i === idx ? 'w-6 bg-black' : 'w-3 bg-black/40');
-      b.setAttribute('aria-label', `Слайд ${i + 1}`);
-      b.onclick = () => {
-        idx = i;
-        zoom = 1;
-        render();
-      };
-      dots.appendChild(b);
-    });
-  }
-  function go(d) {
-    idx = (idx + d + gallery.length) % gallery.length;
-    zoom = 1;
-    render();
-  }
-  prevBtn.onclick = () => go(-1);
-  nextBtn.onclick = () => go(1);
 
-  const handleKeydown = (event) => {
-    const lightboxActive =
-      document.getElementById('showcaseLightbox')?.getAttribute('aria-hidden') === 'false';
-    if (!lightboxActive && !root.matches(':focus-within')) {
+  const startCarousel = () => {
+    if (root.dataset.carouselInitialized === 'true') {
       return;
     }
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      go(-1);
+    root.dataset.carouselInitialized = 'true';
+    root.innerHTML = '';
+
+    const items = Array.isArray(gallery) ? gallery : [];
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className =
+        'flex h-full w-full items-center justify-center rounded-2xl bg-white/60 text-center text-sm text-ink-700';
+      empty.textContent = 'Галерея пока пуста. Добавьте изображения в папку images/gallery.';
+      root.appendChild(empty);
+      return;
     }
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      go(1);
+
+    let idx = 0;
+    let zoom = 1;
+    let origin = '50% 50%';
+    let touchStartX = null;
+    let currentSrc = null;
+    let pendingLoadHandler = null;
+
+    const img = document.createElement('img');
+    img.draggable = false;
+    img.className = 'absolute inset-0 h-full w-full object-cover transition-opacity duration-300';
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.style.opacity = '0';
+    root.appendChild(img);
+
+    if (!root.hasAttribute('tabindex')) {
+      root.setAttribute('tabindex', '0');
     }
+    root.classList.add('focus-visible:ring-2', 'focus-visible:ring-black/20');
+
+    const prevBtn = document.createElement('button');
+    prevBtn.setAttribute('type', 'button');
+    prevBtn.setAttribute('aria-label', 'Предыдущее фото');
+    prevBtn.className =
+      'pointer-events-auto absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white focus-visible:ring-2 focus-visible:ring-black/20';
+    prevBtn.textContent = '‹';
+
+    const nextBtn = document.createElement('button');
+    nextBtn.setAttribute('type', 'button');
+    nextBtn.setAttribute('aria-label', 'Следующее фото');
+    nextBtn.className =
+      'pointer-events-auto absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white focus-visible:ring-2 focus-visible:ring-black/20';
+    nextBtn.textContent = '›';
+
+    root.appendChild(prevBtn);
+    root.appendChild(nextBtn);
+
+    const dots = document.createElement('div');
+    dots.className = 'absolute bottom-2 left-0 right-0 flex items-center justify-center gap-2';
+    root.appendChild(dots);
+
+    const DOT_ACTIVE_CLASS = 'pointer-events-auto dot h-2 w-6 rounded-full bg-black transition-all duration-200';
+    const DOT_INACTIVE_CLASS =
+      'pointer-events-auto dot h-2 w-3 rounded-full bg-black/40 transition-all duration-200';
+    const dotButtons = items.map((_, i) => {
+      const button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.setAttribute('aria-label', `Слайд ${i + 1}`);
+      button.addEventListener('click', () => {
+        idx = i;
+        zoom = 1;
+        origin = '50% 50%';
+        render({ forceImage: true });
+      });
+      dots.appendChild(button);
+      return button;
+    });
+
+    const applyTransform = () => {
+      img.style.transform = `scale(${zoom})`;
+      img.style.transformOrigin = origin;
+    };
+
+    const updateDots = () => {
+      dotButtons.forEach((button, buttonIndex) => {
+        button.className = buttonIndex === idx ? DOT_ACTIVE_CLASS : DOT_INACTIVE_CLASS;
+      });
+    };
+
+    const updateImage = (forceImageUpdate = false) => {
+      const item = items[idx];
+      if (!item) return;
+      const nextSrc = item.src;
+      const finalize = () => {
+        currentSrc = nextSrc;
+        applyTransform();
+        img.style.opacity = '1';
+      };
+      if (!forceImageUpdate && currentSrc === nextSrc) {
+        finalize();
+        return;
+      }
+      img.style.opacity = '0';
+      img.alt = item.alt || '';
+      if (pendingLoadHandler) {
+        img.removeEventListener('load', pendingLoadHandler);
+        pendingLoadHandler = null;
+      }
+      const handleLoad = () => {
+        img.removeEventListener('load', handleLoad);
+        pendingLoadHandler = null;
+        finalize();
+      };
+      img.addEventListener('load', handleLoad);
+      pendingLoadHandler = handleLoad;
+      img.src = nextSrc;
+      if (img.complete) {
+        handleLoad();
+      }
+    };
+
+    const render = ({ forceImage = false } = {}) => {
+      updateImage(forceImage);
+      updateDots();
+    };
+
+    const go = (delta) => {
+      idx = (idx + delta + items.length) % items.length;
+      zoom = 1;
+      origin = '50% 50%';
+      render({ forceImage: true });
+    };
+
+    prevBtn.addEventListener('click', () => go(-1));
+    nextBtn.addEventListener('click', () => go(1));
+
+    const handleKeydown = (event) => {
+      const lightboxActive =
+        document.getElementById('showcaseLightbox')?.getAttribute('aria-hidden') === 'false';
+      if (!lightboxActive && !root.matches(':focus-within')) {
+        return;
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        go(-1);
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        go(1);
+      }
+    };
+
+    root.addEventListener('keydown', handleKeydown);
+    root.addEventListener('dblclick', (event) => {
+      const rect = root.getBoundingClientRect();
+      const x = (((event.clientX ?? rect.width / 2) - rect.left) / rect.width) * 100;
+      const y = (((event.clientY ?? rect.height / 2) - rect.top) / rect.height) * 100;
+      origin = `${x}% ${y}%`;
+      zoom = zoom > 1 ? 1 : 1.6;
+      updateImage();
+    });
+    root.addEventListener('touchstart', (event) => {
+      touchStartX = event.touches[0].clientX;
+    });
+    root.addEventListener('touchend', (event) => {
+      if (touchStartX == null) return;
+      const dx = event.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) go(dx > 0 ? -1 : 1);
+      touchStartX = null;
+    });
+
+    render({ forceImage: true });
   };
 
-  root.addEventListener('keydown', handleKeydown);
-  root.addEventListener('dblclick', (e) => {
-    const rect = root.getBoundingClientRect();
-    const x = (((e.clientX ?? rect.width / 2) - rect.left) / rect.width) * 100;
-    const y = (((e.clientY ?? rect.height / 2) - rect.top) / rect.height) * 100;
-    origin = `${x}% ${y}%`;
-    zoom = zoom > 1 ? 1 : 1.6;
-    render();
-  });
-  root.addEventListener('touchstart', (e) => {
-    touchStartX = e.touches[0].clientX;
-  });
-  root.addEventListener('touchend', (e) => {
-    if (touchStartX == null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 40) go(dx > 0 ? -1 : 1);
-    touchStartX = null;
-  });
-  render();
+  if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          obs.disconnect();
+          startCarousel();
+        }
+      },
+      { rootMargin: '200px 0px' },
+    );
+    observer.observe(root);
+  } else {
+    startCarousel();
+  }
 }
 function renderAudience() {
   const root = $('#audienceGrid');
@@ -1393,11 +1482,11 @@ function renderProgram(options = {}) {
       </div>
     </div>
     <div class="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white p-1 shadow-sm">
-      <button type="button" data-view="full" class="group/view flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-ink-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
+      <button type="button" data-view="full" class="group/view flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-ink-700 transition focus-visible:ring-2 focus-visible:ring-black/20">
         <span class="h-4 w-4 text-current">${renderIcon('view-detailed')}</span>
         <span>Подробно</span>
       </button>
-      <button type="button" data-view="compact" class="group/view flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-ink-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20">
+      <button type="button" data-view="compact" class="group/view flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-sm font-medium text-ink-700 transition focus-visible:ring-2 focus-visible:ring-black/20">
         <span class="h-4 w-4 text-current">${renderIcon('view-compact')}</span>
         <span>Кратко</span>
       </button>
@@ -1462,7 +1551,7 @@ function renderProgram(options = {}) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className =
-        'group relative flex min-w-[220px] flex-col gap-3 rounded-2xl border border-black/10 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30';
+        'group relative flex min-w-[220px] flex-col gap-3 rounded-2xl border border-black/10 bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft focus-visible:ring-2 focus-visible:ring-black/30';
       if (isActive) {
         btn.classList.add('border-black/30', 'shadow-soft-md');
       }
@@ -1953,7 +2042,7 @@ function initMobileNav() {
     $$('#navLinks a').forEach((link) => {
       const clone = link.cloneNode(true);
       clone.className =
-        'block rounded-xl border border-black/10 px-3 py-2 text-base font-medium text-ink-950 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40';
+        'block rounded-xl border border-black/10 px-3 py-2 text-base font-medium text-ink-950 transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/40';
       clone.addEventListener('click', () => close());
       linksRoot.appendChild(clone);
     });
