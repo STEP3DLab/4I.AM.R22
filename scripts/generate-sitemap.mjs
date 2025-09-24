@@ -36,6 +36,7 @@ const BASE_WITH_TRAILING_SLASH = baseUrl.href.endsWith('/') ? baseUrl.href : `${
 
 const pages = [
   { loc: '/', priority: 0.9, changefreq: 'monthly' },
+  { loc: '/reverse-engineering.html', priority: 0.85, changefreq: 'monthly' },
   { loc: '/#about', priority: 0.6, changefreq: 'monthly' },
   { loc: '/#program', priority: 0.7, changefreq: 'monthly' },
   { loc: '/#team', priority: 0.6, changefreq: 'monthly' },

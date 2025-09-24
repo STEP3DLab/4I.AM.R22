@@ -660,6 +660,10 @@ button:disabled {
   margin: 0;
 }
 
+.form__error.is-hidden {
+  display: none;
+}
+
 .form__success {
   background: rgba(7, 148, 85, 0.1);
   border-radius: var(--radius-12);
