@@ -1,5 +1,4 @@
 import {
-  activityTypeFromTitle,
   calculateProgramHours,
   clampIndex,
   formatDaysLabel,
@@ -7,6 +6,7 @@ import {
   formatShortDateRu,
   getBlocksSummary,
   getCountdownStatus,
+  normalizeActivityType,
 } from './utils/course-utils.js';
 import {
   buildApplicationSummary,
@@ -240,23 +240,31 @@ const modules = [
         title:
           'Лекция: Реверсивный инжиниринг и аддитивные технологии в производстве. ОТ и ТБ. Кейсы РГСУ (Hi-Tech, Ростех, Северсталь, СИБУР, ЕВРАЗ)',
         hours: '2 ч (1 лк + 0,5 сем + 0,5 кт)',
+        durationHours: 2,
         control: 'Устный опрос',
+        type: 'lecture',
       },
       {
         title: 'Мастер-класс №1: CAD/CAM-моделирование мастер-моделей и метаформ (T-FLEX CAD)',
         hours: '—',
+        durationHours: 0,
         control: 'Зачёт',
+        type: 'workshop',
       },
       {
         title:
           'Прак-работа #1: Выбор средства оцифровки и оснастки. Калибровка сканера (RangeVision Spectrum)',
         hours: '2 ч',
+        durationHours: 2,
         control: '—',
+        type: 'practice',
       },
       {
         title: 'Прак-работа #2: 3D-сканирование на стационарном сканере',
         hours: '4 ч',
+        durationHours: 4,
         control: '—',
+        type: 'practice',
       },
     ],
   },
@@ -266,17 +274,23 @@ const modules = [
       {
         title: 'Прак-работа #3: Реверс в Geomagic Design X (базовые функции)',
         hours: '4 ч',
+        durationHours: 4,
         control: '—',
+        type: 'practice',
       },
       {
         title: 'Мастер-класс №2: Основы 3D-печати (FDM, PICASO 3D). От индустриального партнёра',
         hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)',
+        durationHours: 2,
         control: '—',
+        type: 'workshop',
       },
       {
         title: 'Прак-работа #4: Подготовка моделей к FDM/DLP/SLA. Запуск печати',
         hours: '2 ч',
+        durationHours: 2,
         control: '—',
+        type: 'practice',
       },
     ],
   },
@@ -286,12 +300,16 @@ const modules = [
       {
         title: 'Мастер-класс №3: 3D-сканирование ручным оптическим сканером (Artec Eva)',
         hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)',
+        durationHours: 2,
         control: 'Устный опрос',
+        type: 'workshop',
       },
       {
         title: 'Прак-работа #5: Geomagic Design X (продвинутые функции)',
         hours: '6 ч (1 лк + 5 пр)',
+        durationHours: 6,
         control: 'Зачёт',
+        type: 'practice',
       },
     ],
   },
@@ -301,17 +319,23 @@ const modules = [
       {
         title: 'Мастер-класс №4: Основы DLP/SLA-печати. От индустриального партнёра',
         hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)',
+        durationHours: 2,
         control: 'Устный опрос',
+        type: 'workshop',
       },
       {
         title: 'Прак-работа #6: Подготовка к FDM/DLP/SLA. Запуск печати',
         hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)',
+        durationHours: 2,
         control: 'Зачёт',
+        type: 'practice',
       },
       {
         title: 'Отработка навыков (сканирование/реверс/печать) — свободный формат',
         hours: '4 ч',
+        durationHours: 4,
         control: '—',
+        type: 'practice',
       },
     ],
   },
@@ -322,7 +346,9 @@ const modules = [
         title:
           'Экзамен (ДЭ): задание в формате International High-Tech Competition (компетенция «Реверсивный инжиниринг»)',
         hours: '16 ч (2 лк + 12 пр + 2 кт)',
+        durationHours: 16,
         control: 'Экзамен (ДЭ)',
+        type: 'exam',
       },
     ],
   },
@@ -418,20 +444,37 @@ function renderHeroStart() {
   heroStartEl.textContent = courseStartLabel;
   heroStartEl.setAttribute('data-start', COURSE_START_ISO);
 }
+const PILL_TONE_CLASSNAMES = {
+  neutral: 'border-black/10 bg-white text-ink-800 shadow-soft',
+  lecture: 'border-sky-200 bg-sky-50 text-sky-900 shadow-soft',
+  practice: 'border-emerald-200 bg-emerald-50 text-emerald-900 shadow-soft',
+  workshop: 'border-amber-200 bg-amber-50 text-amber-900 shadow-soft',
+  exam: 'border-rose-200 bg-rose-50 text-rose-900 shadow-soft',
+};
+
+function getPillClassName(tone = 'neutral') {
+  const toneClass = PILL_TONE_CLASSNAMES[tone] || PILL_TONE_CLASSNAMES.neutral;
+  return `inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${toneClass}`;
+}
+
+function escapeHtml(str = '') {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function createPill(text, tone = 'neutral') {
-  const tones = {
-    neutral: 'border-black/10 bg-white text-ink-800 shadow-soft',
-    lecture: 'border-sky-200 bg-sky-50 text-sky-900 shadow-soft',
-    practice: 'border-emerald-200 bg-emerald-50 text-emerald-900 shadow-soft',
-    workshop: 'border-amber-200 bg-amber-50 text-amber-900 shadow-soft',
-    exam: 'border-rose-200 bg-rose-50 text-rose-900 shadow-soft',
-  };
   const span = document.createElement('span');
-  span.className = `inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
-    tones[tone] || tones.neutral
-  }`;
+  span.className = getPillClassName(tone);
   span.textContent = text;
   return span;
+}
+
+function renderPill(text, tone = 'neutral') {
+  return `<span class="${getPillClassName(tone)}">${escapeHtml(text)}</span>`;
 }
 function renderBenefits() {
   const root = $('#benefits');
@@ -1454,6 +1497,24 @@ function renderProgram(options = {}) {
   }
   let view = 'full';
   let openDay = getInitialOpenDay(programModules);
+  const moduleSummaries = programModules.map((module) => getBlocksSummary(module.blocks));
+  const moduleDates = programModules.map((_, index) => new Date(COURSE_START.getTime() + index * 86400000));
+  const emptySummary = { hours: 0, typeCounts: {} };
+  const getModuleDate = (index) => {
+    const candidate = moduleDates[index];
+    if (candidate instanceof Date && !Number.isNaN(candidate.valueOf())) {
+      return candidate;
+    }
+    return new Date(COURSE_START.getTime() + index * 86400000);
+  };
+  const getDisplayDate = (index) => {
+    try {
+      return formatShortDateRu(getModuleDate(index));
+    } catch (error) {
+      console.warn('Не удалось отформатировать дату модуля', error);
+      return '';
+    }
+  };
   const railTone = (t) =>
     ({
       lecture: 'from-sky-400/40',
@@ -1553,10 +1614,11 @@ function renderProgram(options = {}) {
       tabs.appendChild(placeholder);
       return;
     }
+    const fragment = document.createDocumentFragment();
     programModules.forEach((m, i) => {
       const isActive = openDay === m.day;
-      const d = new Date(COURSE_START.getTime() + i * 86400000);
-      const summary = getBlocksSummary(m.blocks);
+      const summary = moduleSummaries[i] ?? emptySummary;
+      const displayDate = getDisplayDate(i);
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className =
@@ -1571,7 +1633,7 @@ function renderProgram(options = {}) {
           <span class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-sm font-semibold text-ink-900">${String(i + 1).padStart(2, '0')}</span>
           <div>
             <div class="text-sm font-semibold text-ink-950">${m.day}</div>
-            <div class="text-xs text-ink-700">${formatShortDateRu(d)}</div>
+            <div class="text-xs text-ink-700">${displayDate}</div>
           </div>
         </div>
         <div class="flex flex-wrap items-center gap-2 text-xs text-ink-700">
@@ -1584,8 +1646,9 @@ function renderProgram(options = {}) {
         renderTabs();
         renderDays();
       });
-      tabs.appendChild(btn);
+      fragment.appendChild(btn);
     });
+    tabs.appendChild(fragment);
   }
   function renderDays() {
     body.innerHTML = '';
@@ -1597,17 +1660,18 @@ function renderProgram(options = {}) {
       body.appendChild(placeholder);
       return;
     }
+    const fragment = document.createDocumentFragment();
     programModules.forEach((m, i) => {
       const host = document.createElement('div');
       host.className = 'relative z-10 border-b border-black/10';
-      const summary = getBlocksSummary(m.blocks);
+      const summary = moduleSummaries[i] ?? emptySummary;
       const expanded = openDay === m.day;
       const panelId = `program-day-${String(i + 1).padStart(2, '0')}`;
       const hoursChip = summary.hours > 0 ? formatHoursChip(summary.hours) : '';
       const compactChips = renderTypeChips(summary.typeCounts, 'compact');
       const fullChips = renderTypeChips(summary.typeCounts, 'full');
       const chevron = expanded ? renderIcon('chevron-up') : renderIcon('chevron-down');
-      const displayDate = formatShortDateRu(new Date(COURSE_START.getTime() + i * 86400000));
+      const displayDate = getDisplayDate(i);
       const buttonClasses =
         'group flex w-full flex-col gap-3 rounded-2xl border border-black/10 bg-white p-4 text-left transition hover:bg-black/5 md:flex-row md:items-center md:justify-between' +
         (expanded ? ' border-black/20 shadow-soft-md' : '');
@@ -1652,26 +1716,37 @@ function renderProgram(options = {}) {
       panelContent.className = `min-h-0 gap-4 p-4 ${view === 'full' ? 'md:grid-cols-2' : 'md:grid-cols-3'}`;
       panelContent.classList.toggle('grid', expanded);
       panelContent.classList.toggle('hidden', !expanded);
-      panelContent.innerHTML = `
-        ${
-          m.blocks.length === 0
-            ? '<div class="rounded-xl border border-black/10 p-4 text-sm opacity-60">Зарезервировано под защиту проектов/экскурсию/подведение итогов.</div>'
-            : ''
-        }
-        ${m.blocks
-          .map((b) => {
-            const t = activityTypeFromTitle(b.title);
-            const icon =
-              t === 'lecture'
-                ? 'lecture'
-                : t === 'practice'
-                  ? 'practice'
-                  : t === 'exam'
-                    ? 'exam'
-                    : 'workshop';
-            return `
+      const placeholder =
+        m.blocks.length === 0
+          ? '<div class="rounded-xl border border-black/10 p-4 text-sm opacity-60">Зарезервировано под защиту проектов/экскурсию/подведение итогов.</div>'
+          : '';
+      const blockCards = m.blocks
+        .map((b) => {
+          const blockType = normalizeActivityType(b.type, b.title);
+          const icon =
+            blockType === 'lecture'
+              ? 'lecture'
+              : blockType === 'practice'
+                ? 'practice'
+                : blockType === 'exam'
+                  ? 'exam'
+                  : 'workshop';
+          const rawDurationLabel = String(b.hours ?? '').trim();
+          const durationValue = Number(b.durationHours);
+          const hasDurationValue = Number.isFinite(durationValue) && durationValue > 0;
+          const hasDurationLabel = rawDurationLabel.length > 0 && rawDurationLabel !== '—';
+          const durationLabel = hasDurationLabel ? rawDurationLabel : hasDurationValue ? `${durationValue} ч` : '';
+          const durationPill = durationLabel ? renderPill(`⏱ ${durationLabel}`) : '';
+          const controlText = String(b.control ?? '').trim();
+          const controlPill = controlText && controlText !== '—' ? renderPill(`✔ ${controlText}`) : '';
+          const typeMeta = typeChipMeta[blockType];
+          const typePillLabel = typeMeta?.label ?? 'Формат';
+          const typePillTone = typeMeta ? blockType : 'neutral';
+          const typePill = renderPill(`Тип: ${typePillLabel}`, typePillTone);
+          const pillParts = [durationPill, controlPill, typePill].filter(Boolean).join('');
+          return `
             <div class="relative overflow-hidden rounded-xl border border-black/10 p-4 shadow-sm hover:shadow-md hover-shimmer">
-              <span aria-hidden class="absolute left-0 top-0 h-full w-0.5 bg-gradient-to-b ${railTone(t)} to-transparent"></span>
+              <span aria-hidden class="absolute left-0 top-0 h-full w-0.5 bg-gradient-to-b ${railTone(blockType)} to-transparent"></span>
               <div class="flex items-start gap-3">
                 <div class="grid h-8 w-8 place-items-center rounded-lg border border-black/10 bg-white">
                   <span class="h-5 w-5 text-ink-900">${renderIcon(icon)}</span>
@@ -1679,20 +1754,18 @@ function renderProgram(options = {}) {
                 <div class="flex-1">
                   <div class="font-medium leading-snug ${view === 'compact' ? 'line-clamp-2' : ''}">${b.title}</div>
                   <div class="mt-2 flex flex-wrap items-center gap-2 text-xs opacity-70">
-                    ${b.hours !== '—' ? createPill('⏱ ' + b.hours).outerHTML : ''}
-                    ${b.control !== '—' ? createPill('✔ ' + b.control).outerHTML : ''}
-                    ${createPill('Тип: ' + { lecture: 'Лекция', practice: 'Практика', workshop: 'Мастер-класс', exam: 'Экзамен' }[t], t).outerHTML}
+                    ${pillParts}
                   </div>
                 </div>
               </div>
             </div>`;
-          })
-          .join('')}
-      `;
+        })
+        .join('');
+      panelContent.innerHTML = `${placeholder}${blockCards}`;
 
       panel.appendChild(panelContent);
       host.appendChild(panel);
-      body.appendChild(host);
+      fragment.appendChild(host);
 
       window.requestAnimationFrame(() => {
         const isExpanded = openDay === m.day;
@@ -1704,6 +1777,7 @@ function renderProgram(options = {}) {
         panel.style.maxHeight = isExpanded ? `${panelContent.scrollHeight}px` : '0px';
       });
     });
+    body.appendChild(fragment);
   }
   updateViewButtons(view);
   renderTabs();
