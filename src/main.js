@@ -1799,7 +1799,7 @@ function initObservers() {
               a.removeAttribute('aria-current');
             }
           });
-          if (cta) {
+          if (cta && cta.dataset.dismissed !== 'true') {
             if (id === 'apply') {
               cta.style.opacity = '0';
               cta.style.pointerEvents = 'none';
@@ -1826,6 +1826,45 @@ function initObservers() {
     { threshold: 0.15 },
   );
   Array.from(document.querySelectorAll('.reveal')).forEach((el) => reveal.observe(el));
+}
+function initStickyCta() {
+  const cta = document.getElementById('stickyCta');
+  if (!cta) return;
+  const dismissBtn = document.getElementById('stickyCtaDismiss');
+  const storageKey = 'stickyCtaDismissed';
+  const hide = (persist) => {
+    cta.classList.add('hidden');
+    cta.setAttribute('aria-hidden', 'true');
+    cta.style.pointerEvents = 'none';
+    cta.dataset.dismissed = 'true';
+    if (persist) {
+      try {
+        localStorage.setItem(storageKey, '1');
+      } catch (error) {
+        console.warn('Не удалось сохранить состояние скрытия CTA', error);
+      }
+    }
+  };
+  const show = () => {
+    cta.classList.remove('hidden');
+    cta.setAttribute('aria-hidden', 'false');
+    cta.style.pointerEvents = 'auto';
+    cta.dataset.dismissed = 'false';
+  };
+  let dismissed = false;
+  try {
+    dismissed = localStorage.getItem(storageKey) === '1';
+  } catch (error) {
+    console.warn('Не удалось прочитать состояние скрытия CTA', error);
+  }
+  if (dismissed) {
+    hide(false);
+    return;
+  }
+  show();
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => hide(true));
+  }
 }
 function initScrollBar() {
   const bar = document.getElementById('scrollbar');
@@ -2003,6 +2042,7 @@ if (!globalThis.__STEP3D_SKIP_AUTO_INIT__) {
   renderHelpfulLinks();
   initCountdown();
   initForm();
+  initStickyCta();
   initObservers();
   initMobileNav();
   initScrollBar();
