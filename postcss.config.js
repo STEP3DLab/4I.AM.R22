@@ -1,6 +1,10 @@
+const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
+
 export default {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
+  plugins: isTest
+    ? {}
+    : {
+        tailwindcss: {},
+        autoprefixer: {},
+      },
 };

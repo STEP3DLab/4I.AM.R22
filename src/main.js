@@ -1313,14 +1313,23 @@ function renderStartCalendar() {
   const body = `<div class="grid grid-cols-6 bg-white/30 text-sm">${arr.map((d) => `<div class="px-3 py-3 text-center"><div class="inline-flex min-w-[3rem] items-center justify-center rounded-full border border-black/10 px-3 py-1">${formatShortDateRu(d)}</div></div>`).join('')}</div>`;
   root.innerHTML = head + body;
 }
-function renderProgram() {
+export function getInitialOpenDay(programModules = []) {
+  if (!Array.isArray(programModules)) return '';
+  const firstWithDay = programModules.find((module) => {
+    const day = module?.day;
+    return typeof day === 'string' && day.trim().length > 0;
+  });
+  return firstWithDay?.day ?? '';
+}
+function renderProgram(options = {}) {
+  const programModules = Array.isArray(options.modules) ? options.modules : modules;
   const root = $('#programRoot');
   if (!root) {
     console.warn('Контейнер программы (#programRoot) не найден. Секция расписания не будет инициализирована.');
     return;
   }
   let view = 'full';
-  let openDay = '01 (Пн)';
+  let openDay = getInitialOpenDay(programModules);
   const railTone = (t) =>
     ({
       lecture: 'from-sky-400/40',
@@ -1412,7 +1421,15 @@ function renderProgram() {
     const tabs = $('#dayTabs');
     if (!tabs) return;
     tabs.innerHTML = '';
-    modules.forEach((m, i) => {
+    if (programModules.length === 0) {
+      const placeholder = document.createElement('div');
+      placeholder.className =
+        'flex min-h-[64px] w-full items-center justify-center rounded-2xl border border-dashed border-black/10 bg-white px-4 text-sm text-ink-600';
+      placeholder.textContent = 'Расписание формируется. Подробности появятся ближе к старту.';
+      tabs.appendChild(placeholder);
+      return;
+    }
+    programModules.forEach((m, i) => {
       const isActive = openDay === m.day;
       const d = new Date(COURSE_START.getTime() + i * 86400000);
       const summary = getBlocksSummary(m.blocks);
@@ -1448,7 +1465,15 @@ function renderProgram() {
   }
   function renderDays() {
     body.innerHTML = '';
-    modules.forEach((m, i) => {
+    if (programModules.length === 0) {
+      const placeholder = document.createElement('div');
+      placeholder.className =
+        'rounded-2xl border border-dashed border-black/10 bg-white p-6 text-center text-sm text-ink-700 shadow-sm';
+      placeholder.textContent = 'Скоро появится подробное расписание по дням. Следите за обновлениями!';
+      body.appendChild(placeholder);
+      return;
+    }
+    programModules.forEach((m, i) => {
       const host = document.createElement('div');
       host.className = 'relative z-10 border-b border-black/10';
       const summary = getBlocksSummary(m.blocks);
@@ -1959,23 +1984,27 @@ function renderLead() {
   setText('leadPriceInline', lead.price);
   setText('leadPriceMobile', lead.price);
 }
-renderHeroStart();
-renderBenefits();
-renderStats();
-loadGallery()
-  .then(initCarousel)
-  .catch(() => initCarousel([]));
-renderAudience();
-renderStartCalendar();
-renderProgram();
-renderTeam();
-renderTeamShowcase();
-renderApplyLocations();
-renderFaq();
-renderHelpfulLinks();
-initCountdown();
-initForm();
-initObservers();
-initMobileNav();
-initScrollBar();
-renderLead();
+export { renderProgram };
+
+if (!globalThis.__STEP3D_SKIP_AUTO_INIT__) {
+  renderHeroStart();
+  renderBenefits();
+  renderStats();
+  loadGallery()
+    .then(initCarousel)
+    .catch(() => initCarousel([]));
+  renderAudience();
+  renderStartCalendar();
+  renderProgram();
+  renderTeam();
+  renderTeamShowcase();
+  renderApplyLocations();
+  renderFaq();
+  renderHelpfulLinks();
+  initCountdown();
+  initForm();
+  initObservers();
+  initMobileNav();
+  initScrollBar();
+  renderLead();
+}
