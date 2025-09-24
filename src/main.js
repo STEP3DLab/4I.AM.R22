@@ -6,7 +6,6 @@ import {
   formatShortDateRu,
   getBlocksSummary,
   getCountdownStatus,
-  buildCourseCalendarIcs,
 } from './utils/course-utils.js';
 import {
   buildApplicationSummary,
@@ -406,74 +405,6 @@ function renderHeroStart() {
   }
   heroStartEl.textContent = courseStartLabel;
   heroStartEl.setAttribute('data-start', COURSE_START_ISO);
-
-  const calendarBtn = document.getElementById('addToCalendarBtn');
-  if (calendarBtn) {
-    calendarBtn.setAttribute('aria-label', `Добавить в календарь: старт ${courseStartLabel}`);
-  }
-}
-
-function initCalendarDownload() {
-  const button = document.getElementById('addToCalendarBtn');
-  const message = document.getElementById('calendarMessage');
-  if (!button || !message) {
-    if (!button) {
-      console.warn('Кнопка добавления в календарь не найдена.');
-    }
-    return;
-  }
-
-  const updateLabel = () => {
-    button.setAttribute('aria-label', `Добавить в календарь: старт ${courseStartLabel}`);
-  };
-
-  updateLabel();
-
-  const resetMessage = () => {
-    message.classList.add('hidden');
-    message.textContent = '';
-  };
-
-  resetMessage();
-
-  button.addEventListener('click', (event) => {
-    event.preventDefault();
-    resetMessage();
-
-    try {
-      const pageUrl =
-        typeof window !== 'undefined' && window.location && window.location.href
-          ? window.location.href
-          : 'https://step3dlab.github.io/4I.AM.R22/';
-      const icsContent = buildCourseCalendarIcs({
-        durationHours: totalProgramHours,
-        title: 'Реверсивный инжиниринг и АТ — интенсив',
-        description:
-          'Практический курс STEP_3D × РГСУ: 3D-сканирование → реверс в CAD → 3D-печать оснастки и мастер-моделей.',
-        location: lead.venue,
-        url: pageUrl,
-      });
-      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = 'step3d-course.ics';
-      document.body.append(anchor);
-      anchor.click();
-      anchor.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-      message.textContent = `Файл календаря скачан. Старт ${courseStartLabel}.`;
-    } catch (error) {
-      console.error('Не удалось сформировать файл календаря', error);
-      message.textContent = 'Не удалось подготовить файл календаря. Попробуйте ещё раз.';
-    }
-
-    message.classList.remove('hidden');
-    window.requestAnimationFrame(() => {
-      message.focus({ preventScroll: true });
-    });
-  });
 }
 function createPill(text, tone = 'neutral') {
   const tones = {
@@ -2097,7 +2028,6 @@ export { renderProgram };
 if (!globalThis.__STEP3D_SKIP_AUTO_INIT__) {
   renderHeroStart();
   renderBenefits();
-  initCalendarDownload();
   renderStats();
   loadGallery()
     .then(initCarousel)
