@@ -246,7 +246,14 @@
                   <span><span class="countdown__digit" data-hours>00</span><span class="countdown__label">часов</span></span>
                   <span><span class="countdown__digit" data-minutes>00</span><span class="countdown__label">минут</span></span>
                 </div>
-                <p class="hero__meta">Старт 15 апреля · Москва, технопарк РГСУ</p>
+                <p class="hero__meta">
+                  Старт
+                  <time id="heroStartDate" datetime="2025-10-20" data-start="2025-10-20T09:00:00+03:00">20 октября 2025</time>
+                  · Москва, ул. Беговая, д. 12
+                </p>
+                <p class="hero__meta hero__meta--muted">
+                  Финальное занятие — Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)
+                </p>
               </div>
               <div class="hero__actions">
                 <a class="btn-primary" href="#apply">Записаться</a>
@@ -525,33 +532,64 @@
             <p class="eyebrow">Подать заявку</p>
             <h2 id="section-apply">Оставьте контакты — мы свяжемся в течение дня</h2>
           </div>
-          <form id="applyForm" class="form" novalidate>
-            <div class="form__row">
-              <label for="name">ФИО*</label>
-              <input id="name" name="name" type="text" required autocomplete="name" aria-describedby="name-error" />
-              <p class="form__error" id="name-error" role="alert" hidden>Пожалуйста, укажите ФИО.</p>
-            </div>
-            <div class="form__row">
-              <label for="email">Электронная почта*</label>
-              <input id="email" name="email" type="email" required autocomplete="email" aria-describedby="email-error" />
-              <p class="form__error" id="email-error" role="alert" hidden>Укажите корректный e-mail.</p>
-            </div>
-            <div class="form__row">
-              <label for="company">Компания</label>
-              <input id="company" name="company" type="text" autocomplete="organization" />
-            </div>
-            <div class="form__row">
-              <label for="message">Комментарий</label>
-              <textarea id="message" name="message" rows="4"></textarea>
-            </div>
-            <div class="form__consent">
-              <input id="consent" name="consent" type="checkbox" required aria-describedby="consent-desc" />
-              <label for="consent">Согласен(на) на обработку персональных данных</label>
-            </div>
-            <p id="consent-desc" class="form__hint">Мы используем данные только для связи по программе.</p>
-            <button type="submit" class="btn-primary" disabled>Отправить</button>
-            <p class="form__success" role="status" hidden>Спасибо! Заявка отправлена, мы свяжемся с вами в ближайшее время.</p>
-          </form>
+          <div class="apply-layout">
+            <aside class="apply-lead" aria-labelledby="apply-lead-title">
+              <h3 id="apply-lead-title">Детали программы</h3>
+              <dl class="apply-lead__facts">
+                <div class="apply-lead__fact">
+                  <dt class="apply-lead__label">Старт</dt>
+                  <dd class="apply-lead__value" id="leadStart" data-start="2025-10-20T09:00:00+03:00">Старт: 20 октября 2025</dd>
+                </div>
+                <div class="apply-lead__fact">
+                  <dt class="apply-lead__label">Длительность</dt>
+                  <dd class="apply-lead__value" id="leadDuration">48 часов · 1 неделя</dd>
+                </div>
+                <div class="apply-lead__fact">
+                  <dt class="apply-lead__label">Формат группы</dt>
+                  <dd class="apply-lead__value" id="leadSeats">6–12 человек в группе</dd>
+                </div>
+                <div class="apply-lead__fact">
+                  <dt class="apply-lead__label">Стоимость</dt>
+                  <dd class="apply-lead__value" id="leadPrice">68 000 ₽</dd>
+                </div>
+              </dl>
+              <p class="apply-lead__note">
+                Стоимость участия — <span id="leadPriceInline">68 000 ₽</span>. Поможем оформить договор и закрывающие документы.
+              </p>
+              <p class="apply-lead__note apply-lead__note--mobile">
+                <span id="leadPriceMobile">68 000 ₽</span> за неделю практики с наставниками STEP_3D.
+              </p>
+            </aside>
+            <form id="applyForm" class="form" novalidate>
+              <div class="form__row">
+                <label for="name">ФИО*</label>
+                <input id="name" name="name" type="text" required autocomplete="name" aria-describedby="name-error" />
+                <p class="form__error" id="name-error" role="alert" hidden>Пожалуйста, укажите ФИО.</p>
+              </div>
+              <div class="form__row">
+                <label for="email">Электронная почта*</label>
+                <input id="email" name="email" type="email" required autocomplete="email" aria-describedby="email-error" />
+                <p class="form__error" id="email-error" role="alert" hidden>Укажите корректный e-mail.</p>
+              </div>
+              <div class="form__row">
+                <label for="company">Компания</label>
+                <input id="company" name="company" type="text" autocomplete="organization" />
+              </div>
+              <div class="form__row">
+                <label for="message">Комментарий</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+              </div>
+              <div class="form__consent">
+                <input id="consent" name="consent" type="checkbox" required aria-describedby="consent-desc" />
+                <label for="consent">Согласен(на) на обработку персональных данных</label>
+              </div>
+              <p id="consent-desc" class="form__hint">Мы используем данные только для связи по программе.</p>
+              <button type="submit" class="btn-primary" disabled>Отправить</button>
+              <p class="form__success" role="status" hidden>
+                Спасибо! Заявка отправлена, мы свяжемся с вами в ближайшее время.
+              </p>
+            </form>
+          </div>
         </div>
       </section>
       <!-- STEP_3D: FAQ accordion -->

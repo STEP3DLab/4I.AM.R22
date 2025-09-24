@@ -35,7 +35,7 @@ if (featureChips.length) {
 // STEP_3D: Countdown timer with reserved width
 const countdownRoot = document.querySelector('[data-countdown]');
 if (countdownRoot) {
-  const targetDate = new Date('2024-04-15T09:00:00+03:00');
+  const targetDate = new Date('2025-10-20T09:00:00+03:00');
   const daysNode = countdownRoot.querySelector('[data-days]');
   const hoursNode = countdownRoot.querySelector('[data-hours]');
   const minutesNode = countdownRoot.querySelector('[data-minutes]');
