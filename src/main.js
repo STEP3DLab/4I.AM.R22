@@ -1760,6 +1760,20 @@ function initForm() {
       else input.classList.remove('border-red-400');
     }
   }
+  const stateClasses = {
+    enabled: ['bg-black', 'hover:opacity-90'],
+    disabled: ['cursor-not-allowed', 'bg-black/30'],
+  };
+  const baseButtonClasses = submitBtn.className
+    .split(/\s+/)
+    .filter(Boolean)
+    .filter((cls) => !stateClasses.disabled.includes(cls));
+  function applyButtonState(isEnabled) {
+    const nextClasses = isEnabled
+      ? [...baseButtonClasses, ...stateClasses.enabled]
+      : [...baseButtonClasses, ...stateClasses.disabled];
+    submitBtn.className = nextClasses.join(' ');
+  }
   function validate(silent = false) {
     const name = form.elements.name.value.trim();
     const email = form.elements.email.value.trim();
@@ -1778,9 +1792,7 @@ function initForm() {
       if (!silent) showError('agree', 'Нужно согласие на обработку данных');
     } else if (!silent) showError('agree', '');
     submitBtn.disabled = !ok;
-    submitBtn.className =
-      'rounded-xl px-4 py-2 text-white outline-none transition focus-visible:ring-2 focus-visible:ring-black/30 ' +
-      (ok ? 'bg-black hover:opacity-90' : 'bg-black/30 cursor-not-allowed');
+    applyButtonState(ok);
     return ok;
   }
   form.addEventListener('input', () => {
