@@ -58,7 +58,7 @@ async function copyIfExists(relativePath) {
 }
 
 async function buildTailwind() {
-  const inputFile = path.join(rootDir, 'assets/css/tailwind.css');
+  const inputFile = path.join(rootDir, 'assets/css/tailwind.src.css');
   const outputFile = path.join(distDir, 'assets/css/tailwind.css');
   await mkdir(path.dirname(outputFile), { recursive: true });
   const executable =
