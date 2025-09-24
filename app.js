@@ -35,7 +35,9 @@ if (featureChips.length) {
 // STEP_3D: Countdown timer with reserved width
 const countdownRoot = document.querySelector('[data-countdown]');
 if (countdownRoot) {
-  const targetDate = new Date('2025-10-20T09:00:00+03:00');
+  const targetDateIso = '2025-10-20T09:00:00+03:00';
+  const targetDate = new Date(targetDateIso);
+  countdownRoot.setAttribute('data-start', targetDateIso);
   const daysNode = countdownRoot.querySelector('[data-days]');
   const hoursNode = countdownRoot.querySelector('[data-hours]');
   const minutesNode = countdownRoot.querySelector('[data-minutes]');
@@ -199,7 +201,7 @@ window.addEventListener('resize', () => {
 const form = document.getElementById('applyForm');
 if (form) {
   const submitButton = form.querySelector('button[type="submit"]');
-  const consent = form.querySelector('#consent');
+  const consent = form.querySelector('#agree, #consent');
   const successMessage = form.querySelector('.form__success');
   const requiredFields = Array.from(form.querySelectorAll('input[required][type!="checkbox"], textarea[required]'));
   const errorMap = new Map(
@@ -222,11 +224,8 @@ if (form) {
   const validateField = (field) => {
     const errorNode = errorMap.get(field);
     if (!errorNode) return;
-    if (field.validity.valid) {
-      errorNode.hidden = true;
-    } else {
-      errorNode.hidden = false;
-    }
+    const shouldHide = field.validity.valid;
+    errorNode.classList.toggle('is-hidden', shouldHide);
   };
 
   requiredFields.forEach((field) => {
