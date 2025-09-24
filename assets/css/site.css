@@ -364,6 +364,21 @@ a.skip-link:focus-visible {
   min-height: 180px;
 }
 
+.team-card__avatar {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 9999px;
+  border: 1px dashed rgba(79, 70, 229, 0.28);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 231, 255, 0.7));
+  color: rgba(79, 70, 229, 0.65);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
 .team-modal__photo {
   min-height: 220px;
 }

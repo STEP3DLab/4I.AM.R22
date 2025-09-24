@@ -3,7 +3,6 @@ import {
   clampIndex,
   formatDaysLabel,
   formatLongDateRu,
-  formatShortDateRu,
   getBlocksSummary,
   getCountdownStatus,
   normalizeActivityType,
@@ -196,47 +195,60 @@ const teamMembers = [
     interests: 'Увлечения: музыка, программирование, спорт.',
   },
 ];
-const teamShowcase = [
-  {
-    id: 'showcase-ponkratova',
-    tag: 'Эксперт',
-    title: 'Христина Понкратова',
-    caption:
-      'Практикум по 3D-сканированию: от калибровки до высокоточной цифровки деталей для биопротезирования.',
-    picture: {
-      avif: 'images/gallery/scan-station.avif',
-      webp: 'images/gallery/scan-station.webp',
-      fallback: 'images/gallery/scan-station.svg',
-    },
-    alt: 'Христина Понкратова демонстрирует 3D-сканирование детали',
-  },
-  {
-    id: 'showcase-project',
-    tag: 'Кейс STEP_3D',
-    title: 'Индивидуальные импланты',
-    caption:
-      'Команда STEP_3D разрабатывает CAD-модели имплантов и медицинской оснастки по результатам реверсивного инжиниринга.',
-    picture: {
-      avif: 'images/gallery/cad-model.avif',
-      webp: 'images/gallery/cad-model.webp',
-      fallback: 'images/gallery/cad-model.svg',
-    },
-    alt: 'Цифровая модель импланта в CAD после реверсивного инжиниринга',
-  },
-  {
-    id: 'showcase-rekut',
-    tag: 'Эксперт',
-    title: 'Алексей Рекут',
-    caption:
-      'Наставник WorldSkills сопровождает этап аддитивного производства: подбор технологии и контроль печати мастер-моделей.',
-    picture: {
-      avif: 'images/gallery/printing.avif',
-      webp: 'images/gallery/printing.webp',
-      fallback: 'images/gallery/printing.svg',
-    },
-    alt: 'Алексей Рекут контролирует 3D-печать детали',
-  },
+const galleryFiles = [
+  'gallery-workshop-01.jpg',
+  'gallery-workshop-02.jpg',
+  'gallery-workshop-03.jpg',
+  'gallery-workshop-04.jpg',
+  'gallery-workshop-05.jpg',
+  'gallery-workshop-06.jpg',
+  'gallery-workshop-07.jpg',
+  'gallery-workshop-08.jpg',
+  'gallery-workshop-09.jpg',
+  'gallery-workshop-10.jpg',
+  'gallery-workshop-11.jpg',
+  'gallery-workshop-12.jpg',
+  'photo_5208550249549916288_y.jpg',
+  'photo_5240367431703191905_y.jpg',
+  'photo_5224365229666854148_y.jpg',
+  'photo_5224365229666854151_y.jpg',
+  'photo_5242198539470230878_y.jpg',
+  'photo_5242198539470230882_x.jpg',
+  'photo_5242198539470230887_x.jpg',
+  'photo_5244789671765071608_y.jpg',
+  'photo_5249116782596316903_y.jpg',
+  'photo_5312057896231621906_y.jpg',
+  'photo_5312067890620521246_y.jpg',
+  'photo_5312067890620521247_y.jpg',
+  'photo_5350630224422891438_y.jpg',
+  'photo_5395774681505717765_y.jpg',
+  'photo_5395774681505717766_y.jpg',
+  'photo_5404609008326795903_x.jpg',
+  'photo_5404609008326795954_y.jpg',
+  'photo_5404609008326795958_y.jpg',
+  'photo_5404609008326795961_y.jpg',
+  'photo_5404609008326795962_y.jpg',
+  'photo_5435945910057165000_y.jpg',
+  'photo_5458797343685075184_y.jpg',
+  'photo_5462921397052501526_y.jpg',
+  'photo_5462921397052501528_y.jpg',
+  'photo_5462921397052501529_y.jpg',
 ];
+const teamShowcase = galleryFiles.map((file, index) => {
+  const slug = file.replace(/\.[^.]+$/, '');
+  const photoNumber = String(index + 1).padStart(2, '0');
+  const caption = `Практический интенсив STEP_3D — фото ${photoNumber}`;
+  const isWorkshop = file.startsWith('gallery-workshop');
+  const tag = isWorkshop ? 'Мастерская' : 'Интенсив';
+  return {
+    id: `showcase-${slug}`,
+    tag,
+    title: `${tag} · фото ${photoNumber}`,
+    caption,
+    picture: { fallback: `images/gallery/${file}` },
+    alt: caption,
+  };
+});
 const modules = [
   {
     day: '01 (Пн)',
@@ -684,37 +696,56 @@ function renderTeam() {
   const detailRoot = document.getElementById('teamDetail');
   if (!cardsRoot || !detailRoot || !teamMembers.length) return;
   cardsRoot.innerHTML = '';
-  teamMembers.forEach((member) => {
-    const card = document.createElement('article');
-    card.className =
-      'flex h-full flex-col gap-4 rounded-2xl border border-black/10 bg-white/70 p-5 shadow-soft transition hover:-translate-y-1 hover:shadow-soft';
-    card.innerHTML = `
-      <div class="flex flex-col gap-4">
-        <div class="team-card__photo" aria-hidden="true"></div>
-        <div>
-          <div class="text-sm opacity-60">${member.title}</div>
-          <div class="mt-1 text-lg font-semibold leading-snug">${member.name}</div>
-          <p class="mt-3 text-sm text-ink-800">${member.summary}</p>
-          <ul class="mt-4 space-y-1 text-xs text-ink-700">
-            ${(member.cardPoints || [])
-              .map(
-                (point) =>
-                  `<li class="relative pl-3 leading-snug before:absolute before:left-0 before:top-1.5 before:h-1 before:w-1 before:rounded-full before:bg-black/30">${point}</li>`,
-              )
-              .join('')}
-          </ul>
-        </div>
+  detailRoot.innerHTML = '';
+
+  const memberNames = teamMembers.map((member) => member?.name).filter(Boolean);
+  const formattedNames =
+    memberNames.length <= 1
+      ? memberNames[0] ?? ''
+      : `${memberNames.slice(0, -1).join(', ')} и ${memberNames[memberNames.length - 1]}`;
+
+  const avatarsMarkup = teamMembers
+    .map((member) => {
+      const initials = String(member?.name || '')
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((part) => part[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase()
+        .padEnd(2, '·');
+      return `<span class="team-card__avatar" aria-hidden="true">${initials}</span>`;
+    })
+    .join('');
+
+  const teamCard = document.createElement('button');
+  teamCard.type = 'button';
+  teamCard.className =
+    'group flex w-full flex-col gap-4 rounded-2xl border border-black/10 bg-white/70 p-5 text-left shadow-soft transition hover:-translate-y-1 hover:shadow-soft focus-visible:ring-2 focus-visible:ring-black/20';
+  teamCard.setAttribute(
+    'aria-label',
+    'Команда курса — откроется окно с подробной информацией о преподавателях',
+  );
+  teamCard.innerHTML = `
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-wrap items-center gap-3" aria-hidden="true">
+        ${avatarsMarkup}
       </div>
-    `;
-    cardsRoot.appendChild(card);
-  });
-  detailRoot.innerHTML = `
-    <div class="mt-6 flex justify-center">
-      <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-black/10 px-5 py-2 text-sm font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/20" data-team-open-all>
-        <span>Подробнее</span>
-        <span aria-hidden>→</span>
-      </button>
+      <div>
+        <div class="text-sm uppercase tracking-[.2em] text-ink-400">Команда курса</div>
+        <div class="mt-1 text-lg font-semibold leading-snug text-ink-950">Знакомьтесь с наставниками STEP_3D</div>
+        <p class="mt-3 text-sm text-ink-800">
+          ${teamMembers.length === 1 ? 'Один преподаватель' : `${teamMembers.length} преподавателя`}${
+            formattedNames ? `: ${formattedNames}` : ''
+          }.
+        </p>
+        <p class="mt-2 text-xs text-ink-600">Нажмите, чтобы открыть профили и достижения каждого преподавателя.</p>
+      </div>
     </div>
+  `;
+  cardsRoot.appendChild(teamCard);
+
+  detailRoot.innerHTML = `
     <div data-team-overlay class="team-modal pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-4 py-8 opacity-0" aria-hidden="true">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-team-dismiss></div>
       <div class="team-modal__panel relative w-full max-w-4xl overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft-md transition duration-300" role="dialog" aria-modal="true" aria-labelledby="" tabindex="-1" data-team-dialog>
@@ -730,7 +761,6 @@ function renderTeam() {
   const modalContent = detailRoot.querySelector('[data-team-modal-content]');
   const panel = detailRoot.querySelector('[data-team-dialog]');
   const announcer = detailRoot.querySelector('[data-team-announcer]');
-  const openAllBtn = detailRoot.querySelector('[data-team-open-all]');
   if (panel) {
     panel.setAttribute('aria-hidden', 'true');
   }
@@ -856,9 +886,9 @@ function renderTeam() {
       `,
     };
   };
-  openAllBtn?.addEventListener('click', () => {
+  teamCard.addEventListener('click', () => {
     const { markup, headingId } = buildModalContent();
-    openModal({ content: markup, trigger: openAllBtn, labelId: headingId, announceText: 'Команда курса' });
+    openModal({ content: markup, trigger: teamCard, labelId: headingId, announceText: 'Команда курса' });
   });
 }
 function renderTeamShowcase() {
@@ -1245,19 +1275,12 @@ function renderAudience() {
   });
 }
 function renderStartCalendar() {
-  const days = 6;
-  const labels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-  const arr = new Array(days)
-    .fill(0)
-    .map((_, i) => new Date(COURSE_START.getTime() + i * 86400000));
   const root = $('#startCalendar');
   if (!root) {
     console.warn('Контейнер стартового календаря не найден, блок пропущен.');
     return;
   }
-  const head = `<div class="grid grid-cols-6 bg-white/60 text-xs">${labels.map((l) => `<div class="px-3 py-2 text-center font-medium text-ink-700">${l}</div>`).join('')}</div>`;
-  const body = `<div class="grid grid-cols-6 bg-white/30 text-sm">${arr.map((d) => `<div class="px-3 py-3 text-center"><div class="inline-flex min-w-[3rem] items-center justify-center rounded-full border border-black/10 px-3 py-1">${formatShortDateRu(d)}</div></div>`).join('')}</div>`;
-  root.innerHTML = head + body;
+  root.remove();
 }
 export function getInitialOpenDay(programModules = []) {
   if (!Array.isArray(programModules)) return '';
@@ -1275,25 +1298,9 @@ function renderProgram(options = {}) {
     return;
   }
   let view = 'full';
-  let openDay = getInitialOpenDay(programModules);
+  let openDay = '';
   const moduleSummaries = programModules.map((module) => getBlocksSummary(module.blocks));
-  const moduleDates = programModules.map((_, index) => new Date(COURSE_START.getTime() + index * 86400000));
   const emptySummary = { hours: 0, typeCounts: {} };
-  const getModuleDate = (index) => {
-    const candidate = moduleDates[index];
-    if (candidate instanceof Date && !Number.isNaN(candidate.valueOf())) {
-      return candidate;
-    }
-    return new Date(COURSE_START.getTime() + index * 86400000);
-  };
-  const getDisplayDate = (index) => {
-    try {
-      return formatShortDateRu(getModuleDate(index));
-    } catch (error) {
-      console.warn('Не удалось отформатировать дату модуля', error);
-      return '';
-    }
-  };
   const railTone = (t) =>
     ({
       lecture: 'from-sky-400/40',
@@ -1397,7 +1404,6 @@ function renderProgram(options = {}) {
     programModules.forEach((m, i) => {
       const isActive = openDay === m.day;
       const summary = moduleSummaries[i] ?? emptySummary;
-      const displayDate = getDisplayDate(i);
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className =
@@ -1410,10 +1416,7 @@ function renderProgram(options = {}) {
       btn.innerHTML = `
         <div class="flex items-center gap-3">
           <span class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-sm font-semibold text-ink-900">${String(i + 1).padStart(2, '0')}</span>
-          <div>
-            <div class="text-sm font-semibold text-ink-950">${m.day}</div>
-            <div class="text-xs text-ink-700">${displayDate}</div>
-          </div>
+          <div class="text-sm font-semibold text-ink-950">${m.day}</div>
         </div>
         <div class="flex flex-wrap items-center gap-2 text-xs text-ink-700">
           ${hoursChip}
@@ -1450,7 +1453,6 @@ function renderProgram(options = {}) {
       const compactChips = renderTypeChips(summary.typeCounts, 'compact');
       const fullChips = renderTypeChips(summary.typeCounts, 'full');
       const chevron = expanded ? renderIcon('chevron-up') : renderIcon('chevron-down');
-      const displayDate = getDisplayDate(i);
       const buttonClasses =
         'group flex w-full flex-col gap-3 rounded-2xl border border-black/10 bg-white p-4 text-left transition hover:bg-black/5 md:flex-row md:items-center md:justify-between' +
         (expanded ? ' border-black/20 shadow-soft-md' : '');
@@ -1462,10 +1464,7 @@ function renderProgram(options = {}) {
       btn.innerHTML = `
         <div class="flex items-center gap-3">
           <span class="grid h-10 w-10 place-items-center rounded-xl border border-black/10 bg-white text-sm font-semibold text-ink-900">${String(i + 1).padStart(2, '0')}</span>
-          <div>
-            <div class="font-medium text-ink-950">${m.day}</div>
-            <div class="text-xs text-ink-700">${displayDate}</div>
-          </div>
+          <div class="font-medium text-ink-950">${m.day}</div>
         </div>
         <div class="flex flex-wrap items-center gap-2 text-xs text-ink-700 md:hidden">
           ${hoursChip}
@@ -2017,7 +2016,10 @@ function renderLead() {
   setText('leadPrice', lead.price);
   const durationEl = document.getElementById('leadDuration');
   if (durationEl) {
-    durationEl.textContent = `${courseHours} часов · ${lead.schedule}`;
+    const [scheduleShortRaw] = String(lead.schedule || '').split(',');
+    const scheduleShort = scheduleShortRaw ? scheduleShortRaw.trim() : '';
+    const scheduleLabel = scheduleShort || lead.schedule || '—';
+    durationEl.textContent = `${courseHours} часов · ${scheduleLabel}`;
   } else {
     console.warn('Элемент #leadDuration не найден, длительность курса не обновлена.');
   }

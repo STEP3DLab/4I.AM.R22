@@ -61,7 +61,7 @@ describe('program rendering', () => {
     expect(body?.textContent).toContain('Скоро появится подробное расписание');
   });
 
-  it('expands the first module even if its title changes', () => {
+  it('keeps modules collapsed by default', () => {
     renderProgram({
       modules: [
         { day: '10 (Пн — обновлено)', blocks: [] },
@@ -71,11 +71,13 @@ describe('program rendering', () => {
 
     const dayButtons = document.querySelectorAll('#programDays button[aria-expanded]');
     expect(dayButtons.length).toBeGreaterThan(1);
-    expect(dayButtons[0].getAttribute('aria-expanded')).toBe('true');
-    expect(dayButtons[1].getAttribute('aria-expanded')).toBe('false');
+    dayButtons.forEach((btn) => {
+      expect(btn.getAttribute('aria-expanded')).toBe('false');
+    });
 
     const panels = document.querySelectorAll('#programDays [id^="program-day-"]');
-    expect(panels[0]?.hasAttribute('hidden')).toBe(false);
-    expect(panels[1]?.hasAttribute('hidden')).toBe(true);
+    panels.forEach((panel) => {
+      expect(panel?.hasAttribute('hidden')).toBe(true);
+    });
   });
 });
