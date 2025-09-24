@@ -2,8 +2,37 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 
 const DEFAULT_BASE_URL = 'https://step3dlab.github.io/4I.AM.R22/';
-const BASE_URL = (process.env.SITEMAP_BASE_URL ?? DEFAULT_BASE_URL).trim();
-const BASE_WITH_TRAILING_SLASH = BASE_URL.endsWith('/') ? BASE_URL : `${BASE_URL}/`;
+
+function determineBaseUrl() {
+  const raw = process.env.SITEMAP_BASE_URL;
+  if (raw === undefined) {
+    return { url: new URL(DEFAULT_BASE_URL), warning: null };
+  }
+
+  const trimmed = raw.trim();
+  if (!trimmed) {
+    return {
+      url: new URL(DEFAULT_BASE_URL),
+      warning: 'SITEMAP_BASE_URL is set but empty after trimming.',
+    };
+  }
+
+  try {
+    return { url: new URL(trimmed), warning: null };
+  } catch (error) {
+    return {
+      url: new URL(DEFAULT_BASE_URL),
+      warning: `SITEMAP_BASE_URL is not a valid absolute URL: ${error.message}`,
+    };
+  }
+}
+
+const { url: baseUrl, warning: baseUrlWarning } = determineBaseUrl();
+if (baseUrlWarning) {
+  console.warn(`[sitemap] ${baseUrlWarning} Falling back to default base URL: ${DEFAULT_BASE_URL}`);
+}
+
+const BASE_WITH_TRAILING_SLASH = baseUrl.href.endsWith('/') ? baseUrl.href : `${baseUrl.href}/`;
 
 const pages = [
   { loc: '/', priority: 0.9, changefreq: 'monthly' },
@@ -15,7 +44,13 @@ const pages = [
 
 function resolveUrl(loc) {
   const normalizedLoc = loc.startsWith('/') ? loc.slice(1) : loc;
-  return new URL(normalizedLoc, BASE_WITH_TRAILING_SLASH).toString();
+  try {
+    return new URL(normalizedLoc, BASE_WITH_TRAILING_SLASH).toString();
+  } catch (error) {
+    const message =
+      'Failed to resolve URL for sitemap entry. Ensure the base URL is a valid absolute URL.';
+    throw new Error(`${message} Original error: ${error.message}`);
+  }
 }
 
 export async function generateSitemap({ outputDir = 'public', filename = 'sitemap.xml' } = {}) {
