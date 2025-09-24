@@ -1,7 +1,6 @@
 import {
   calculateProgramHours,
   clampIndex,
-  formatDaysLabel,
   formatLongDateRu,
   getBlocksSummary,
   getCountdownStatus,
@@ -564,31 +563,40 @@ function renderIcon(name) {
 function renderStats() {
   const root = $('#stats');
   if (!root) return;
-  const steps = COURSE_STEPS;
   root.className = 'hero-highlight';
+  const highlights = [
+    { label: 'Код программы', value: course.code },
+    {
+      label: 'Длительность',
+      value: Number.isFinite(course.durationHours)
+        ? `${course.durationHours} ак. ч.`
+        : course.durationHours || '',
+    },
+    { label: 'График', value: course.schedule },
+    { label: 'Стоимость', value: course.price },
+  ].filter((item) => Boolean(item.value));
+  const highlightRows = highlights
+    .map(
+      (item) => `
+        <div class="flex items-baseline justify-between gap-3 rounded-2xl bg-white/75 px-3 py-2 shadow-sm">
+          <dt class="text-[11px] font-semibold uppercase tracking-[.2em] text-ink-500">${item.label}</dt>
+          <dd class="text-sm font-semibold leading-snug text-ink-900">${item.value}</dd>
+        </div>
+      `,
+    )
+    .join('');
+  const highlightContent = highlightRows
+    ? `<dl class="mt-4 space-y-2">${highlightRows}</dl>`
+    : course.summary
+    ? `<p class="mt-4 text-sm leading-relaxed text-ink-700">${course.summary}</p>`
+    : '';
   root.innerHTML = `
     <article class="rounded-3xl border border-black/10 bg-white/85 p-5 shadow-soft backdrop-blur-sm" role="group" aria-labelledby="courseHighlightTitle">
-      <div class="text-xs font-semibold uppercase tracking-[.32em] text-ink-500">Практикум</div>
+      <div class="text-[11px] font-semibold uppercase tracking-[.3em] text-ink-500">О программе</div>
       <h3 id="courseHighlightTitle" class="mt-3 text-2xl font-semibold tracking-tight text-ink-950">
-        Практический интенсив на базе РГСУ
+        Ключевые факты о программе
       </h3>
-      <p class="mt-2 text-sm leading-relaxed text-ink-700">
-        3D-сканирование → реверс в CAD → печать оснастки и мастер-моделей. От кейсов к результату.
-      </p>
-      <div class="mt-4 flex flex-wrap items-center gap-2">
-        ${steps
-          .map(
-            (step) => `
-              <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-3 py-1 text-xs font-medium text-ink-800">
-                <span class="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-sky-400/80 to-indigo-500/80 text-white shadow-sm" aria-hidden="true">
-                  ${renderIcon(step.icon)}
-                </span>
-                ${step.title}
-              </span>
-            `,
-          )
-          .join('')}
-      </div>
+      ${highlightContent}
     </article>
   `;
 }
@@ -612,9 +620,9 @@ function renderHeroAnimation() {
           ${stepsMarkup}
         </div>
         <div class="hero-animation__caption">
-          <span class="hero-animation__caption-title">Практический интенсив</span>
+          <span class="hero-animation__caption-title">Ключевые блоки курса</span>
           <p id="heroAnimationCaption" class="hero-animation__caption-text">
-            3D-сканирование → реверс в CAD → печать оснастки и мастер-моделей. От кейсов к результату.
+            От первого скана до готовой оснастки — практическая отработка каждого этапа.
           </p>
         </div>
       </div>
@@ -1576,9 +1584,11 @@ function initCountdown() {
 
   el.setAttribute('data-start', COURSE_START_ISO);
 
+  const unitEl = el.parentElement?.querySelector('[data-countdown-unit]') ?? null;
   const progressBar = document.getElementById('countdownBar');
 
-  let lastContent = '';
+  let lastValue = '';
+  let lastUnit = '';
   let liveMode = '';
   let timerId = null;
 
@@ -1592,16 +1602,36 @@ function initCountdown() {
     liveMode = nextMode;
   }
 
+  function updateDisplay(value, unit = '') {
+    if (lastValue !== value) {
+      el.textContent = value;
+      lastValue = value;
+    }
+    if (unitEl) {
+      const normalizedUnit = unit.trim();
+      if (lastUnit !== normalizedUnit) {
+        unitEl.textContent = normalizedUnit;
+        unitEl.classList.toggle('hidden', normalizedUnit.length === 0);
+        lastUnit = normalizedUnit;
+      }
+    }
+  }
+
+  function getDaysSuffix(value) {
+    const abs = Math.abs(value) % 100;
+    const lastDigit = abs % 10;
+    if (abs > 10 && abs < 20) return 'дней';
+    if (lastDigit === 1) return 'день';
+    if (lastDigit >= 2 && lastDigit <= 4) return 'дня';
+    return 'дней';
+  }
+
   function tick() {
     const status = getCountdownStatus(COURSE_START, new Date());
 
     if (status.isStarted) {
       setLiveMode('polite');
-      const startedMessage = 'курс начался';
-      if (lastContent !== startedMessage) {
-        el.textContent = startedMessage;
-        lastContent = startedMessage;
-      }
+      updateDisplay('курс начался', '');
       if (progressBar) {
         progressBar.style.width = '100%';
         progressBar.setAttribute('aria-valuenow', '100');
@@ -1617,11 +1647,9 @@ function initCountdown() {
     const isLastHour = status.days === 0 && status.hours === 0;
     setLiveMode(isLastHour ? 'polite' : 'off');
 
-    const nextText = status.days <= 0 ? '0 дней' : formatDaysLabel(status.days);
-    if (nextText !== lastContent) {
-      el.textContent = nextText;
-      lastContent = nextText;
-    }
+    const nextValue = Math.max(status.days, 0);
+    const nextUnit = getDaysSuffix(nextValue);
+    updateDisplay(String(nextValue), nextUnit);
 
     if (progressBar) {
       const normalizedDays = Math.min(Math.max(status.days, 0), COUNTDOWN_VISUALIZATION_RANGE_DAYS);
