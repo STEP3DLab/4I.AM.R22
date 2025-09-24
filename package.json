@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "styles": "tailwindcss -c tailwind.config.js -i assets/css/tailwind.src.css -o assets/css/tailwind.css --minify",
     "build": "node scripts/build.mjs",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "ci": "npm run lint && npm run format:check && npm run test && npm run build && npm run test:e2e -- --reporter=line",
