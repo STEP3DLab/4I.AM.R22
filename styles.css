@@ -315,6 +315,23 @@ button:disabled {
   background: rgba(75, 123, 255, 0.08);
 }
 
+.btn-share {
+  min-width: 0;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+.btn-share[data-share-state='copied'] {
+  background: rgba(75, 123, 255, 0.08);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.btn-share[data-share-state='error'] {
+  background: rgba(217, 45, 32, 0.08);
+  border-color: var(--status-exam);
+  color: var(--status-exam);
+}
+
 /* STEP_3D: Feature cards */
 .feature-grid {
   display: grid;
@@ -541,6 +558,23 @@ button:disabled {
 
 .team-card p {
   color: var(--muted);
+}
+
+.team-card--partner {
+  place-items: center;
+  padding: var(--space-32) var(--space-24);
+  gap: var(--space-16);
+}
+
+.team-card--partner p {
+  margin: 0;
+  color: var(--ink);
+  font-size: var(--font-md);
+  line-height: 1.4;
+}
+
+.team-card--partner strong {
+  color: var(--brand);
 }
 
 /* STEP_3D: Course lead info */
