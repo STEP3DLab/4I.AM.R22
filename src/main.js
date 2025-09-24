@@ -579,8 +579,12 @@ function renderInfoSection(title, items) {
       }
       const label = item.label || '';
       const href = item.href || '';
+      let linkAttributes = '';
+      if (/^https?:\/\//i.test(href)) {
+        linkAttributes = ' target="_blank" rel="noreferrer"';
+      }
       const content = href
-        ? `<a href="${href}" target="_blank" rel="noreferrer" class="underline decoration-black/20 underline-offset-2 transition hover:decoration-black">${label}</a>`
+        ? `<a href="${href}"${linkAttributes} class="underline decoration-black/20 underline-offset-2 transition hover:decoration-black">${label}</a>`
         : label;
       return `<li class="relative pl-4 text-sm leading-snug text-ink-800"><span class="absolute left-0 top-1.5 h-1.5 w-1.5 rounded-full bg-black/20"></span>${content}</li>`;
     })
