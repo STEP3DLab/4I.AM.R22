@@ -94,11 +94,23 @@
         padding: var(--space-16) 0;
       }
       .site-logo {
-        font-weight: 600;
-        font-size: 18px;
-        letter-spacing: -0.01em;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-8);
         color: inherit;
         text-decoration: none;
+      }
+      .site-logo img {
+        display: block;
+        height: 36px;
+        width: auto;
+      }
+      .site-logo__code {
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
       }
       .site-nav__list {
         display: flex;
@@ -195,7 +207,17 @@
     <a class="skip-link" href="#mainContent">Перейти к содержимому</a>
     <header class="site-header" role="banner">
       <div class="layout site-header__inner">
-        <a href="#top" class="site-logo" data-course-code>4I.R22.01</a>
+        <a href="#top" class="site-logo" data-course-code aria-label="STEP_3D Lab — курс 4I.R22.01">
+          <img
+            src="images/logos/step3d.svg"
+            width="180"
+            height="48"
+            alt="Логотип STEP_3D Lab"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="site-logo__code">4I.R22.01</span>
+        </a>
         <nav class="site-nav" aria-label="Основная навигация">
           <ul class="site-nav__list" id="navLinks">
             <li><a href="#about" data-nav="about">О курсе</a></li>
