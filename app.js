@@ -3,7 +3,9 @@ const navLinks = document.querySelectorAll('#navLinks a');
 const sections = Array.from(document.querySelectorAll('main section[id]'));
 
 if (navLinks.length && sections.length) {
-  const navMap = new Map(sections.map((section) => [section.id, document.querySelector(`a[href="#${section.id}"]`)]));
+  const navMap = new Map(
+    sections.map((section) => [section.id, document.querySelector(`a[href="#${section.id}"]`)]),
+  );
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -15,7 +17,7 @@ if (navLinks.length && sections.length) {
         }
       });
     },
-    { rootMargin: '-30% 0px -50% 0px', threshold: [0.5] }
+    { rootMargin: '-30% 0px -50% 0px', threshold: [0.5] },
   );
   sections.forEach((section) => observer.observe(section));
 }
@@ -112,13 +114,17 @@ if (carousel) {
       if (event.key === 'ArrowRight') {
         event.preventDefault();
         goToSlide(currentIndex + 1);
-        const dots = dotsContainer ? Array.from(dotsContainer.querySelectorAll('.carousel__dot')) : [];
+        const dots = dotsContainer
+          ? Array.from(dotsContainer.querySelectorAll('.carousel__dot'))
+          : [];
         dots[currentIndex]?.focus();
       }
       if (event.key === 'ArrowLeft') {
         event.preventDefault();
         goToSlide(currentIndex - 1);
-        const dots = dotsContainer ? Array.from(dotsContainer.querySelectorAll('.carousel__dot')) : [];
+        const dots = dotsContainer
+          ? Array.from(dotsContainer.querySelectorAll('.carousel__dot'))
+          : [];
         dots[currentIndex]?.focus();
       }
     });
@@ -201,9 +207,13 @@ if (form) {
   const submitButton = form.querySelector('button[type="submit"]');
   const consent = form.querySelector('#consent');
   const successMessage = form.querySelector('.form__success');
-  const requiredFields = Array.from(form.querySelectorAll('input[required][type!="checkbox"], textarea[required]'));
+  const requiredFields = Array.from(
+    form.querySelectorAll('input[required][type!="checkbox"], textarea[required]'),
+  );
   const errorMap = new Map(
-    requiredFields.map((field) => [field, document.getElementById(`${field.id}-error`)]).filter(([, node]) => node)
+    requiredFields
+      .map((field) => [field, document.getElementById(`${field.id}-error`)])
+      .filter(([, node]) => node),
   );
 
   const hideSuccessMessage = () => {
@@ -301,7 +311,8 @@ if (accordionButtons.length) {
       }
       if (event.key === 'ArrowUp') {
         event.preventDefault();
-        const prev = accordionButtons[currentIndex - 1] || accordionButtons[accordionButtons.length - 1];
+        const prev =
+          accordionButtons[currentIndex - 1] || accordionButtons[accordionButtons.length - 1];
         prev.focus();
       }
       if (event.key === 'Home') {

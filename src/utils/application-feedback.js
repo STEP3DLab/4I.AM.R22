@@ -20,8 +20,7 @@ export function buildApplicationSummary({ name, email, comment }) {
 
 export function createFeedbackCard(summary) {
   const card = document.createElement('div');
-  card.className =
-    'feedback-card rounded-2xl border border-black/10 bg-white p-4 shadow-soft-md';
+  card.className = 'feedback-card rounded-2xl border border-black/10 bg-white p-4 shadow-soft-md';
   card.setAttribute('data-state', 'hidden');
   card.setAttribute('role', 'status');
 

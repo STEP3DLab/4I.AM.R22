@@ -42,9 +42,7 @@ export function getAssistantRecommendations(comment = '') {
   try {
     const normalized = comment.toLocaleLowerCase('ru-RU');
     const matches = normalized
-      ? catalog.filter((module) =>
-          module.keywords.some((keyword) => normalized.includes(keyword)),
-        )
+      ? catalog.filter((module) => module.keywords.some((keyword) => normalized.includes(keyword)))
       : [];
 
     if (matches.length > 0) {

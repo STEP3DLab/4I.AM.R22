@@ -40,12 +40,7 @@ describe('program rendering', () => {
         { day: '11 (Вт)', blocks: [] },
       ]),
     ).toBe('10 (Пн)');
-    expect(
-      getInitialOpenDay([
-        { day: '  ' },
-        { day: '11 (Вт)', blocks: [] },
-      ]),
-    ).toBe('11 (Вт)');
+    expect(getInitialOpenDay([{ day: '  ' }, { day: '11 (Вт)', blocks: [] }])).toBe('11 (Вт)');
     expect(getInitialOpenDay([])).toBe('');
   });
 

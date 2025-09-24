@@ -1,9 +1,5 @@
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx,html}',
-    './assets/**/*.{html,js}',
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx,html}', './assets/**/*.{html,js}'],
   theme: {
     extend: {
       maxWidth: {

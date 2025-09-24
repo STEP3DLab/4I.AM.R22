@@ -65,7 +65,9 @@ async function buildTailwind() {
     process.platform === 'win32'
       ? path.join(rootDir, 'node_modules', '.bin', 'tailwindcss.cmd')
       : path.join(rootDir, 'node_modules', '.bin', 'tailwindcss');
-  await execFileAsync(executable, ['-i', inputFile, '-o', outputFile, '--minify', '--postcss'], { cwd: rootDir });
+  await execFileAsync(executable, ['-i', inputFile, '-o', outputFile, '--minify', '--postcss'], {
+    cwd: rootDir,
+  });
 }
 
 async function build() {

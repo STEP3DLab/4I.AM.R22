@@ -5,15 +5,15 @@
 }
 
 :where(
-    a,
-    button,
-    [role='button'],
-    input,
-    textarea,
-    select,
-    summary,
-    details[role='button']
-  ):focus-visible {
+  a,
+  button,
+  [role='button'],
+  input,
+  textarea,
+  select,
+  summary,
+  details[role='button']
+):focus-visible {
   outline: 3px solid var(--a11y-focus-color);
   outline-offset: var(--a11y-focus-offset);
   box-shadow: 0 0 0 4px var(--a11y-focus-background);

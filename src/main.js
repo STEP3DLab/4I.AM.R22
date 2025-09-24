@@ -6,16 +6,8 @@ import {
   getCountdownStatus,
   normalizeActivityType,
 } from './utils/course-utils.js';
-import {
-  buildApplicationSummary,
-  createFeedbackCard,
-} from './utils/application-feedback.js';
-import {
-  COURSE_CONFIG,
-  COURSE_START,
-  COURSE_START_ISO,
-  SITE_CONFIG,
-} from './data/course.js';
+import { buildApplicationSummary, createFeedbackCard } from './utils/application-feedback.js';
+import { COURSE_CONFIG, COURSE_START, COURSE_START_ISO, SITE_CONFIG } from './data/course.js';
 
 const siteConfig = SITE_CONFIG ?? {};
 const course = COURSE_CONFIG ?? {};
@@ -405,7 +397,8 @@ const faqItems = [
   },
   {
     question: 'Что происходит на экзамене?',
-    answer: '<p>Итоговый модуль — 16 академических часов практики. Участники выполняют задание компетенции «Реверсивный инжиниринг»: оцифровывают деталь, строят CAD-модель и подготавливают её к аддитивному производству.</p><p class="mt-2">Экзамен завершает программу сертификацией навыков и обратной связью от экспертов.</p>',
+    answer:
+      '<p>Итоговый модуль — 16 академических часов практики. Участники выполняют задание компетенции «Реверсивный инжиниринг»: оцифровывают деталь, строят CAD-модель и подготавливают её к аддитивному производству.</p><p class="mt-2">Экзамен завершает программу сертификацией навыков и обратной связью от экспертов.</p>',
   },
 ];
 const helpfulLinks = [
@@ -588,8 +581,8 @@ function renderStats() {
   const highlightContent = highlightRows
     ? `<dl class="mt-4 space-y-2">${highlightRows}</dl>`
     : course.summary
-    ? `<p class="mt-4 text-sm leading-relaxed text-ink-700">${course.summary}</p>`
-    : '';
+      ? `<p class="mt-4 text-sm leading-relaxed text-ink-700">${course.summary}</p>`
+      : '';
   root.innerHTML = `
     <article class="rounded-3xl border border-black/10 bg-white/85 p-5 shadow-soft backdrop-blur-sm" role="group" aria-labelledby="courseHighlightTitle">
       <div class="text-[11px] font-semibold uppercase tracking-[.3em] text-ink-500">О программе</div>
@@ -709,7 +702,7 @@ function renderTeam() {
   const memberNames = teamMembers.map((member) => member?.name).filter(Boolean);
   const formattedNames =
     memberNames.length <= 1
-      ? memberNames[0] ?? ''
+      ? (memberNames[0] ?? '')
       : `${memberNames.slice(0, -1).join(', ')} и ${memberNames[memberNames.length - 1]}`;
 
   const avatarsMarkup = teamMembers
@@ -896,7 +889,12 @@ function renderTeam() {
   };
   teamCard.addEventListener('click', () => {
     const { markup, headingId } = buildModalContent();
-    openModal({ content: markup, trigger: teamCard, labelId: headingId, announceText: 'Команда курса' });
+    openModal({
+      content: markup,
+      trigger: teamCard,
+      labelId: headingId,
+      announceText: 'Команда курса',
+    });
   });
 }
 function renderTeamShowcase() {
@@ -1200,7 +1198,8 @@ function renderFaq() {
     `;
     const panel = document.createElement('div');
     panel.id = panelId;
-    panel.className = 'faq-answer overflow-hidden px-4 text-sm text-ink-800 transition-[max-height] duration-200 ease-out';
+    panel.className =
+      'faq-answer overflow-hidden px-4 text-sm text-ink-800 transition-[max-height] duration-200 ease-out';
     panel.setAttribute('role', 'region');
     panel.setAttribute('aria-labelledby', controlId);
     panel.setAttribute('aria-hidden', String(!expanded));
@@ -1302,7 +1301,9 @@ function renderProgram(options = {}) {
   const programModules = Array.isArray(options.modules) ? options.modules : modules;
   const root = $('#programRoot');
   if (!root) {
-    console.warn('Контейнер программы (#programRoot) не найден. Секция расписания не будет инициализирована.');
+    console.warn(
+      'Контейнер программы (#programRoot) не найден. Секция расписания не будет инициализирована.',
+    );
     return;
   }
   let view = 'full';
@@ -1371,7 +1372,8 @@ function renderProgram(options = {}) {
     });
   };
   const tabsWrap = document.createElement('div');
-  tabsWrap.className = 'relative border-b border-black/10 bg-white md:sticky md:top-16 md:shadow-sm';
+  tabsWrap.className =
+    'relative border-b border-black/10 bg-white md:sticky md:top-16 md:shadow-sm';
   tabsWrap.innerHTML =
     '<div class="overflow-x-auto px-3 py-2"><div class="flex items-stretch gap-3" id="dayTabs"></div></div>';
   root.appendChild(tabsWrap);
@@ -1446,7 +1448,8 @@ function renderProgram(options = {}) {
       const placeholder = document.createElement('div');
       placeholder.className =
         'rounded-2xl border border-dashed border-black/10 bg-white p-6 text-center text-sm text-ink-700 shadow-sm';
-      placeholder.textContent = 'Скоро появится подробное расписание по дням. Следите за обновлениями!';
+      placeholder.textContent =
+        'Скоро появится подробное расписание по дням. Следите за обновлениями!';
       body.appendChild(placeholder);
       return;
     }
@@ -1521,10 +1524,15 @@ function renderProgram(options = {}) {
           const durationValue = Number(b.durationHours);
           const hasDurationValue = Number.isFinite(durationValue) && durationValue > 0;
           const hasDurationLabel = rawDurationLabel.length > 0 && rawDurationLabel !== '—';
-          const durationLabel = hasDurationLabel ? rawDurationLabel : hasDurationValue ? `${durationValue} ч` : '';
+          const durationLabel = hasDurationLabel
+            ? rawDurationLabel
+            : hasDurationValue
+              ? `${durationValue} ч`
+              : '';
           const durationPill = durationLabel ? renderPill(`⏱ ${durationLabel}`) : '';
           const controlText = String(b.control ?? '').trim();
-          const controlPill = controlText && controlText !== '—' ? renderPill(`✔ ${controlText}`) : '';
+          const controlPill =
+            controlText && controlText !== '—' ? renderPill(`✔ ${controlText}`) : '';
           const typeMeta = typeChipMeta[blockType];
           const typePillLabel = typeMeta?.label ?? 'Формат';
           const typePillTone = typeMeta ? blockType : 'neutral';
