@@ -64,5 +64,8 @@ describe('course utils', () => {
   it('wraps carousel index safely', () => {
     expect(clampIndex(0, -1, 3)).toBe(2);
     expect(clampIndex(2, 1, 3)).toBe(0);
+    expect(clampIndex(1, 10, 4)).toBe(3);
+    expect(clampIndex(1, -10, 4)).toBe(3);
+    expect(clampIndex(0, -13, 5)).toBe(2);
   });
 });
