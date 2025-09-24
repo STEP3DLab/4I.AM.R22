@@ -35,17 +35,22 @@ const COUNTDOWN_VISUALIZATION_RANGE_DAYS = 60;
 const modules = defaultProgramModules;
 
 const teamShowcase = galleryFiles.map((file, index) => {
-  const slug = file.replace(/\.[^.]+$/, '');
+  const normalizedPath = file.replace(/^\/+/, '');
+  const segments = normalizedPath.split('/');
+  const filename = segments.pop() ?? normalizedPath;
+  const baseSlug = filename.replace(/\.[^.]+$/, '');
+  const slug = baseSlug.replace(/[^a-z0-9-]+/gi, '-').replace(/^-+|-+$/g, '') || `photo-${index + 1}`;
   const photoNumber = String(index + 1).padStart(2, '0');
   const caption = `Практический интенсив STEP_3D — фото ${photoNumber}`;
-  const isWorkshop = file.startsWith('gallery-workshop');
-  const tag = isWorkshop ? 'Мастерская' : 'Интенсив';
+  const isWorkshop = filename.startsWith('gallery-workshop');
+  const isTeamAlbum = segments.includes('team');
+  const tag = isTeamAlbum ? 'Команда' : isWorkshop ? 'Мастерская' : 'Интенсив';
   return {
     id: `showcase-${slug}`,
     tag,
     title: `${tag} · фото ${photoNumber}`,
     caption,
-    picture: { fallback: `images/gallery/${file}` },
+    picture: { fallback: `images/${normalizedPath}` },
     alt: caption,
   };
 });
