@@ -12,8 +12,15 @@ import {
   buildApplicationSummary,
   createFeedbackCard,
 } from './utils/application-feedback.js';
-import { COURSE_START, COURSE_START_ISO } from './data/course.js';
+import {
+  COURSE_CONFIG,
+  COURSE_START,
+  COURSE_START_ISO,
+  SITE_CONFIG,
+} from './data/course.js';
 
+const siteConfig = SITE_CONFIG ?? {};
+const course = COURSE_CONFIG ?? {};
 const courseStartLabel = formatLongDateRu(COURSE_START);
 
 const COUNTDOWN_VISUALIZATION_RANGE_DAYS = 60;
@@ -322,36 +329,21 @@ const modules = [
   { day: '06 (Сб)', blocks: [] },
 ];
 const totalProgramHours = Math.round(calculateProgramHours(modules));
+const courseHours = Number.isFinite(Number(course.durationHours))
+  ? Number(course.durationHours)
+  : totalProgramHours;
 const lead = {
-  price: '68\u202f000 ₽',
-  schedule: '1 неделя, пн-сб 09:00—18:00',
-  seats: '6–12 человек в группе',
+  price: course.price ?? '—',
+  schedule: course.schedule ?? '—',
+  seats: course.groupSize ?? '—',
   startLabel: courseStartLabel,
-  venue:
-    'Москва, ул. Беговая, д. 12 (лаборатория промдизайна); итоговое занятие (суббота) — Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)',
+  venue: course.venue ?? '',
 };
-const applyLocations = [
-  {
-    id: 'begovaya',
-    kind: 'Основная площадка',
-    badge: 'Будни',
-    address: 'Москва, ул. Беговая, д. 12',
-    caption: 'Лаборатория промышленного дизайна',
-    mapQuery: 'Москва, ул. Беговая, 12',
-  },
-  {
-    id: 'vika',
-    kind: 'Финальное занятие',
-    badge: 'Суббота',
-    address: 'Москва, ул. Вильгельма Пика, д. 4, к. 8',
-    caption: 'Технопарк РГСУ, пространство STEP_3D',
-    mapQuery: 'Москва, ул. Вильгельма Пика, 4к8',
-  },
-];
+const applyLocations = Array.isArray(siteConfig.locations) ? siteConfig.locations : [];
 const faqItems = [
   {
     question: 'Как устроено расписание курса?',
-    answer: `<p>Интенсив проходит в формате ${lead.schedule}. За неделю мы проходим ${totalProgramHours} академических часов: совмещаем лекции, практикумы, мастер-классы и консультации.</p>
+    answer: `<p>Интенсив проходит в формате ${lead.schedule}. За неделю мы проходим ${courseHours} академических часов: совмещаем лекции, практикумы, мастер-классы и консультации.</p>
 <p class="mt-2">Пятый день полностью посвящён экзамену и защите проекта в формате International High-Tech Competition.</p>`,
   },
   {
@@ -399,6 +391,23 @@ const APP_VERSION = (import.meta.env && import.meta.env.VITE_APP_VERSION) || 'de
 const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json?v=${encodeURIComponent(APP_VERSION)}`;
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
+
+function renderCourseMeta() {
+  const map = [
+    ['[data-course-code]', course.code],
+    ['[data-course-tagline]', course.tagline],
+    ['[data-course-summary]', course.summary],
+  ];
+  map.forEach(([selector, value]) => {
+    if (!value) return;
+    const el = $(selector);
+    if (!el) {
+      console.warn(`Элемент ${selector} не найден, пропускаем обновление конфигурации курса.`);
+      return;
+    }
+    el.textContent = value;
+  });
+}
 
 function renderHeroStart() {
   const heroStartEl = document.getElementById('heroStartDate');
@@ -2155,7 +2164,7 @@ function renderLead() {
   setText('leadPrice', lead.price);
   const durationEl = document.getElementById('leadDuration');
   if (durationEl) {
-    durationEl.textContent = `${totalProgramHours} часов · ${lead.schedule}`;
+    durationEl.textContent = `${courseHours} часов · ${lead.schedule}`;
   } else {
     console.warn('Элемент #leadDuration не найден, длительность курса не обновлена.');
   }
@@ -2173,6 +2182,7 @@ function renderLead() {
 export { renderProgram, initScrollBar };
 
 if (!globalThis.__STEP3D_SKIP_AUTO_INIT__) {
+  renderCourseMeta();
   renderHeroStart();
   renderBenefits();
   renderStats();
