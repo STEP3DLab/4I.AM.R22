@@ -430,11 +430,26 @@
       aria-label="Стоимость и ссылка на запись"
     >
       <div class="layout">
-        <div class="flex items-center justify-between rounded-2xl border border-black/10 bg-white/90 px-4 py-2 shadow-lg backdrop-blur">
+        <div class="flex items-center justify-between gap-3 rounded-2xl border border-black/10 bg-white/90 px-4 py-2 shadow-lg backdrop-blur">
           <span class="text-sm"
             >Стоимость: <span class="font-semibold" id="leadPriceMobile"></span
           ></span>
-          <a href="#apply" class="rounded-xl bg-black px-3 py-1.5 text-white">Записаться</a>
+          <div class="flex items-center gap-2">
+            <a
+              href="#apply"
+              class="rounded-xl bg-black px-3 py-1.5 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
+              >Записаться</a
+            >
+            <button
+              type="button"
+              id="stickyCtaDismiss"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/10 text-sm text-ink-500 transition hover:bg-black hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              aria-controls="stickyCta"
+            >
+              <span aria-hidden="true" class="text-base leading-none">×</span>
+              <span class="sr-only">Скрыть предложение</span>
+            </button>
+          </div>
         </div>
       </div>
     </aside>
