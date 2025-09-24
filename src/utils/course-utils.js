@@ -1,3 +1,5 @@
+import { COURSE_START_ISO } from '../data/course.js';
+
 const DATE_FORMATTER = new Intl.DateTimeFormat('ru-RU', {
   day: '2-digit',
   month: 'short',
@@ -8,6 +10,25 @@ const LONG_DATE_FORMATTER = new Intl.DateTimeFormat('ru-RU', {
   month: 'long',
   year: 'numeric',
 });
+
+function formatIcsDate(date) {
+  if (!(date instanceof Date) || Number.isNaN(date.valueOf())) {
+    throw new TypeError('formatIcsDate expects a valid Date instance');
+  }
+  const pad = (value) => String(value).padStart(2, '0');
+  return `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}T${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}Z`;
+}
+
+function escapeIcsText(text) {
+  if (text == null) {
+    return '';
+  }
+  return String(text)
+    .replace(/\\/g, '\\\\')
+    .replace(/\n/g, '\\n')
+    .replace(/,/g, '\\,')
+    .replace(/;/g, '\\;');
+}
 
 export function formatShortDateRu(date) {
   if (!(date instanceof Date) || Number.isNaN(date.valueOf())) {
@@ -104,4 +125,52 @@ export function calculateProgramHours(modules = []) {
     const summary = getBlocksSummary(module?.blocks ?? []);
     return total + summary.hours;
   }, 0);
+}
+
+export function buildCourseCalendarIcs({
+  durationHours = 0,
+  title = 'Интенсив STEP_3D × РГСУ',
+  description = 'Практический курс по реверсивному инжинирингу и аддитивному производству.',
+  location = '',
+  url = '',
+  startIso = COURSE_START_ISO,
+} = {}) {
+  const start = new Date(startIso || COURSE_START_ISO);
+  if (Number.isNaN(start.valueOf())) {
+    throw new TypeError('buildCourseCalendarIcs requires a valid start date');
+  }
+
+  const hours = Number(durationHours);
+  const durationMinutes = Number.isFinite(hours) && hours > 0 ? Math.round(hours * 60) : 0;
+  const end = new Date(start.getTime() + durationMinutes * 60000);
+  const dtEnd = durationMinutes > 0 ? formatIcsDate(end) : formatIcsDate(start);
+
+  const dtStart = formatIcsDate(start);
+  const dtStamp = formatIcsDate(new Date());
+  const summary = escapeIcsText(title);
+  const desc = escapeIcsText(description);
+  const place = escapeIcsText(location);
+  const page = escapeIcsText(url);
+
+  const lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//STEP_3D//Course Calendar//RU',
+    `NAME:${summary}`,
+    `X-WR-CALNAME:${summary}`,
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    `UID:step3d-course-${dtStart}@step3d.ru`,
+    `DTSTAMP:${dtStamp}`,
+    `DTSTART:${dtStart}`,
+    `DTEND:${dtEnd}`,
+    `SUMMARY:${summary}`,
+    `DESCRIPTION:${desc}`,
+    place ? `LOCATION:${place}` : null,
+    page ? `URL:${page}` : null,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].filter(Boolean);
+
+  return `${lines.join('\r\n')}\r\n`;
 }
