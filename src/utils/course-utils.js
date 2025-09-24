@@ -120,6 +120,24 @@ export function formatDaysLabel(input) {
   return `${value} ${suffix}`;
 }
 
+export function formatTeachersLabel(input) {
+  if (!Number.isFinite(input)) {
+    return '';
+  }
+  const value = Math.trunc(input);
+  const abs = Math.abs(value) % 100;
+  const last = abs % 10;
+  let suffix = 'преподавателей';
+  if (abs > 10 && abs < 20) {
+    suffix = 'преподавателей';
+  } else if (last === 1) {
+    suffix = 'преподаватель';
+  } else if (last >= 2 && last <= 4) {
+    suffix = 'преподавателя';
+  }
+  return `${value} ${suffix}`;
+}
+
 export function clampIndex(current, delta, length) {
   if (!Number.isFinite(current) || !Number.isFinite(delta) || length <= 0) {
     return 0;
