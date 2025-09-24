@@ -1909,6 +1909,7 @@ function initStickyCta() {
 }
 function initScrollBar() {
   const bar = document.getElementById('scrollbar');
+  if (!bar) return;
   function onScroll() {
     const h = document.documentElement;
     const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
@@ -2064,7 +2065,7 @@ function renderLead() {
   setText('leadPriceInline', lead.price);
   setText('leadPriceMobile', lead.price);
 }
-export { renderProgram };
+export { renderProgram, initScrollBar };
 
 if (!globalThis.__STEP3D_SKIP_AUTO_INIT__) {
   renderHeroStart();
