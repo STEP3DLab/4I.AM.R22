@@ -7,6 +7,10 @@ import {
   getBlocksSummary,
   getCountdownStatus,
 } from './utils/course-utils.js';
+import {
+  buildApplicationSummary,
+  createFeedbackCard,
+} from './utils/application-feedback.js';
 import { COURSE_START, COURSE_START_ISO } from './data/course.js';
 
 const courseStartLabel = formatLongDateRu(COURSE_START);
@@ -1616,25 +1620,6 @@ function initCountdown() {
   timerId = setInterval(tick, 60000);
 }
 const FEEDBACK_HIDE_DELAY = 6000;
-function buildApplicationSummary({ name, email, comment }) {
-  const trimmedName = name.trim();
-  const firstName = trimmedName ? trimmedName.split(/\s+/)[0] : 'Коллега';
-  const emailPart = email.trim();
-  const commentPart = comment.trim();
-  const details = [];
-  if (commentPart) {
-    details.push(`Мы учтём ваш запрос: «${commentPart}».`);
-  }
-  if (emailPart) {
-    details.push(`Подтверждение отправим на ${emailPart}.`);
-  }
-  return {
-    title: `${firstName}, заявка отправлена!`,
-    body:
-      details.join(' ') ||
-      'Спасибо за интерес к интенсиву. Менеджер свяжется с вами и расскажет про свободные места.',
-  };
-}
 function initForm() {
   const form = document.getElementById('applyForm');
   const submitBtn = document.getElementById('submitBtn');
@@ -1680,29 +1665,10 @@ function initForm() {
       clearTimeout(feedbackTimer);
       feedbackTimer = null;
     }
-    feedbackHost.innerHTML = `
-      <div class="feedback-card rounded-2xl border border-black/10 bg-white p-4 shadow-soft-md" data-state="hidden" role="status">
-        <div class="flex items-start gap-3">
-          <div>
-            <p class="text-sm font-semibold text-ink-950">${summary.title}</p>
-            <p class="mt-1 text-sm text-ink-800">${summary.body}</p>
-          </div>
-          <button
-            type="button"
-            class="ml-auto inline-flex h-7 w-7 flex-none items-center justify-center rounded-full border border-black/10 text-xs text-ink-700 transition hover:bg-black hover:text-white"
-            aria-label="Скрыть уведомление"
-            data-feedback-close
-          >
-            ×
-          </button>
-        </div>
-      </div>
-    `;
-    const card = feedbackHost.querySelector('.feedback-card');
-    const closeBtn = feedbackHost.querySelector('[data-feedback-close]');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', hideFeedback, { once: true });
-    }
+    feedbackHost.innerHTML = '';
+    const { card, closeBtn } = createFeedbackCard(summary || {});
+    feedbackHost.append(card);
+    closeBtn?.addEventListener('click', hideFeedback, { once: true });
     window.requestAnimationFrame(() => {
       card?.setAttribute('data-state', 'visible');
     });
