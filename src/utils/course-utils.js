@@ -113,8 +113,8 @@ export function clampIndex(current, delta, length) {
   if (!Number.isFinite(current) || !Number.isFinite(delta) || length <= 0) {
     return 0;
   }
-  const next = (current + delta + length) % length;
-  return next;
+  const normalized = ((current + delta) % length + length) % length;
+  return normalized;
 }
 
 export function calculateProgramHours(modules = []) {
