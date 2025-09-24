@@ -20,10 +20,7 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ru_RU" />
-    <meta
-      property="og:image"
-      content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp"
-    />
+    <meta property="og:image" content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp" />
     <meta property="og:image:alt" content="Алексей Рекут контролирует 3D-печать детали" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Реверсивный инжиниринг и АТ — интенсив" />
@@ -31,499 +28,568 @@
       name="twitter:description"
       content="Практический образовательный интенсив на базе РГСУ: 3D-сканирование, реверсивный инжиниринг в CAD, 3D-печать."
     />
-    <meta
-      name="twitter:image"
-      content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp"
-    />
-    <link rel="preload" href="assets/css/tailwind.css" as="style" />
-    <link rel="preload" href="assets/css/a11y.css" as="style" />
-    <link rel="preload" href="assets/css/site.css" as="style" />
-    <link rel="stylesheet" href="assets/css/tailwind.css" />
-    <link rel="stylesheet" href="assets/css/a11y.css" />
-    <link rel="stylesheet" href="assets/css/site.css" />
+    <meta name="twitter:image" content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp" />
+    <!-- STEP_3D: Inline critical styles for header and hero -->
+    <style>
+      :root {
+        color-scheme: light;
+        --brand: #4b7bff;
+        --ink: #101828;
+        --muted: #667085;
+        --bg: #f7f9fc;
+        --surface: #ffffff;
+        --border: #e5e7eb;
+        --radius-12: 12px;
+        --radius-24: 24px;
+        --shadow-1: 0 2px 10px rgba(16, 24, 40, 0.06);
+        --shadow-2: 0 8px 30px rgba(16, 24, 40, 0.08);
+        --space-8: 8px;
+        --space-16: 16px;
+        --space-24: 24px;
+        --space-32: 32px;
+        --space-48: 48px;
+        --space-64: 64px;
+      }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      .skip-link {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translate(-50%, -100%);
+        padding: var(--space-16) var(--space-24);
+        background: var(--brand);
+        color: #ffffff;
+        border-radius: var(--radius-24);
+        text-decoration: none;
+        transition: transform 150ms ease;
+        z-index: 1000;
+      }
+      .skip-link:focus-visible {
+        transform: translate(-50%, 16px);
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+      }
+      .site-header {
+        position: sticky;
+        top: 0;
+        backdrop-filter: saturate(180%) blur(8px);
+        background: rgba(255, 255, 255, 0.75);
+        border-bottom: 1px solid var(--border);
+        z-index: 900;
+      }
+      .layout {
+        width: min(1120px, 100% - var(--space-32));
+        margin: 0 auto;
+      }
+      .site-header__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-16);
+        padding: var(--space-16) 0;
+      }
+      .site-logo {
+        font-weight: 600;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+        color: inherit;
+        text-decoration: none;
+      }
+      .site-nav__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-16);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .hero {
+        padding: calc(var(--space-64) + var(--space-32)) 0 var(--space-64);
+      }
+      .hero__grid {
+        display: grid;
+        gap: var(--space-32);
+      }
+      .hero__title {
+        font-size: clamp(32px, 6vw, 56px);
+        line-height: 1.2;
+        margin: 0;
+        max-width: 20ch;
+      }
+      .hero__lead {
+        font-size: 20px;
+        line-height: 1.5;
+        margin: 0;
+        color: #667085;
+      }
+      .hero__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-16);
+        margin-top: var(--space-24);
+      }
+      .btn-primary {
+        background: var(--brand);
+        color: #ffffff;
+        border-radius: 999px;
+        padding: 12px var(--space-24);
+        border: none;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+      }
+      .btn-secondary {
+        border-radius: 999px;
+        padding: 12px var(--space-24);
+        border: 1px solid var(--brand);
+        color: var(--brand);
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+      }
+      .hero__media {
+        background: var(--surface);
+        border-radius: var(--radius-24);
+        padding: var(--space-16);
+        box-shadow: var(--shadow-2);
+      }
+      .hero__media picture,
+      .hero__media img {
+        display: block;
+        width: 100%;
+        border-radius: var(--radius-12);
+        height: auto;
+      }
+      @media (min-width: 768px) {
+        .site-nav__list {
+          gap: var(--space-24);
+          align-items: center;
+          justify-content: flex-end;
+        }
+        .hero__grid {
+          grid-template-columns: 1fr 1fr;
+          align-items: center;
+        }
+      }
+    </style>
+    <!-- STEP_3D: Defer non-critical stylesheet -->
+    <link rel="preload" href="styles.css" as="style" />
+    <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="styles.css" />
+    </noscript>
   </head>
   <body>
     <a class="skip-link" href="#mainContent">Перейти к содержимому</a>
-    <div
-      id="scrollbar"
-      class="fixed left-0 top-0 z-[60] h-0.5 w-full bg-black/80"
-      style="transform-origin: left center; transform: scaleX(0)"
-    ></div>
-    <header class="main-nav-container border-b border-black/10 bg-white/75 shadow-sm backdrop-blur" role="banner">
-      <div class="layout flex items-center justify-between py-3">
-        <a href="#top" class="font-semibold tracking-tight" data-course-code>4I.R22.01</a>
-        <div class="flex items-center gap-3">
-          <button
-            type="button"
-            id="mobileNavToggle"
-            class="inline-flex items-center gap-2 rounded-xl border border-black/10 px-3 py-1.5 text-sm font-medium transition hover:bg-black hover:text-white md:hidden"
-            aria-controls="mobileNavPanel"
-            aria-expanded="false"
-          >
-            <span aria-hidden="true" class="inline-flex h-4 w-4 flex-col justify-between">
-              <span class="block h-[2px] w-full rounded-full bg-current"></span>
-              <span class="block h-[2px] w-full rounded-full bg-current"></span>
-              <span class="block h-[2px] w-full rounded-full bg-current"></span>
-            </span>
-            <span>Меню</span>
-          </button>
-          <nav class="hidden md:block" aria-label="Основная навигация">
-            <ul id="navLinks" class="flex items-center gap-6 text-sm" role="list">
-              <li>
-                <a href="#about" class="opacity-70 transition hover:opacity-100" data-nav="about">О курсе</a>
-              </li>
-              <li>
-                <a href="#program" class="opacity-70 transition hover:opacity-100" data-nav="program">Программа</a>
-              </li>
-              <li>
-                <a href="#team" class="opacity-70 transition hover:opacity-100" data-nav="team">Команда</a>
-              </li>
-              <li>
-                <a
-                  href="#apply"
-                  class="opacity-70 transition hover:opacity-100"
-                  data-nav="apply"
-                  >Записаться</a
-                >
-              </li>
-            </ul>
-          </nav>
-          <a
-            href="#apply"
-            class="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-black/10 px-4 py-2 text-sm font-medium transition hover:bg-black hover:text-white"
-            >Записаться</a
-          >
-        </div>
+    <header class="site-header" role="banner">
+      <div class="layout site-header__inner">
+        <a href="#top" class="site-logo" data-course-code>4I.R22.01</a>
+        <nav class="site-nav" aria-label="Основная навигация">
+          <ul class="site-nav__list" id="navLinks">
+            <li><a href="#about" data-nav="about">О курсе</a></li>
+            <li><a href="#program" data-nav="program">Программа</a></li>
+            <li><a href="#gallery" data-nav="gallery">Фотогалерея</a></li>
+            <li><a href="#team" data-nav="team">Команда</a></li>
+            <li><a href="#apply" data-nav="apply">Записаться</a></li>
+            <li><a href="#faq" data-nav="faq">FAQ</a></li>
+          </ul>
+        </nav>
       </div>
     </header>
-    <div id="mobileNav" class="fixed inset-0 z-[70] hidden" aria-hidden="true" data-open="false">
-      <div
-        data-mobile-nav-overlay
-        class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-200 pointer-events-none"
-      ></div>
-      <nav
-        id="mobileNavPanel"
-        tabindex="-1"
-        aria-label="Мобильная навигация"
-        class="absolute right-0 top-0 flex h-full w-72 max-w-[80vw] translate-x-full flex-col gap-6 bg-white p-6 shadow-xl transition-transform duration-200"
-      >
-        <div class="flex items-center justify-between gap-3">
-          <span class="text-xs uppercase tracking-[.2em] text-ink-400">Меню</span>
-          <button
-            type="button"
-            data-mobile-nav-close
-            class="rounded-lg border border-black/10 px-2.5 py-1 text-xs uppercase tracking-[.2em] text-ink-700 transition hover:bg-black hover:text-white"
-          >
-            Закрыть
-          </button>
-        </div>
-        <div class="flex flex-col gap-3" data-mobile-nav-links></div>
-      </nav>
-    </div>
-    <main id="mainContent" class="page-main" tabindex="-1">
-    <section id="top" class="page-section page-section--hero section-gap" aria-labelledby="section-top-heading">
-      <div class="layout">
-        <div
-          class="surface surface-emphasis grid grid-cols-1 items-start gap-10 p-6 md:grid-cols-[1.1fr_minmax(0,0.9fr)] md:p-10"
-        >
-          <div class="flex flex-col gap-6">
-            <a
-              href="https://technopark.rgsu.net/"
-              target="_blank"
-              rel="noreferrer noopener"
-              class="eyebrow group"
-              data-course-tagline
-            >
-              Программа повышения квалификации на безе ФГБОУ ВО РГСУ совместно с ООО CTEП_3Д
-              <span
-                aria-hidden="true"
-                class="ml-1 text-base leading-none transition-transform group-hover:translate-x-0.5"
-              >↗</span>
-            </a>
-            <h1 id="section-top-heading" class="reveal text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
-              Реверсивный инжиниринг<br />и аддитивное производство
-            </h1>
-            <p class="reveal text-lg text-ink-800" data-course-summary>
-              Практический образовательный интенсив на базе РГСУ: 3D-сканирование, реверсивный
-              инжиниринг в CAD, 3D-печать
-            </p>
-            <div id="benefits" class="flex flex-wrap gap-2" aria-label="Преимущества"></div>
-            <div class="flex flex-wrap items-center gap-4">
-              <a
-                href="#apply"
-                class="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-black px-6 py-2.5 text-base font-semibold text-white transition hover:opacity-90"
-                >Записаться</a
-              >
-              <a
-                href="#program"
-                class="rounded-xl border border-black/10 px-5 py-2.5 text-sm font-medium transition hover:bg-black hover:text-white"
-                >Смотреть программу</a
-              >
-            </div>
-            <div class="flex flex-col gap-3">
-              <div>
-                <span class="text-sm text-ink-700">Старт:</span>
-                <span
-                  class="text-base font-semibold text-ink-900"
-                  id="heroStartDate"
-                  data-start="2025-10-20T09:00:00+03:00"
-                  >20 октября 2025</span
-                >
+    <main id="mainContent">
+      <!-- STEP_3D: Hero section with chips and countdown -->
+      <section id="top" class="hero" aria-labelledby="section-hero">
+        <div class="layout">
+          <div class="hero__grid">
+            <div class="hero__content">
+              <p class="eyebrow" data-course-tagline>Программа повышения квалификации РГСУ × STEP_3D</p>
+              <h1 id="section-hero" class="hero__title">Реверсивный инжиниринг и аддитивное производство</h1>
+              <p class="hero__lead" data-course-summary>
+                Интенсив на 72 часа: сканирование, обработка облаков точек, моделирование и 3D-печать с наставниками
+                производства.
+              </p>
+              <div class="hero__chips" role="group" aria-label="Формат участия">
+                <button type="button" class="chip" data-feature aria-pressed="false">
+                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M12 2.5 3 7v2l9 4.5 9-4.5V7l-9-4.5Zm0 9.2L3 7v10l9 4.5 9-4.5V7l-9 4.7Z" fill="currentColor" />
+                  </svg>
+                  Очные мастер-классы
+                </button>
+                <button type="button" class="chip" data-feature aria-pressed="false">
+                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M5 5h14v2H5V5Zm0 6h14v2H5v-2Zm0 6h9v2H5v-2Z" fill="currentColor" />
+                  </svg>
+                  Учебные кейсы от партнёров
+                </button>
+                <button type="button" class="chip" data-feature aria-pressed="false">
+                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M12 2a5 5 0 0 1 5 5v3.09a6 6 0 1 1-10 0V7a5 5 0 0 1 5-5Zm0 20a3 3 0 0 0 3-3H9a3 3 0 0 0 3 3Z" fill="currentColor" />
+                  </svg>
+                  Наставники из индустрии
+                </button>
               </div>
-              <div
-                class="w-full max-w-sm rounded-3xl border border-black/5 bg-gradient-to-br from-sky-500 via-indigo-500 to-indigo-600 p-4 text-white shadow-soft"
-                role="group"
-                aria-label="До старта программы"
-              >
-                <div class="flex items-center gap-3">
-                  <div
-                    class="grid h-12 w-12 place-items-center rounded-2xl bg-white/15 text-2xl text-white"
-                    aria-hidden="true"
-                  >
-                    <span>⏳</span>
-                  </div>
-                  <div class="flex-1">
-                    <div class="text-xs font-semibold uppercase tracking-[.25em] text-white/80">
-                      До старта программы
-                    </div>
-                    <div class="mt-1 flex items-baseline gap-2">
-                      <span
-                        id="countdown"
-                        class="text-3xl font-semibold leading-none tracking-tight text-white"
-                        aria-live="off"
-                      >
-                        —
-                      </span>
-                      <span data-countdown-unit class="text-sm font-medium text-white/80">дней</span>
-                    </div>
-                  </div>
+              <div class="hero__countdown" aria-live="polite">
+                <div class="countdown" data-countdown>
+                  <span><span class="countdown__digit" data-days>00</span><span class="countdown__label">дней</span></span>
+                  <span><span class="countdown__digit" data-hours>00</span><span class="countdown__label">часов</span></span>
+                  <span><span class="countdown__digit" data-minutes>00</span><span class="countdown__label">минут</span></span>
                 </div>
-                <div class="mt-4 h-2 w-full rounded-full bg-white/25" role="presentation">
-                  <div
-                    id="countdownBar"
-                    class="h-2 rounded-full bg-white transition-all duration-500"
-                    role="progressbar"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    aria-valuenow="0"
-                    style="width: 0%"
-                  ></div>
-                </div>
+                <p class="hero__meta">Старт 15 апреля · Москва, технопарк РГСУ</p>
+              </div>
+              <div class="hero__actions">
+                <a class="btn-primary" href="#apply">Записаться</a>
+                <a class="btn-secondary" href="#program">Смотреть программу</a>
               </div>
             </div>
-            <div id="stats" class="mt-6" aria-label="О курсе"></div>
-          </div>
-          <div
-            class="relative aspect-square overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-b from-neutral-50 to-neutral-100 p-2"
-          >
-            <div
-              id="carousel"
-              class="relative h-full w-full overflow-hidden rounded-2xl select-none"
-              aria-roledescription="карусель"
-            ></div>
-            <div class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/10"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="gallery" class="page-section section-gap" aria-labelledby="section-gallery-heading">
-      <div class="layout">
-        <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div class="max-w-2xl">
-            <h2 id="section-gallery-heading" class="reveal section-heading">Фотогалерея</h2>
-            <p class="reveal section-subheading">
-              Атмосфера практических занятий: оборудование, команда и результаты слушателей на площадках STEP_3D и РГСУ.
-            </p>
-          </div>
-          <div class="flex gap-2 self-start md:self-end">
-            <button
-              type="button"
-              aria-label="Предыдущий слайд"
-              data-showcase-prev
-              aria-controls="teamShowcaseFigure"
-              class="grid h-12 w-12 place-items-center rounded-full border border-black/10 bg-white/90 text-ink-900 shadow-soft transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/20"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              aria-label="Следующий слайд"
-              data-showcase-next
-              aria-controls="teamShowcaseFigure"
-              class="grid h-12 w-12 place-items-center rounded-full border border-black/10 bg-white/90 text-ink-900 shadow-soft transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/20"
-            >
-              ›
-            </button>
-          </div>
-        </div>
-        <div class="mt-8 flex flex-col gap-4">
-          <figure
-            id="teamShowcaseFigure"
-            class="group relative overflow-hidden rounded-3xl border border-black/10 bg-white/90 p-1 shadow-soft"
-            role="group"
-            aria-roledescription="галерея"
-            tabindex="0"
-          >
-            <div class="relative overflow-hidden rounded-[26px] bg-neutral-100">
-              <picture data-showcase-picture class="block h-full w-full">
+            <figure class="hero__media">
+              <picture>
+                <source
+                  srcset="images/gallery/printing.avif 640w"
+                  sizes="(min-width: 960px) 480px, 100vw"
+                  type="image/avif"
+                />
+                <source
+                  srcset="images/gallery/printing.webp 640w"
+                  sizes="(min-width: 960px) 480px, 100vw"
+                  type="image/webp"
+                />
                 <img
-                  data-showcase-img
-                  alt=""
-                  class="h-full w-full rounded-[26px] object-cover transition duration-300 group-focus-visible:scale-[1.01] group-hover:scale-[1.01]"
-                  loading="lazy"
+                  src="images/gallery/printing.webp"
+                  srcset="images/gallery/printing.webp 640w"
+                  sizes="(min-width: 960px) 480px, 100vw"
+                  width="640"
+                  height="480"
+                  alt="Наставник контролирует процесс 3D-печати"
+                  loading="eager"
+                  fetchpriority="high"
                   decoding="async"
                 />
               </picture>
-              <span
-                data-showcase-tag
-                class="absolute left-5 top-5 hidden items-center rounded-full bg-black/75 px-3 py-1 text-xs font-medium text-white shadow-sm"
-              ></span>
-              <span
-                data-showcase-counter
-                class="absolute right-5 top-5 inline-flex items-center rounded-full bg-black/75 px-3 py-1 text-xs font-medium text-white shadow-sm"
-              ></span>
+              <figcaption class="hero__figure-caption">Практика на промышленных FDM-принтерах</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+      <!-- STEP_3D: About section -->
+      <section id="about" class="section" aria-labelledby="section-about">
+        <div class="layout stack">
+          <div class="section__header">
+            <p class="eyebrow">Зачем участвовать</p>
+            <h2 id="section-about">Теория, практика и портфолио в одном интенсиве</h2>
+          </div>
+          <div class="feature-grid" role="list">
+            <article class="feature-card" role="listitem">
+              <h3>Эксперты STEP_3D</h3>
+              <p>Работайте с инженерами, которые внедряют аддитивные технологии на производстве и делятся кейсами.</p>
+            </article>
+            <article class="feature-card" role="listitem">
+              <h3>Готовый проект</h3>
+              <p>Участники формируют собственный кейс: от сканирования деталей до подготовки модели к печати.</p>
+            </article>
+            <article class="feature-card" role="listitem">
+              <h3>Сертификат РГСУ</h3>
+              <p>По итогам программы выдаётся удостоверение о повышении квалификации установленного образца.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <!-- STEP_3D: Gallery carousel -->
+      <section id="gallery" class="section" aria-labelledby="section-gallery">
+        <div class="layout stack">
+          <div class="section__header">
+            <p class="eyebrow">Как проходит обучение</p>
+            <h2 id="section-gallery">Фотогалерея</h2>
+          </div>
+          <section aria-label="Фотогалерея">
+            <div class="carousel" role="region" aria-roledescription="carousel">
+              <button type="button" class="carousel__control prev" aria-label="Предыдущее фото">‹</button>
+              <ul class="carousel__track" aria-live="polite">
+                <li class="carousel__slide" id="slide-1" role="tabpanel" aria-labelledby="dot-1">
+                  <figure>
+                    <picture>
+                      <source
+                        srcset="images/gallery/scan-station.avif 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        type="image/avif"
+                      />
+                      <source
+                        srcset="images/gallery/scan-station.webp 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        type="image/webp"
+                      />
+                      <img
+                        src="images/gallery/scan-station.webp"
+                        srcset="images/gallery/scan-station.webp 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        width="640"
+                        height="480"
+                        alt="Студент учится сканировать корпус детали"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
+                    <figcaption>Сканирование деталей на оптическом стенде</figcaption>
+                  </figure>
+                </li>
+                <li class="carousel__slide" id="slide-2" role="tabpanel" aria-labelledby="dot-2">
+                  <figure>
+                    <picture>
+                      <source
+                        srcset="images/gallery/cad-model.avif 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        type="image/avif"
+                      />
+                      <source
+                        srcset="images/gallery/cad-model.webp 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        type="image/webp"
+                      />
+                      <img
+                        src="images/gallery/cad-model.webp"
+                        srcset="images/gallery/cad-model.webp 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        width="640"
+                        height="480"
+                        alt="Группа студентов обсуждает CAD-модель на экране"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
+                    <figcaption>Командная работа над CAD-моделями</figcaption>
+                  </figure>
+                </li>
+                <li class="carousel__slide" id="slide-3" role="tabpanel" aria-labelledby="dot-3">
+                  <figure>
+                    <picture>
+                      <source
+                        srcset="images/gallery/printing.avif 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        type="image/avif"
+                      />
+                      <source
+                        srcset="images/gallery/printing.webp 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        type="image/webp"
+                      />
+                      <img
+                        src="images/gallery/printing.webp"
+                        srcset="images/gallery/printing.webp 640w"
+                        sizes="(min-width: 960px) 560px, 100vw"
+                        width="640"
+                        height="480"
+                        alt="Наставник демонстрирует параметры 3D-печати"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
+                    <figcaption>Настройка печати и постобработка моделей</figcaption>
+                  </figure>
+                </li>
+              </ul>
+              <button type="button" class="carousel__control next" aria-label="Следующее фото">›</button>
+              <div class="carousel__dots" role="tablist" aria-label="Выбор слайда"></div>
             </div>
-            <figcaption class="mt-3 rounded-2xl border border-black/5 bg-white/90 px-5 py-4">
-              <div class="text-sm font-semibold text-ink-950" data-showcase-title></div>
-              <p class="mt-1 text-sm text-ink-700" data-showcase-caption></p>
-            </figcaption>
-          </figure>
-          <p id="teamShowcaseStatus" class="text-xs text-ink-600" aria-live="polite"></p>
+          </section>
         </div>
-      </div>
-    </section>
-    <section id="about" class="page-section section-gap" aria-labelledby="section-about-heading">
-      <div class="layout">
-        <h2 id="section-about-heading" class="reveal section-heading">Для кого</h2>
-        <p class="reveal section-subheading">
-          Курс рассчитан на специалистов, которым нужен прикладной навык — от оцифровки до готовой
-          детали. Программа также подходит начинающим, которые хотят освоить аддитивные технологии с
-          нуля.
-        </p>
-        <div id="audienceGrid" class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"></div>
-        <p class="mt-3 text-xs text-ink-700">
-          Не нашли себя? <a href="#apply" class="underline underline-offset-2">Напишите нам</a> —
-          подскажем, подойдёт ли программа под ваши задачи.
-        </p>
-        <div class="mt-6 rounded-3xl border border-amber-200/60 bg-amber-50/70 p-5 text-sm shadow-soft">
-          <div class="font-medium">Предварительные требования</div>
-          <p class="mt-1 flex items-start gap-2 text-ink-900">
-            <span aria-hidden="true" class="mt-0.5 text-lg">⚙️</span>
-            <span class="font-semibold"
-              >Слушатели должны владеть базовыми навыками CAD-проектирования и быть знакомыми с
-              основами теории машиностроения.</span
-            >
-          </p>
-        </div>
-      </div>
-    </section>
-    <section id="program" class="page-section section-gap" aria-labelledby="section-program-heading">
-      <div class="layout">
-        <h2 id="section-program-heading" class="reveal section-heading">Календарно-тематический план</h2>
-        <p class="reveal section-subheading">48 часов</p>
-        <div id="startCalendar" class="mt-8 mb-6 overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft"></div>
-        <div id="programRoot" class="relative rounded-3xl border border-black/10 bg-white shadow-soft"></div>
-        <div class="mt-6 grid gap-4 md:grid-cols-3">
-          <div class="rounded-3xl border border-black/10 bg-white/80 p-5 shadow-soft">
-            <div class="text-xs uppercase tracking-[.2em] text-ink-400">Стоимость</div>
-            <div class="mt-2 text-2xl font-semibold" id="leadPrice"></div>
+      </section>
+      <!-- STEP_3D: Program and schedule -->
+      <section id="program" class="section" aria-labelledby="section-program">
+        <div class="layout stack">
+          <div class="section__header">
+            <p class="eyebrow">Учебный план</p>
+            <h2 id="section-program">Программа интенсива</h2>
           </div>
-          <div class="rounded-3xl border border-black/10 bg-white/80 p-5 shadow-soft">
-            <div class="text-xs uppercase tracking-[.2em] text-ink-400">Сроки и режим</div>
-            <div class="mt-2 font-medium" id="leadDuration"></div>
-            <div
-              class="mt-1 text-sm text-ink-700"
-              id="leadStart"
-              data-start="2025-10-20T09:00:00+03:00"
-            >
-              Старт: 20 октября 2025
+          <div class="segmented" role="group" aria-label="Режим отображения расписания">
+            <button type="button" class="segmented__btn is-active" data-view="compact" aria-pressed="true">Компактный</button>
+            <button type="button" class="segmented__btn" data-view="detailed" aria-pressed="false">Подробный</button>
+          </div>
+          <div class="schedule" data-view="compact">
+            <article class="schedule__item" data-type="lecture">
+              <header class="schedule__header">
+                <h3>День 1 · Основы реверсивного инжиниринга</h3>
+                <span class="status-chip" data-status="lecture" aria-label="Формат: Лекция">Лекция</span>
+              </header>
+              <div class="schedule__meta">
+                <p>История, оборудование, требования к цифровому двойнику.</p>
+                <p>09:30 – 13:00</p>
+              </div>
+              <div class="schedule__details">
+                <p>Разбор кейсов внедрения аддитивных технологий. Практическое знакомство с оборудованием, обзор ПО.</p>
+              </div>
+            </article>
+            <article class="schedule__item" data-type="practice">
+              <header class="schedule__header">
+                <h3>День 2 · Сканирование и подготовка данных</h3>
+                <span class="status-chip" data-status="practice" aria-label="Формат: Практика">Практика</span>
+              </header>
+              <div class="schedule__meta">
+                <p>Настройка сканера, построение облаков точек.</p>
+                <p>10:00 – 18:00</p>
+              </div>
+              <div class="schedule__details">
+                <p>Участники формируют сеточную модель, очищают и выравнивают данные. Разбор типовых ошибок и способов контроля качества.</p>
+              </div>
+            </article>
+            <article class="schedule__item" data-type="workshop">
+              <header class="schedule__header">
+                <h3>День 3 · Построение CAD-модели</h3>
+                <span class="status-chip" data-status="workshop" aria-label="Формат: Мастер-класс">Мастер-класс</span>
+              </header>
+              <div class="schedule__meta">
+                <p>Перенос сетки в CAD, параметрическое моделирование.</p>
+                <p>10:00 – 18:00</p>
+              </div>
+              <div class="schedule__details">
+                <p>Работа в малых группах с наставником. Подготовка моделей к печати, формирование отчёта для заказчика.</p>
+              </div>
+            </article>
+            <article class="schedule__item" data-type="exam">
+              <header class="schedule__header">
+                <h3>День 4 · Защита проектов</h3>
+                <span class="status-chip" data-status="exam" aria-label="Формат: Экзамен">Экзамен</span>
+              </header>
+              <div class="schedule__meta">
+                <p>Презентация проектов, обратная связь от экспертов.</p>
+                <p>11:00 – 16:00</p>
+              </div>
+              <div class="schedule__details">
+                <p>Сдача готовых моделей, защита результатов и планов по внедрению. Индивидуальные рекомендации от комиссии.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <!-- STEP_3D: Team section -->
+      <section id="team" class="section" aria-labelledby="section-team">
+        <div class="layout stack">
+          <div class="section__header">
+            <p class="eyebrow">Команда наставников</p>
+            <h2 id="section-team">Преподаватели STEP_3D</h2>
+          </div>
+          <div class="team-grid">
+            <article class="team-card">
+              <img
+                src="images/gallery/photo_5242198539470230887_x.jpg"
+                width="320"
+                height="320"
+                alt="Алексей Рекут"
+                loading="lazy"
+                decoding="async"
+              />
+              <h3>Алексей Рекут</h3>
+              <p>Руководитель STEP_3D. Эксперт по внедрению аддитивного производства на машиностроительных предприятиях.</p>
+            </article>
+            <article class="team-card">
+              <img
+                src="images/gallery/photo_5244789671765071608_y.jpg"
+                width="320"
+                height="320"
+                alt="Анастасия Колесникова"
+                loading="lazy"
+                decoding="async"
+              />
+              <h3>Анастасия Колесникова</h3>
+              <p>Инженер-технолог, наставник по подготовке цифровых двойников и управлению качеством печати.</p>
+            </article>
+            <article class="team-card">
+              <img
+                src="images/gallery/photo_5312057896231621906_y.jpg"
+                width="320"
+                height="320"
+                alt="Иван Мальцев"
+                loading="lazy"
+                decoding="async"
+              />
+              <h3>Иван Мальцев</h3>
+              <p>Инженер-конструктор. Специализируется на реверс-инжиниринге сложных деталей и оптимизации конструкции.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <!-- STEP_3D: Application form -->
+      <section id="apply" class="section" aria-labelledby="section-apply">
+        <div class="layout stack">
+          <div class="section__header">
+            <p class="eyebrow">Подать заявку</p>
+            <h2 id="section-apply">Оставьте контакты — мы свяжемся в течение дня</h2>
+          </div>
+          <form id="applyForm" class="form" novalidate>
+            <div class="form__row">
+              <label for="name">ФИО*</label>
+              <input id="name" name="name" type="text" required autocomplete="name" aria-describedby="name-error" />
+              <p class="form__error" id="name-error" role="alert" hidden>Пожалуйста, укажите ФИО.</p>
             </div>
-          </div>
-          <div class="rounded-3xl border border-black/10 bg-white/80 p-5 shadow-soft">
-            <div class="text-xs uppercase tracking-[.2em] text-ink-400">Группа</div>
-            <div class="mt-2 font-medium" id="leadSeats"></div>
-          </div>
+            <div class="form__row">
+              <label for="email">Электронная почта*</label>
+              <input id="email" name="email" type="email" required autocomplete="email" aria-describedby="email-error" />
+              <p class="form__error" id="email-error" role="alert" hidden>Укажите корректный e-mail.</p>
+            </div>
+            <div class="form__row">
+              <label for="company">Компания</label>
+              <input id="company" name="company" type="text" autocomplete="organization" />
+            </div>
+            <div class="form__row">
+              <label for="message">Комментарий</label>
+              <textarea id="message" name="message" rows="4"></textarea>
+            </div>
+            <div class="form__consent">
+              <input id="consent" name="consent" type="checkbox" required aria-describedby="consent-desc" />
+              <label for="consent">Согласен(на) на обработку персональных данных</label>
+            </div>
+            <p id="consent-desc" class="form__hint">Мы используем данные только для связи по программе.</p>
+            <button type="submit" class="btn-primary" disabled>Отправить</button>
+            <p class="form__success" role="status" hidden>Спасибо! Заявка отправлена, мы свяжемся с вами в ближайшее время.</p>
+          </form>
         </div>
-        <p class="mt-5 text-xs text-ink-700">
-          Индустриальный партнёр курса — <span class="font-medium">STEP_3D</span>.
-        </p>
-      </div>
-    </section>
-    <section id="team" class="page-section section-gap" aria-labelledby="section-team-heading">
-      <div class="layout">
-        <h2 id="section-team-heading" class="reveal section-heading">Команда</h2>
-        <p class="reveal section-subheading">
-          РГСУ — один из ведущих центров компетенций по реверсивному инжинирингу. Среди преподавателей — чемпионы и эксперты WorldSkills/BRICS.
-        </p>
-        <div id="teamCards" class="mt-8 grid gap-4 md:grid-cols-3" aria-label="Команда курса"></div>
-        <div id="teamDetail" class="mt-8"></div>
-      </div>
-    </section>
-    <section id="apply" class="page-section section-gap" aria-labelledby="section-apply-heading">
-      <div class="layout">
-        <h2 id="section-apply-heading" class="reveal section-heading">Записаться на курс</h2>
-        <p class="reveal section-subheading">
-          Оставьте заявку — менеджер свяжется с вами и уточнит детали (наличие мест, график, документы).
-        </p>
-        <form id="applyForm" class="mt-8 rounded-3xl border border-black/10 bg-white/90 p-6 shadow-soft" novalidate>
-          <div class="grid gap-5 md:grid-cols-2">
-            <label class="flex flex-col gap-2 text-sm font-medium text-ink-800">
-              Имя и фамилия
-              <input
-                name="name"
-                autocomplete="name"
-                required
-                placeholder="Иван Иванов"
-                class="rounded-2xl border border-black/10 bg-white/95 px-4 py-2.5 text-sm font-normal outline-none transition focus-visible:ring-2 focus-visible:ring-black/30"
-              />
-              <span class="hidden text-xs text-red-600" data-err="name"></span>
-            </label>
-            <label class="flex flex-col gap-2 text-sm font-medium text-ink-800">
-              Электронная почта
-              <input
-                name="email"
-                type="email"
-                autocomplete="email"
-                required
-                placeholder="name@example.com"
-                class="rounded-2xl border border-black/10 bg-white/95 px-4 py-2.5 text-sm font-normal outline-none transition focus-visible:ring-2 focus-visible:ring-black/30"
-              />
-              <span class="hidden text-xs text-red-600" data-err="email"></span>
-            </label>
-            <label class="md:col-span-2 flex flex-col gap-2 text-sm font-medium text-ink-800">
-              Комментарий
-              <textarea
-                name="comment"
-                rows="4"
-                placeholder="Кратко о целях и опыте"
-                class="rounded-2xl border border-black/10 bg-white/95 px-4 py-2.5 text-sm font-normal outline-none transition focus-visible:ring-2 focus-visible:ring-black/30"
-              ></textarea>
-            </label>
-            <label class="md:col-span-2 flex items-start gap-3 text-sm text-ink-800">
-              <input
-                name="agree"
-                type="checkbox"
-                class="mt-1 h-4 w-4 rounded border-black/30 outline-none focus-visible:ring-2 focus-visible:ring-black/30"
-              />
-              <span
-                >Согласен(а) на обработку персональных данных и условия политики
-                конфиденциальности.</span
-              >
-            </label>
-            <span class="hidden text-xs text-red-600 md:col-span-2" data-err="agree"></span>
+      </section>
+      <!-- STEP_3D: FAQ accordion -->
+      <section id="faq" class="section" aria-labelledby="section-faq">
+        <div class="layout stack">
+          <div class="section__header">
+            <p class="eyebrow">Частые вопросы</p>
+            <h2 id="section-faq">Что важно знать перед стартом</h2>
           </div>
-          <div class="mt-6 flex flex-wrap items-center gap-3">
-            <button
-              type="submit"
-              id="submitBtn"
-              disabled
-              class="cursor-not-allowed rounded-xl bg-black/30 px-5 py-2.5 text-sm font-medium text-white outline-none transition focus-visible:ring-2 focus-visible:ring-black/30"
-            >
-              Отправить заявку
-            </button>
-            <span
-              class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-4 py-1.5 text-sm shadow-soft"
-              >Стоимость: <span class="font-medium" id="leadPriceInline"></span
-            ></span>
-          </div>
-          <div id="applyFeedback" aria-live="polite" class="mt-4 space-y-3"></div>
-          <div class="mt-6 grid gap-4 md:grid-cols-2 md:items-start">
-            <div id="applyLocations" class="flex flex-col gap-3"></div>
-            <div id="applyMap" class="min-h-[18rem]"></div>
-          </div>
-          <section
-            id="faqPanel"
-            class="mt-6 rounded-3xl border border-black/10 bg-white/90 p-4 text-sm md:p-5"
-            aria-labelledby="faqPanelHeading"
-          >
-            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h3 id="faqPanelHeading" class="text-base font-semibold">Часто задаваемые вопросы</h3>
-                <p class="text-ink-800">
-                  Раскрывайте ответы, чтобы узнать про формат, расписание и организационные детали интенсива.
-                </p>
+          <div class="accordion" role="presentation">
+            <div class="accordion__item">
+              <button type="button" aria-expanded="true" aria-controls="faq-panel-1" id="faq-trigger-1">Где проходят занятия?</button>
+              <div id="faq-panel-1" role="region" aria-labelledby="faq-trigger-1">
+                <p>Очные занятия проходят в технопарке РГСУ (ул. Вильгельма Пика, 4). Онлайн-сессии доступны для дистанционных участников.</p>
               </div>
             </div>
-            <div id="faqList" class="mt-4 space-y-3" role="list"></div>
-          </section>
-        </form>
-        <div class="mt-4 space-y-2 text-xs opacity-70">
-          <p>
-            Нажимая кнопку «Отправить заявку», вы даёте
-            <span class="underline">согласие на обработку персональных данных</span> и подтверждаете
-            ознакомление с политикой конфиденциальности.
-          </p>
-          <p>
-            Индустриальный партнёр курса — <span class="font-medium">STEP_3D</span>. По всем вопросам
-            можно
-            <a class="underline" href="https://t.me/step3d_support" target="_blank" rel="noreferrer"
-              >Связаться с нами в Telegram</a
-            >.
-          </p>
-          <p>
-            По предварительной договорённости (<span class="font-medium">от 6 человек</span>) мы можем
-            согласовать и утвердить удобные для вашей команды даты старта и расписания.
-          </p>
-        </div>
-        <div class="mt-6">
-          <div class="text-sm opacity-60">Полезные ссылки</div>
-          <div id="helpfulLinks" class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
-        </div>
-      </div>
-    </section>
-    <aside
-      id="stickyCta"
-      class="fixed inset-x-0 bottom-3 z-[55] px-3 transition opacity-100 sm:hidden"
-      role="complementary"
-      aria-label="Стоимость и ссылка на запись"
-    >
-      <div class="layout">
-        <div class="flex items-center justify-between gap-3 rounded-2xl border border-black/10 bg-white/90 px-4 py-2 shadow-lg backdrop-blur">
-          <span class="text-sm"
-            >Стоимость: <span class="font-semibold" id="leadPriceMobile"></span
-          ></span>
-          <div class="flex items-center gap-2">
-            <a
-              href="#apply"
-              class="rounded-xl bg-black px-3 py-1.5 text-white focus-visible:ring-2 focus-visible:ring-black/30"
-              >Записаться</a
-            >
-            <button
-              type="button"
-              id="stickyCtaDismiss"
-              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/10 text-sm text-ink-500 transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-              aria-controls="stickyCta"
-            >
-              <span aria-hidden="true" class="text-base leading-none">×</span>
-              <span class="sr-only">Скрыть предложение</span>
-            </button>
+            <div class="accordion__item">
+              <button type="button" aria-expanded="false" aria-controls="faq-panel-2" id="faq-trigger-2">Можно ли совмещать с работой?</button>
+              <div id="faq-panel-2" role="region" aria-labelledby="faq-trigger-2" hidden>
+                <p>Сессии проходят блоками по два дня в неделю. Практические задания можно выполнять в удобное время с поддержкой наставника.</p>
+              </div>
+            </div>
+            <div class="accordion__item">
+              <button type="button" aria-expanded="false" aria-controls="faq-panel-3" id="faq-trigger-3">Нужен ли опыт в CAD?</button>
+              <div id="faq-panel-3" role="region" aria-labelledby="faq-trigger-3" hidden>
+                <p>Будет полезен базовый опыт моделирования, но мы начинаем с фундаментальных инструментов и закрепляем их практикой.</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </section>
     </main>
-    <footer class="border-t border-black/10 bg-white/70 py-10 backdrop-blur" role="contentinfo">
-      <div class="layout text-sm opacity-70">
-        <a
-          href="https://rgsu.net/"
-          target="_blank"
-          rel="noreferrer"
-          class="underline-offset-2 hover:underline"
-          >© 2025 РГСУ · Курс «Реверсивный инжиниринг и АТ». Все права защищены.</a
-        >
-        <div class="mt-3 space-y-1 text-xs leading-relaxed text-ink-700">
-          <p>
-            Образовательная деятельность осуществляется на основании лицензии на осуществление
-            образовательной деятельности № 2755 от 11.07.2016 (серия 90Л01 № 0009250), выданной
-            Федеральной службой по надзору в сфере образования и науки (Рособрнадзор).
-          </p>
-          <p>
-            РГСУ имеет государственную аккредитацию по основным профессиональным образовательным
-            программам (свидетельство № 2756 от 11.07.2016).
-          </p>
-        </div>
+    <footer class="site-footer">
+      <div class="layout site-footer__inner">
+        <p>© STEP_3D, 2024 · Программа РГСУ 4I.AM.R22</p>
+        <a href="mailto:edu@step3d.ru">edu@step3d.ru</a>
       </div>
     </footer>
-    <script type="module" src="./src/main.js"></script>
+    <script type="module" src="app.js" defer></script>
   </body>
 </html>
