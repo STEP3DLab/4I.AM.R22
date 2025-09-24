@@ -2,6 +2,7 @@ import {
   activityTypeFromTitle,
   calculateProgramHours,
   clampIndex,
+  formatDaysLabel,
   formatLongDateRu,
   formatShortDateRu,
   getBlocksSummary,
@@ -14,6 +15,8 @@ import {
 import { COURSE_START, COURSE_START_ISO } from './data/course.js';
 
 const courseStartLabel = formatLongDateRu(COURSE_START);
+
+const COUNTDOWN_VISUALIZATION_RANGE_DAYS = 60;
 
 const benefits = [
   'Разработка КД и 3D-моделей по существующим деталям',
@@ -533,16 +536,35 @@ function renderStats() {
     if (stat.chart?.id) {
       card.setAttribute('aria-describedby', stat.chart.id);
     }
+
+    const parts = String(stat.value ?? '')
+      .split(' ')
+      .map((piece) => piece.trim())
+      .filter(Boolean);
+    const [valuePrimary = '', ...valueRest] = parts;
+    const valueSecondary = valueRest.join(' ');
+
     card.innerHTML = `
-      <div class="flex items-center gap-3">
-        <div class="grid h-10 w-10 place-items-center rounded-xl bg-black/5 text-ink-900">${renderIcon(stat.icon)}</div>
-        <div>
-          <div class="text-xl font-semibold tracking-tight">${stat.value}</div>
-          <div class="text-[11px] uppercase tracking-[.2em] text-ink-500">${stat.label}</div>
+      <div class="flex h-full flex-col items-center justify-between gap-4 text-center">
+        <div class="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-sky-400/90 to-indigo-500 text-white shadow-soft" aria-hidden="true">
+          ${renderIcon(stat.icon)}
         </div>
+        <div>
+          <div class="text-4xl font-semibold tracking-tight text-ink-900">${valuePrimary}</div>
+          ${
+            valueSecondary
+              ? `<div class="mt-1 text-sm font-medium uppercase tracking-[.3em] text-ink-500">${valueSecondary}</div>`
+              : ''
+          }
+        </div>
+        ${
+          stat.detail
+            ? `<div class="text-sm leading-relaxed text-ink-700">${stat.detail}</div>`
+            : ''
+        }
+        <div class="text-[11px] font-semibold uppercase tracking-[.4em] text-ink-500/80">${stat.label}</div>
+        ${stat.chart?.markup ? `<div class="w-full">${stat.chart.markup}</div>` : ''}
       </div>
-      ${stat.detail ? `<div class="mt-3 text-xs text-ink-700">${stat.detail}</div>` : ''}
-      ${stat.chart?.markup ? `<div class="mt-4">${stat.chart.markup}</div>` : ''}
     `;
     root.appendChild(card);
   });
@@ -1600,6 +1622,8 @@ function initCountdown() {
 
   el.setAttribute('data-start', COURSE_START_ISO);
 
+  const progressBar = document.getElementById('countdownBar');
+
   let lastContent = '';
   let liveMode = '';
   let timerId = null;
@@ -1624,6 +1648,11 @@ function initCountdown() {
         el.textContent = startedMessage;
         lastContent = startedMessage;
       }
+      if (progressBar) {
+        progressBar.style.width = '100%';
+        progressBar.setAttribute('aria-valuenow', '100');
+        progressBar.classList.remove('opacity-40');
+      }
       if (timerId !== null) {
         clearInterval(timerId);
         timerId = null;
@@ -1634,10 +1663,22 @@ function initCountdown() {
     const isLastHour = status.days === 0 && status.hours === 0;
     setLiveMode(isLastHour ? 'polite' : 'off');
 
-    const nextText = `${status.days}д ${status.hours}ч ${status.minutes}м`;
+    const nextText = status.days <= 0 ? '0 дней' : formatDaysLabel(status.days);
     if (nextText !== lastContent) {
       el.textContent = nextText;
       lastContent = nextText;
+    }
+
+    if (progressBar) {
+      const normalizedDays = Math.min(Math.max(status.days, 0), COUNTDOWN_VISUALIZATION_RANGE_DAYS);
+      const progress = COUNTDOWN_VISUALIZATION_RANGE_DAYS
+        ? 1 - normalizedDays / COUNTDOWN_VISUALIZATION_RANGE_DAYS
+        : 0;
+      const clampedProgress = Math.max(0, Math.min(1, progress));
+      const percent = Math.round(clampedProgress * 100);
+      progressBar.style.width = `${percent}%`;
+      progressBar.setAttribute('aria-valuenow', String(percent));
+      progressBar.classList.toggle('opacity-40', status.days > COUNTDOWN_VISUALIZATION_RANGE_DAYS);
     }
   }
 

@@ -91,6 +91,24 @@ export function getCountdownStatus(startDate, now = new Date()) {
   return { isStarted: false, days, hours, minutes };
 }
 
+export function formatDaysLabel(input) {
+  if (!Number.isFinite(input)) {
+    return '';
+  }
+  const value = Math.trunc(input);
+  const abs = Math.abs(value) % 100;
+  const last = abs % 10;
+  let suffix = 'дней';
+  if (abs > 10 && abs < 20) {
+    suffix = 'дней';
+  } else if (last === 1) {
+    suffix = 'день';
+  } else if (last >= 2 && last <= 4) {
+    suffix = 'дня';
+  }
+  return `${value} ${suffix}`;
+}
+
 export function clampIndex(current, delta, length) {
   if (!Number.isFinite(current) || !Number.isFinite(delta) || length <= 0) {
     return 0;
