@@ -33,6 +33,10 @@ module.exports = {
         browser: false,
         node: true,
       },
+      globals: {
+        document: 'readonly',
+        window: 'readonly',
+      },
     },
   ],
 };

@@ -122,7 +122,18 @@
           class="surface surface-emphasis grid grid-cols-1 items-start gap-10 p-6 md:grid-cols-[1.1fr_minmax(0,0.9fr)] md:p-10"
         >
           <div class="flex flex-col gap-6">
-            <span class="eyebrow">Интенсив STEP_3D × РГСУ</span>
+            <a
+              href="https://technopark.rgsu.net/"
+              target="_blank"
+              rel="noreferrer noopener"
+              class="eyebrow group"
+            >
+              48-часовая программа ДПО технопарка РГСУ
+              <span
+                aria-hidden="true"
+                class="ml-1 text-base leading-none transition-transform group-hover:translate-x-0.5"
+              >↗</span>
+            </a>
             <h1 id="section-top-heading" class="reveal text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
               Реверсивный инжиниринг<br />и аддитивное производство
             </h1>
@@ -143,21 +154,47 @@
                 >Смотреть программу</a
               >
             </div>
-            <div
-              class="inline-flex flex-wrap items-center gap-3 rounded-full border border-black/10 bg-white/80 px-4 py-2 text-sm shadow-soft"
-            >
-              <span>
-                Старт:
+            <div class="flex flex-col gap-3">
+              <div>
+                <span class="text-sm text-ink-700">Старт:</span>
                 <span
-                  class="font-semibold"
+                  class="text-base font-semibold text-ink-900"
                   id="heroStartDate"
                   data-start="2025-10-20T09:00:00+03:00"
                   >20 октября 2025</span
                 >
-              </span>
-              <span class="opacity-70"
-                >Осталось: <span class="font-medium" id="countdown" aria-live="off">—</span></span
+              </div>
+              <div
+                class="w-full max-w-sm rounded-3xl border border-black/10 bg-white/85 p-4 shadow-soft backdrop-blur"
+                role="group"
+                aria-label="До старта программы"
               >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 text-white shadow-soft"
+                    aria-hidden="true"
+                  >
+                    <span class="text-xl">⏳</span>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-xs font-semibold uppercase tracking-[.2em] text-ink-500">
+                      До старта программы
+                    </div>
+                    <div id="countdown" class="mt-1 text-2xl font-semibold text-ink-900" aria-live="off">—</div>
+                  </div>
+                </div>
+                <div class="mt-4 h-2 w-full rounded-full bg-black/5" role="presentation">
+                  <div
+                    id="countdownBar"
+                    class="h-2 rounded-full bg-gradient-to-r from-sky-400 to-indigo-500 transition-all duration-500"
+                    role="progressbar"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                    style="width: 0%"
+                  ></div>
+                </div>
+              </div>
             </div>
             <div id="stats" class="stat-grid" aria-label="Статистика"></div>
           </div>
