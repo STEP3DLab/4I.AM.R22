@@ -65,15 +65,15 @@ export const helpfulLinks = [
     icon: 'campus',
   },
   {
-    title: 'Портфолио и новости',
-    subtitle: 'Telegram-канал STEP_3D Lab',
-    href: 'https://t.me/STEP_3D_Lab',
+    title: 'Написать нам в Telegram',
+    subtitle: 'Оперативная связь — @step_3d_mngr',
+    href: 'https://t.me/step_3d_mngr',
     icon: 'telegram',
   },
   {
-    title: 'Связаться с нами в Telegram',
-    subtitle: 'Ответим на вопросы и согласуем детали',
-    href: 'https://t.me/step_3d_mngr',
+    title: 'Портфолио и новости',
+    subtitle: 'Telegram-канал STEP_3D Lab',
+    href: 'https://t.me/STEP_3D_Lab',
     icon: 'chat',
   },
 ];
