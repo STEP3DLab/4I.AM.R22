@@ -58,6 +58,87 @@ if (countdownRoot) {
   window.setInterval(updateCountdown, 60000);
 }
 
+// STEP_3D: Share link helper with clipboard fallback
+const shareButton = document.querySelector('[data-share-link]');
+
+if (shareButton) {
+  const labelNode = shareButton.querySelector('[data-share-label]');
+  const defaultText =
+    shareButton.dataset.shareDefault || labelNode?.textContent?.trim() || shareButton.textContent.trim();
+  const shareUrl = shareButton.dataset.shareUrl || window.location.href;
+  const shareText =
+    shareButton.dataset.shareText ||
+    document.querySelector('[data-course-summary]')?.textContent?.trim() ||
+    'Приглашаю на интенсив STEP_3D: реверсивный инжиниринг и аддитивное производство.';
+  let resetTimer = null;
+
+  const setLabel = (text, state = 'default') => {
+    if (labelNode) {
+      labelNode.textContent = text;
+    } else {
+      shareButton.textContent = text;
+    }
+    shareButton.dataset.shareState = state;
+    if (resetTimer) window.clearTimeout(resetTimer);
+    if (state !== 'default') {
+      resetTimer = window.setTimeout(() => {
+        if (labelNode) {
+          labelNode.textContent = defaultText;
+        } else {
+          shareButton.textContent = defaultText;
+        }
+        shareButton.dataset.shareState = 'default';
+      }, 2500);
+    }
+  };
+
+  const copyToClipboard = async (text) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch (error) {
+      console.warn('Clipboard API unavailable', error);
+    }
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      textarea.style.top = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return successful;
+    } catch (error) {
+      console.warn('Fallback copy failed', error);
+      return false;
+    }
+  };
+
+  setLabel(defaultText, 'default');
+
+  shareButton.addEventListener('click', async () => {
+    const shareData = { title: document.title || defaultText, text: shareText, url: shareUrl };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (error) {
+        if (error?.name === 'AbortError') {
+          return;
+        }
+        console.warn('Share API unavailable', error);
+      }
+    }
+    const copied = await copyToClipboard(shareUrl);
+    setLabel(copied ? 'Ссылка скопирована!' : 'Скопируйте ссылку вручную', copied ? 'copied' : 'error');
+  });
+}
+
 // STEP_3D: Accessible carousel implementation
 const carousel = document.querySelector('.carousel');
 if (carousel) {

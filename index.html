@@ -237,7 +237,7 @@
           <div class="hero__grid">
             <div class="hero__content">
               <p class="eyebrow" data-course-tagline>Программа повышения квалификации РГСУ × STEP_3D</p>
-              <h1 id="section-hero" class="hero__title">Реверсивный инжиниринг и аддитивное производство</h1>
+              <h1 id="section-hero" class="hero__title shimmer-text">Реверсивный инжиниринг и аддитивное производство</h1>
               <p class="hero__lead" data-course-summary>
                 Интенсив на 72 часа: сканирование, обработка облаков точек, моделирование и 3D-печать с наставниками
                 производства.
@@ -330,6 +330,70 @@
             <article class="feature-card" role="listitem">
               <h3>Сертификат РГСУ</h3>
               <p>По итогам программы выдаётся удостоверение о повышении квалификации установленного образца.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <!-- STEP_3D: Programs overview -->
+      <section id="programs-overview" class="section" aria-labelledby="section-programs-overview">
+        <div class="layout stack">
+          <div class="section__header">
+            <p class="eyebrow">Образовательные треки STEP_3D</p>
+            <h2 id="section-programs-overview">Актуальные программы технопарка</h2>
+          </div>
+          <div class="program-card-grid">
+            <article class="program-card program-card--highlight">
+              <div class="program-card__header">
+                <p class="program-card__eyebrow">Повышение квалификации</p>
+                <h3 class="program-card__title shimmer-text">Реверсивный инжиниринг и аддитивное производство</h3>
+              </div>
+              <p class="program-card__description">
+                CAD, прототипирование, аддитивные технологии. Практика 3D-сканирования, моделирования и печати с наставниками
+                STEP_3D.
+              </p>
+              <dl class="program-card__meta">
+                <div class="program-card__meta-item">
+                  <dt>Длительность</dt>
+                  <dd>72 академических часа</dd>
+                </div>
+                <div class="program-card__meta-item">
+                  <dt>Аудитория</dt>
+                  <dd>7–11 класс, студенты и молодые инженеры</dd>
+                </div>
+              </dl>
+              <div class="program-card__actions">
+                <a class="btn-primary" href="#apply">Записаться</a>
+                <a class="btn-secondary" href="reverse-engineering.html">Подробнее</a>
+              </div>
+            </article>
+            <article class="program-card">
+              <div class="program-card__header">
+                <p class="program-card__eyebrow">Дополнительное образование</p>
+                <h3 class="program-card__title">Инженерная школа</h3>
+              </div>
+              <p class="program-card__description">
+                CAD, прототипирование, аддитивные технологии и проектная работа для школьников и студентов.
+              </p>
+              <dl class="program-card__meta">
+                <div class="program-card__meta-item">
+                  <dt>Длительность</dt>
+                  <dd>72 академических часа</dd>
+                </div>
+                <div class="program-card__meta-item">
+                  <dt>Аудитория</dt>
+                  <dd>7–11 класс, студенты</dd>
+                </div>
+              </dl>
+              <div class="program-card__actions">
+                <a
+                  class="btn-secondary"
+                  href="https://technopark-rgsu.ru/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Сайт технопарка РГСУ
+                </a>
+              </div>
             </article>
           </div>
         </div>
@@ -431,6 +495,58 @@
               <div class="carousel__dots" role="tablist" aria-label="Выбор слайда"></div>
             </div>
           </section>
+        </div>
+      </section>
+      <!-- STEP_3D: Equipment and software -->
+      <section id="equipment" class="section" aria-labelledby="section-equipment">
+        <div class="layout stack">
+          <div class="section__header">
+            <p class="eyebrow">Инфраструктура</p>
+            <h2 id="section-equipment">Оборудование и ПО</h2>
+          </div>
+          <div class="equipment-grid" role="list">
+            <article class="equipment-card" role="listitem">
+              <h3>Оборудование лаборатории</h3>
+              <ul class="equipment-list">
+                <li>3D-сканеры RangeVision Spectrum, Artec Eva, Leica для точного оцифровывания деталей.</li>
+                <li>Промышленные FDM/DLP/SLA-принтеры PICASO 3D, Creality, Anycubic для изготовления мастер-моделей.</li>
+                <li>Станки с ЧПУ и постобработка: пескоструй, галтование, инструментальная оснастка.</li>
+              </ul>
+            </article>
+            <article class="equipment-card" role="listitem">
+              <h3>Программное обеспечение</h3>
+              <ul class="equipment-list">
+                <li>Geomagic Design X и Control X для реверсивного инжиниринга и контроля качества.</li>
+                <li>T-FLEX CAD, Autodesk Fusion 360, КОМПАС-3D для параметрического моделирования.</li>
+                <li>Ultimaker Cura, CHITUBOX, Polygon X для подготовки печати и сопровождения производства.</li>
+              </ul>
+            </article>
+          </div>
+          <form id="rentForm" class="form form--compact rent-form" action="#" method="post" aria-describedby="rentNote rentHint">
+            <h3 class="form__title">Аренда мощностей STEP_3D</h3>
+            <p class="rent-form__note" id="rentNote">
+              Стоимость аренды — 5 000 ₽ за один день. Можно пользоваться любым оборудованием и ПО лаборатории со своими
+              расходниками.
+            </p>
+            <div class="form__row">
+              <label for="rentName">ФИО*</label>
+              <input id="rentName" name="name" type="text" required autocomplete="name" />
+            </div>
+            <div class="form__row">
+              <label for="rentContact">Телефон или e-mail*</label>
+              <input id="rentContact" name="contact" type="text" required />
+            </div>
+            <div class="form__row">
+              <label for="rentDate">Желаемая дата аренды</label>
+              <input id="rentDate" name="date" type="date" />
+            </div>
+            <div class="form__row">
+              <label for="rentComment">Оборудование или задачи</label>
+              <textarea id="rentComment" name="comment" rows="3"></textarea>
+            </div>
+            <p class="rent-form__hint" id="rentHint">Менеджер свяжется с вами, уточнит детали и забронирует рабочие места.</p>
+            <button type="submit" class="btn-primary">Отправить запрос</button>
+          </form>
         </div>
       </section>
       <!-- STEP_3D: Program and schedule -->
@@ -544,6 +660,32 @@
               <h3>Иван Мальцев</h3>
               <p>Инженер-конструктор. Специализируется на реверс-инжиниринге сложных деталей и оптимизации конструкции.</p>
             </article>
+            <article class="team-card team-card--partner">
+              <p><strong>STEP_3D</strong> — индустриальный партнёр лаборатории</p>
+            </article>
+            <article class="team-card team-card--partner">
+              <p><strong>Технопарк РГСУ</strong> — ресурсная база</p>
+            </article>
+            <article class="team-card team-card--partner">
+              <p><strong>Российский государственный социальный университет</strong> — образовательный партнёр</p>
+            </article>
+          </div>
+          <div class="team-video">
+            <a
+              class="team-video__link"
+              href="images/gallery/document_5395774681049485053.mp4"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span class="team-video__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" focusable="false">
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M10 8.5v7l6-3.5-6-3.5z" fill="currentColor" />
+                </svg>
+              </span>
+              <span>Видео о технопарке РГСУ</span>
+            </a>
+            <p class="team-video__note">Посмотрите, как устроено пространство STEP_3D и лаборатории технопарка.</p>
           </div>
         </div>
       </section>
