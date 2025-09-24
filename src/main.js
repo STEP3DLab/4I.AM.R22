@@ -2,6 +2,7 @@ import {
   calculateProgramHours,
   clampIndex,
   formatLongDateRu,
+  formatTeachersLabel,
   getBlocksSummary,
   getCountdownStatus,
   normalizeActivityType,
@@ -16,223 +17,23 @@ import {
   COURSE_START_ISO,
   SITE_CONFIG,
 } from './data/course.js';
+import {
+  audience,
+  benefits,
+  courseSteps,
+  galleryFiles,
+  helpfulLinks,
+} from './data/content.js';
+import { programModules as defaultProgramModules } from './data/program.js';
+import { teamMembers } from './data/team.js';
 
 const siteConfig = SITE_CONFIG ?? {};
 const course = COURSE_CONFIG ?? {};
 const courseStartLabel = formatLongDateRu(COURSE_START);
 
 const COUNTDOWN_VISUALIZATION_RANGE_DAYS = 60;
+const modules = defaultProgramModules;
 
-const benefits = [
-  'Разработка КД и 3D-моделей по существующим деталям',
-  'Оперативный ремонт и изготовление запчастей на АТ',
-  'Снижение издержек с помощью собственной оснастки',
-];
-const audience = [
-  'Инженеры-конструкторы и технологи',
-  'Операторы ЧПУ',
-  'Студенты техвузов, молодые учёные, преподаватели',
-  'Промышленные дизайнеры',
-];
-const COURSE_STEPS = [
-  { icon: 'focus', title: '3D-сканирование' },
-  { icon: 'lecture', title: 'Реверс в CAD' },
-  { icon: 'practice', title: 'Печать оснастки' },
-];
-const teamMembers = [
-  {
-    id: 'rekut',
-    title: 'Куратор',
-    name: 'Рекут Алексей Валерьевич',
-    summary:
-      'Создатель компетенций WorldSkills по реверсивному инжинирингу и аддитивному производству.',
-    badges: ['54 года', '9+ лет преподавания', 'Эксперт WorldSkills'],
-    cardPoints: [
-      'Заместитель руководителя технопарка РГСУ (2022—н.в.)',
-      'Разработчик федеральных программ и стандартов по аддитивным технологиям',
-    ],
-    highlights: [
-      'Создал компетенции WorldSkills по реверсивному инжинирингу и аддитивному производству',
-      'Менеджер компетенции «Реверсивный инжиниринг» (WorldSkills/АРПН, 2014—н.в.)',
-    ],
-    education: [
-      'ГАУ им. Серго Орджоникидзе, Экономическая кибернетика (1994)',
-      'АНХ при правительстве РФ, Управление в маркетинге (ПК, 2004)',
-      'СКФУ, Преподаватель высшей школы (ПК, 2017)',
-    ],
-    experience: [
-      'Технопарк РГСУ — заместитель руководителя (2022—н.в.)',
-      'Колледж предпринимательства №11 — мастер и методист (2009—2020)',
-      'Разработчик программ ДПО по спортивно-боевому роботостроению',
-    ],
-    competencies: [
-      'Аддитивное производство: FDM, DLP, SLA',
-      'Реверсивный инжиниринг и контроль качества',
-      'Промышленный дизайн и прототипирование на станках с ЧПУ',
-    ],
-    software: [
-      'Rhino 3D, Geomagic Design X, GOM Inspect',
-      'Ultimaker Cura, CHITUBOX, Polygon X, Creality Slicer',
-      'Artec Studio 15, RV 3D Studio',
-      'C++',
-    ],
-    achievements: [
-      'Соавтор первого ФГОС СПО «Аддитивные технологии» (2010—2013)',
-      'Создатель стандартов оценки WorldSkills Russia по реверсивному инжинирингу (2014)',
-      'Создатель компетенции Additive Manufacturing WorldSkills (2020)',
-      'Капитан команды «Дезинтегратор» (ТОП‑16 Битвы роботов, 2023)',
-    ],
-    resources: [
-      {
-        label:
-          'Учебные материалы: «Учебное пособие по Rhinoceros 3D», «Базовый курс Rhinoceros 3D»',
-      },
-      { label: 'Интервью: Россия 24 «Лучший по профессии», «Аддитивная кухня», 4 канал' },
-    ],
-    interests: 'Увлечения: механика, кинетическая скульптура, спортивно-боевые роботы.',
-  },
-  {
-    id: 'ganshin',
-    title: 'Преподаватель',
-    name: 'Ганьшин Владимир Константинович',
-    summary: 'Руководитель технопарка РГСУ и тренер сборной России по реверсивному инжинирингу.',
-    badges: ['34 года', '10+ лет преподавания', 'Тренер сборной'],
-    cardPoints: [
-      'Руководит технопарком РГСУ с 2019 года',
-      'Подготовил чемпионов России и мира по компетенции «Реверсивный инжиниринг»',
-    ],
-    highlights: [
-      'Куратор программ «Промышленный дизайн и инжиниринг», «Реверсивный инжиниринг и АТ»',
-      'Тренер сборной России (WorldSkills, BRICS) — призовые места 2019–2021',
-    ],
-    education: [
-      'МГТУ «Станкин», бакалавр «Технология машиностроения» (2008—2012)',
-      'МГТУ «Станкин», магистр «Конструкторско-технологическое обеспечение» (2012—2014)',
-      'Аспирантура 05.02.07 «Технология и оборудование обработки» (2014—2018)',
-    ],
-    experience: [
-      'Руководитель технопарка РГСУ (2019—н.в.)',
-      'Преподаватель РГСУ и МГТУ «Станкин» (2014—н.в.)',
-      'Политехнический колледж №42 — производственное обучение (2014)',
-      'Западный комплекс непрерывного образования — преподаватель спецдисциплин (2015—2018)',
-    ],
-    competencies: [
-      'Инженерный и промышленный дизайн',
-      'Реверсивный инжиниринг и внедрение ИИ в производстве',
-      'Организация проектной и соревновательной подготовки',
-    ],
-    software: [
-      'Autodesk Inventor, Fusion 360, T-FLEX CAD, КОМПАС-3D',
-      'Geomagic Design X, GOM Inspect',
-      'RangeVision, Artec Eva, Leica — 3D-сканеры',
-      '3D-принтеры: FDM, DLP, SLA; станки с ЧПУ',
-    ],
-    achievements: [
-      'Тренер сборной России: 3 место (WorldSkills Kazan 2019), 1 место (BRICS Shanghai 2020)',
-      'Подготовил четырёх чемпионов России (WorldSkills, 2018—2021)',
-      'Подготовил призёров движения «Профессионалы» и «Абилимпикс» (2023—2025)',
-      'Команда «Дезинтегратор» — ¼ финала Битвы роботов (2023, 2024)',
-    ],
-    resources: [
-      {
-        label: 'Видео-лекции по методологии ДПО (курс из 6 занятий)',
-        href: 'https://surl.lu/xcfxzz',
-      },
-      { label: 'Telegram: t.me/step_3d_mngr', href: 'https://t.me/step_3d_mngr' },
-      { label: 'E-mail: projects.step3d@gmail.com', href: 'mailto:projects.step3d@gmail.com' },
-    ],
-    interests: 'Увлекается шахматами, футболом и искусственным интеллектом.',
-  },
-  {
-    id: 'ponkratova',
-    title: 'Преподаватель',
-    name: 'Понкратова Христина Анатольевна',
-    summary:
-      'Практик STEP_3D по биопротезированию, реверсивному инжинирингу и аддитивному производству.',
-    badges: ['23 года', '5+ лет преподавания', 'Чемпион WorldSkills & BRICS'],
-    cardPoints: [
-      'Учебный мастер технопарка РГСУ, ведёт практикумы по 3D-сканированию',
-      'Наставник Московских мастеров и корпоративных команд по АТ',
-    ],
-    highlights: [
-      'Специализируется на изготовлении индивидуальных имплантов и биопротезов',
-      'Подготовила десятки призёров чемпионатов профессионального мастерства',
-    ],
-    education: [
-      'РУДН, бакалавр «Прикладная математика и информатика» (2020—2024)',
-      'Университет «Синергия», магистратура «Дизайн и продвижение цифрового продукта» (2024—н.в.)',
-    ],
-    experience: [
-      'Технопарк РГСУ — учебный мастер (2024—н.в.)',
-      'Первый МОК — мастер производственного обучения по АТ (2023—2025)',
-      'ЗКНО — лаборатория широкополосных систем радиосвязи, кружок 3D-моделирования (2019—2020)',
-      'Школы 1287 и «Марьина Роща им. Орлова» — ДО по 3D-моделированию (2021—2024)',
-    ],
-    competencies: [
-      'Реверсивный инжиниринг и биопротезирование',
-      'Аддитивное производство и подготовка печати',
-      'Инженерный дизайн САПР и наставничество команд',
-    ],
-    software: [
-      'КОМПАС-3D, Autodesk Inventor, Fusion 360',
-      'Geomagic Design X, Geomagic Control X, GOM Inspect',
-      'Materialise 3-matic, Blender',
-      'Ultimaker Cura, Polygon X, Creality Slicer; Artec Studio 15',
-    ],
-    achievements: [
-      'Чемпион WorldSkills Russia 2019 (реверсивный инжиниринг, Казань)',
-      'Чемпион BRICS Skills Challenge 2019 (Китай, Фошань)',
-      'Призёр WorldSkills Hi-Tech 2018/2019 (Екатеринбург)',
-      'Лауреат гранта Правительства Москвы в сфере образования (2024)',
-    ],
-    resources: [
-      {
-        label:
-          'Опыт подготовки корпоративных и школьных команд по АТ (Ростех, Сибур, Роскосмос, Северсталь)',
-      },
-    ],
-    interests: 'Увлечения: музыка, программирование, спорт.',
-  },
-];
-const galleryFiles = [
-  'gallery-workshop-01.jpg',
-  'gallery-workshop-02.jpg',
-  'gallery-workshop-03.jpg',
-  'gallery-workshop-04.jpg',
-  'gallery-workshop-05.jpg',
-  'gallery-workshop-06.jpg',
-  'gallery-workshop-07.jpg',
-  'gallery-workshop-08.jpg',
-  'gallery-workshop-09.jpg',
-  'gallery-workshop-10.jpg',
-  'gallery-workshop-11.jpg',
-  'gallery-workshop-12.jpg',
-  'photo_5208550249549916288_y.jpg',
-  'photo_5240367431703191905_y.jpg',
-  'photo_5224365229666854148_y.jpg',
-  'photo_5224365229666854151_y.jpg',
-  'photo_5242198539470230878_y.jpg',
-  'photo_5242198539470230882_x.jpg',
-  'photo_5242198539470230887_x.jpg',
-  'photo_5244789671765071608_y.jpg',
-  'photo_5249116782596316903_y.jpg',
-  'photo_5312057896231621906_y.jpg',
-  'photo_5312067890620521246_y.jpg',
-  'photo_5312067890620521247_y.jpg',
-  'photo_5350630224422891438_y.jpg',
-  'photo_5395774681505717765_y.jpg',
-  'photo_5395774681505717766_y.jpg',
-  'photo_5404609008326795903_x.jpg',
-  'photo_5404609008326795954_y.jpg',
-  'photo_5404609008326795958_y.jpg',
-  'photo_5404609008326795961_y.jpg',
-  'photo_5404609008326795962_y.jpg',
-  'photo_5435945910057165000_y.jpg',
-  'photo_5458797343685075184_y.jpg',
-  'photo_5462921397052501526_y.jpg',
-  'photo_5462921397052501528_y.jpg',
-  'photo_5462921397052501529_y.jpg',
-];
 const teamShowcase = galleryFiles.map((file, index) => {
   const slug = file.replace(/\.[^.]+$/, '');
   const photoNumber = String(index + 1).padStart(2, '0');
@@ -248,128 +49,7 @@ const teamShowcase = galleryFiles.map((file, index) => {
     alt: caption,
   };
 });
-const modules = [
-  {
-    day: '01 (Пн)',
-    blocks: [
-      {
-        title:
-          'Лекция: Реверсивный инжиниринг и аддитивные технологии в производстве. ОТ и ТБ. Кейсы РГСУ (Hi-Tech, Ростех, Северсталь, СИБУР, ЕВРАЗ)',
-        hours: '2 ч (1 лк + 0,5 сем + 0,5 кт)',
-        durationHours: 2,
-        control: 'Устный опрос',
-        type: 'lecture',
-      },
-      {
-        title: 'Мастер-класс №1: CAD/CAM-моделирование мастер-моделей и метаформ (T-FLEX CAD)',
-        hours: '—',
-        durationHours: 0,
-        control: 'Зачёт',
-        type: 'workshop',
-      },
-      {
-        title:
-          'Прак-работа #1: Выбор средства оцифровки и оснастки. Калибровка сканера (RangeVision Spectrum)',
-        hours: '2 ч',
-        durationHours: 2,
-        control: '—',
-        type: 'practice',
-      },
-      {
-        title: 'Прак-работа #2: 3D-сканирование на стационарном сканере',
-        hours: '4 ч',
-        durationHours: 4,
-        control: '—',
-        type: 'practice',
-      },
-    ],
-  },
-  {
-    day: '02 (Вт)',
-    blocks: [
-      {
-        title: 'Прак-работа #3: Реверс в Geomagic Design X (базовые функции)',
-        hours: '4 ч',
-        durationHours: 4,
-        control: '—',
-        type: 'practice',
-      },
-      {
-        title: 'Мастер-класс №2: Основы 3D-печати (FDM, PICASO 3D). От индустриального партнёра',
-        hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)',
-        durationHours: 2,
-        control: '—',
-        type: 'workshop',
-      },
-      {
-        title: 'Прак-работа #4: Подготовка моделей к FDM/DLP/SLA. Запуск печати',
-        hours: '2 ч',
-        durationHours: 2,
-        control: '—',
-        type: 'practice',
-      },
-    ],
-  },
-  {
-    day: '03 (Ср)',
-    blocks: [
-      {
-        title: 'Мастер-класс №3: 3D-сканирование ручным оптическим сканером (Artec Eva)',
-        hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)',
-        durationHours: 2,
-        control: 'Устный опрос',
-        type: 'workshop',
-      },
-      {
-        title: 'Прак-работа #5: Geomagic Design X (продвинутые функции)',
-        hours: '6 ч (1 лк + 5 пр)',
-        durationHours: 6,
-        control: 'Зачёт',
-        type: 'practice',
-      },
-    ],
-  },
-  {
-    day: '04 (Чт)',
-    blocks: [
-      {
-        title: 'Мастер-класс №4: Основы DLP/SLA-печати. От индустриального партнёра',
-        hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)',
-        durationHours: 2,
-        control: 'Устный опрос',
-        type: 'workshop',
-      },
-      {
-        title: 'Прак-работа #6: Подготовка к FDM/DLP/SLA. Запуск печати',
-        hours: '2 ч (0,5 лк + 1 пр + 0,5 кт)',
-        durationHours: 2,
-        control: 'Зачёт',
-        type: 'practice',
-      },
-      {
-        title: 'Отработка навыков (сканирование/реверс/печать) — свободный формат',
-        hours: '4 ч',
-        durationHours: 4,
-        control: '—',
-        type: 'practice',
-      },
-    ],
-  },
-  {
-    day: '05 (Пт)',
-    blocks: [
-      {
-        title:
-          'Экзамен (ДЭ): задание в формате International High-Tech Competition (компетенция «Реверсивный инжиниринг»)',
-        hours: '16 ч (2 лк + 12 пр + 2 кт)',
-        durationHours: 16,
-        control: 'Экзамен (ДЭ)',
-        type: 'exam',
-      },
-    ],
-  },
-  { day: '06 (Сб)', blocks: [] },
-];
+
 const totalProgramHours = Math.round(calculateProgramHours(modules));
 const courseHours = Number.isFinite(Number(course.durationHours))
   ? Number(course.durationHours)
@@ -406,26 +86,6 @@ const faqItems = [
   {
     question: 'Что происходит на экзамене?',
     answer: '<p>Итоговый модуль — 16 академических часов практики. Участники выполняют задание компетенции «Реверсивный инжиниринг»: оцифровывают деталь, строят CAD-модель и подготавливают её к аддитивному производству.</p><p class="mt-2">Экзамен завершает программу сертификацией навыков и обратной связью от экспертов.</p>',
-  },
-];
-const helpfulLinks = [
-  {
-    title: 'Сайт технопарка РГСУ',
-    subtitle: 'Официальный портал и проекты',
-    href: 'https://technopark-rgsu.ru/',
-    icon: 'campus',
-  },
-  {
-    title: 'Портфолио и новости',
-    subtitle: 'Telegram-канал STEP_3D Lab',
-    href: 'https://t.me/STEP_3D_Lab',
-    icon: 'telegram',
-  },
-  {
-    title: 'Связаться с нами в Telegram',
-    subtitle: 'Ответим на вопросы и согласуем детали',
-    href: 'https://t.me/step_3d_mngr',
-    icon: 'chat',
   },
 ];
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -604,7 +264,7 @@ function renderStats() {
 function renderHeroAnimation() {
   const root = $('#carousel');
   if (!root) return;
-  const stepsMarkup = COURSE_STEPS.map(
+  const stepsMarkup = courseSteps.map(
     (step, index) => `
       <div class="hero-animation__step" style="--step-index: ${index}">
         <div class="hero-animation__step-icon">${renderIcon(step.icon)}</div>
@@ -622,7 +282,7 @@ function renderHeroAnimation() {
         <div class="hero-animation__caption">
           <span class="hero-animation__caption-title">Ключевые блоки курса</span>
           <p id="heroAnimationCaption" class="hero-animation__caption-text">
-            От первого скана до готовой оснастки — практическая отработка каждого этапа.
+            От первого скана до готовой оснастки — практическая отработка каждого этапа с наставниками.
           </p>
         </div>
       </div>
@@ -734,6 +394,10 @@ function renderTeam() {
     'aria-label',
     'Команда курса — откроется окно с подробной информацией о преподавателях',
   );
+  const teacherCountLabel = formatTeachersLabel(teamMembers.length);
+  const teacherSummary = teacherCountLabel && formattedNames
+    ? `${teacherCountLabel}: ${formattedNames}`
+    : teacherCountLabel || formattedNames || '';
   teamCard.innerHTML = `
     <div class="flex flex-col gap-4">
       <div class="flex flex-wrap items-center gap-3" aria-hidden="true">
@@ -743,9 +407,7 @@ function renderTeam() {
         <div class="text-sm uppercase tracking-[.2em] text-ink-400">Команда курса</div>
         <div class="mt-1 text-lg font-semibold leading-snug text-ink-950">Знакомьтесь с наставниками STEP_3D</div>
         <p class="mt-3 text-sm text-ink-800">
-          ${teamMembers.length === 1 ? 'Один преподаватель' : `${teamMembers.length} преподавателя`}${
-            formattedNames ? `: ${formattedNames}` : ''
-          }.
+          ${teacherSummary ? `${teacherSummary}.` : ''}
         </p>
         <p class="mt-2 text-xs text-ink-600">Нажмите, чтобы открыть профили и достижения каждого преподавателя.</p>
       </div>
@@ -1647,9 +1309,20 @@ function initCountdown() {
     const isLastHour = status.days === 0 && status.hours === 0;
     setLiveMode(isLastHour ? 'polite' : 'off');
 
-    const nextValue = Math.max(status.days, 0);
-    const nextUnit = getDaysSuffix(nextValue);
-    updateDisplay(String(nextValue), nextUnit);
+    if (status.days > 0) {
+      const nextValue = Math.max(status.days, 0);
+      const nextUnit = getDaysSuffix(nextValue);
+      updateDisplay(String(nextValue), nextUnit);
+    } else {
+      const normalizedHours = Math.max(status.hours, 0);
+      const normalizedMinutes = Math.max(status.minutes, 0);
+      const parts = [];
+      if (normalizedHours > 0) {
+        parts.push(`${String(normalizedHours).padStart(2, '0')} ч`);
+      }
+      parts.push(`${String(normalizedMinutes).padStart(2, '0')} мин`);
+      updateDisplay(parts.join(' '), '');
+    }
 
     if (progressBar) {
       const normalizedDays = Math.min(Math.max(status.days, 0), COUNTDOWN_VISUALIZATION_RANGE_DAYS);
