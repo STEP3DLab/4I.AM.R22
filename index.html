@@ -142,7 +142,30 @@
                 class="rounded-xl border border-black/10 px-5 py-2.5 text-sm font-medium transition hover:bg-black hover:text-white"
                 >Смотреть программу</a
               >
+              <button
+                type="button"
+                id="addToCalendarBtn"
+                class="inline-flex items-center gap-2 rounded-xl border border-black/10 px-5 py-2.5 text-sm font-medium transition hover:bg-black hover:text-white"
+                aria-label="Добавить в календарь: старт 20 октября 2025"
+              >
+                <span aria-hidden="true" class="h-4 w-4 text-current">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-full w-full">
+                    <rect x="3" y="5" width="18" height="16" rx="2" ry="2"></rect>
+                    <path d="M3 10h18"></path>
+                    <path d="M8 3v4"></path>
+                    <path d="M16 3v4"></path>
+                  </svg>
+                </span>
+                <span>Добавить в календарь</span>
+              </button>
             </div>
+            <p
+              id="calendarMessage"
+              class="hidden rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-900 shadow-soft"
+              role="status"
+              aria-live="polite"
+              tabindex="-1"
+            ></p>
             <div
               class="inline-flex flex-wrap items-center gap-3 rounded-full border border-black/10 bg-white/80 px-4 py-2 text-sm shadow-soft"
             >
