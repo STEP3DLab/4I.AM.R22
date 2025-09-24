@@ -315,42 +315,6 @@ button:disabled {
   background: rgba(75, 123, 255, 0.08);
 }
 
-/* STEP_3D: Animated shimmer */
-.shimmer-text {
-  color: var(--ink);
-  position: relative;
-}
-
-@supports (-webkit-background-clip: text) or (background-clip: text) {
-  .shimmer-text {
-    background-image: linear-gradient(120deg, var(--ink), #6c8cff, var(--ink));
-    background-size: 200% 100%;
-    color: transparent;
-    background-clip: text;
-    -webkit-background-clip: text;
-    animation: shimmer 6s ease-in-out infinite;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  @supports (-webkit-background-clip: text) or (background-clip: text) {
-    .shimmer-text {
-      animation: none;
-      background-position: 50% 50%;
-    }
-  }
 }
 
 /* STEP_3D: Feature cards */
@@ -697,46 +661,7 @@ button:disabled {
   color: var(--muted);
 }
 
-.team-video {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-16);
-  align-items: flex-start;
-}
 
-.team-video__link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  padding: 12px var(--space-24);
-  border-radius: 999px;
-  background: rgba(75, 123, 255, 0.12);
-  color: var(--brand);
-  font-weight: 600;
-  transition: transform 150ms ease, background-color 150ms ease;
-}
-
-.team-video__link:hover {
-  transform: translateY(-1px);
-  background: rgba(75, 123, 255, 0.18);
-}
-
-.team-video__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-}
-
-.team-video__icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.team-video__note {
-  margin: 0;
-  color: var(--muted);
 }
 
 /* STEP_3D: Course lead info */
