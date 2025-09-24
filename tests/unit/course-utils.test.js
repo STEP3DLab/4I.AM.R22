@@ -7,6 +7,7 @@ import {
   formatShortDateRu,
   getBlocksSummary,
   getCountdownStatus,
+  normalizeActivityType,
   parseHours,
 } from '../../src/utils/course-utils.js';
 
@@ -37,12 +38,18 @@ describe('course utils', () => {
 
   it('summarises blocks and totals hours', () => {
     const summary = getBlocksSummary([
-      { title: 'Лекция', hours: '2 ч' },
-      { title: 'Прак', hours: '1,5 ч' },
-      { title: 'Экзамен', hours: '0.5 ч' },
+      { title: 'Лекция', hours: '2 ч', type: 'lecture' },
+      { title: 'Практика', hours: '—', durationHours: 1.5, type: 'practice' },
+      { title: 'Экзамен', durationHours: 0.5, type: 'exam' },
     ]);
     expect(summary.hours).toBeCloseTo(4);
     expect(summary.typeCounts.practice).toBe(1);
+    expect(summary.typeCounts.exam).toBe(1);
+  });
+
+  it('normalises activity types with explicit overrides', () => {
+    expect(normalizeActivityType('exam', 'Лекция')).toBe('exam');
+    expect(normalizeActivityType(undefined, 'Мастер-класс')).toBe('workshop');
   });
 
   it('calculates total program hours', () => {

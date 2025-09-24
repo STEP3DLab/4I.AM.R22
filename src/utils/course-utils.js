@@ -9,6 +9,8 @@ const LONG_DATE_FORMATTER = new Intl.DateTimeFormat('ru-RU', {
   year: 'numeric',
 });
 
+const SUPPORTED_ACTIVITY_TYPES = new Set(['lecture', 'practice', 'workshop', 'exam']);
+
 export function formatShortDateRu(date) {
   if (!(date instanceof Date) || Number.isNaN(date.valueOf())) {
     throw new TypeError('formatShortDateRu expects a valid Date instance');
@@ -60,14 +62,23 @@ export function activityTypeFromTitle(title = '') {
   return 'lecture';
 }
 
+export function normalizeActivityType(type, fallbackTitle = '') {
+  const value = typeof type === 'string' ? type.trim().toLowerCase() : '';
+  if (SUPPORTED_ACTIVITY_TYPES.has(value)) {
+    return value;
+  }
+  return activityTypeFromTitle(fallbackTitle);
+}
+
 export function getBlocksSummary(blocks = []) {
   const typeCounts = { lecture: 0, practice: 0, workshop: 0, exam: 0 };
   let hours = 0;
   for (const block of blocks) {
     if (!block) continue;
-    const kind = activityTypeFromTitle(block.title ?? '');
+    const kind = normalizeActivityType(block.type, block.title ?? '');
     typeCounts[kind] += 1;
-    hours += parseHours(block.hours ?? '');
+    const duration = Number(block?.durationHours);
+    hours += Number.isFinite(duration) ? duration : parseHours(block.hours ?? '');
   }
   return {
     hours: Math.round(hours * 10) / 10,
