@@ -320,3 +320,83 @@ if (accordionButtons.length) {
 if (accordionButtons.length) {
   openAccordionItem(accordionButtons[0]);
 }
+
+// STEP_3D: Orbit Invaders animation
+const orbitRoot = document.getElementById('orbitInvaders');
+
+if (orbitRoot) {
+  const layer = orbitRoot.querySelector('.orbit-layer');
+  const cube = orbitRoot.querySelector('.center-cube');
+  if (layer) {
+    const COUNT = Number.parseInt(orbitRoot.dataset.count ?? '12', 10) || 12;
+    const SPEED = Number.parseFloat(orbitRoot.dataset.speed ?? '0.6') || 0.6;
+    const RATIO = Number.parseFloat(orbitRoot.dataset.radius ?? '42') || 42;
+
+    const makeInvader = (fill = '#64748b') => {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 16 12');
+      svg.classList.add('invader');
+      const parts = [
+        [0, 4, 2, 2, '#475569'],
+        [14, 4, 2, 2, '#475569'],
+        [2, 2, 12, 8, fill],
+        [4, 0, 8, 4, fill],
+        [4, 4, 2, 2, '#0f172a'],
+        [10, 4, 2, 2, '#0f172a'],
+        [0, 10, 4, 2, fill],
+        [12, 10, 4, 2, fill],
+      ];
+      parts.forEach(([x, y, w, h, color]) => {
+        const rect = document.createElementNS(svg.namespaceURI, 'rect');
+        rect.setAttribute('x', String(x));
+        rect.setAttribute('y', String(y));
+        rect.setAttribute('width', String(w));
+        rect.setAttribute('height', String(h));
+        rect.setAttribute('fill', color);
+        svg.appendChild(rect);
+      });
+      return svg;
+    };
+
+    const nodes = [];
+    for (let i = 0; i < COUNT; i += 1) {
+      const node = document.createElement('div');
+      node.className = 'invader-node';
+      const hue = 210 + ((i * 12) % 140);
+      const invader = makeInvader(`hsl(${hue} 16% 60%)`);
+      node.appendChild(invader);
+      layer.appendChild(node);
+      nodes.push({ node, angle: (i / COUNT) * Math.PI * 2 });
+    }
+
+    let startTimestamp = null;
+    const animate = (timestamp) => {
+      if (startTimestamp === null) startTimestamp = timestamp;
+      const elapsedSeconds = (timestamp - startTimestamp) / 1000;
+      const { width, height } = orbitRoot.getBoundingClientRect();
+      const cx = width / 2;
+      const cy = height / 2;
+      const radius = Math.min(cx, cy) * (RATIO / 50);
+      const angularVelocity = SPEED * Math.PI * 2;
+      nodes.forEach((entry, index) => {
+        const angle = entry.angle + angularVelocity * elapsedSeconds * (index % 2 === 0 ? 0.92 : 1);
+        const x = cx + radius * Math.cos(angle);
+        const y = cy + radius * Math.sin(angle);
+        const tangent = angle + Math.PI / 2;
+        entry.node.style.transform = `translate(${x}px, ${y}px) rotate(${tangent}rad)`;
+      });
+      window.requestAnimationFrame(animate);
+    };
+
+    window.requestAnimationFrame(animate);
+
+    if (cube) {
+      orbitRoot.addEventListener('click', () => {
+        cube.style.animation = 'none';
+        // Force reflow to replay the animation
+        void cube.offsetWidth;
+        cube.style.animation = '';
+      });
+    }
+  }
+}
