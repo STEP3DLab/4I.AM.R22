@@ -36,6 +36,11 @@ const audience = [
   'Студенты техвузов, молодые учёные, преподаватели',
   'Промышленные дизайнеры',
 ];
+const COURSE_STEPS = [
+  { icon: 'focus', title: '3D-сканирование' },
+  { icon: 'lecture', title: 'Реверс в CAD' },
+  { icon: 'practice', title: 'Печать оснастки' },
+];
 const teamMembers = [
   {
     id: 'rekut',
@@ -412,9 +417,6 @@ const helpfulLinks = [
     icon: 'chat',
   },
 ];
-const GALLERY_FOLDER = 'images/gallery';
-const APP_VERSION = (import.meta.env && import.meta.env.VITE_APP_VERSION) || 'dev';
-const GALLERY_MANIFEST = `${GALLERY_FOLDER}/manifest.json?v=${encodeURIComponent(APP_VERSION)}`;
 const $ = (sel, el = document) => el.querySelector(sel);
 const $$ = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 
@@ -548,78 +550,64 @@ function renderIcon(name) {
   }
 }
 function renderStats() {
-  const stats = [
-    {
-      id: 'stat-trust',
-      icon: 'handshake',
-      value: '5 корпораций',
-      label: 'нам доверяют',
-      detail: 'Ростех, СИБУР, Роскосмос, Северсталь, ЕВРАЗ',
-      ariaLabel: 'Нам доверяют 5 крупных корпораций: Ростех, СИБУР, Роскосмос, Северсталь и ЕВРАЗ.',
-    },
-    {
-      id: 'stat-hitech',
-      icon: 'trophy',
-      value: '17 призёров',
-      label: 'чемпионат hi-tech',
-      detail: 'Выпускники занимают призовые места на отраслевом чемпионате Hi-Tech.',
-      ariaLabel: '17 выпускников стали призёрами чемпионата Hi-Tech.',
-    },
-    {
-      id: 'stat-worldskills',
-      icon: 'medal',
-      value: '9 чемпионов',
-      label: 'worldskills и brics',
-      detail: 'Российские и международные победители WorldSkills и BRICS.',
-      ariaLabel: '9 выпускников — чемпионы WorldSkills и BRICS России и международных соревнований.',
-    },
-  ];
-
   const root = $('#stats');
   if (!root) return;
-  root.innerHTML = '';
-  stats.forEach((stat) => {
-    const card = document.createElement('div');
-    card.className = 'stat-card group';
-    card.setAttribute('role', 'group');
-    if (stat.ariaLabel) {
-      card.setAttribute('aria-label', stat.ariaLabel);
-    }
-    if (stat.chart?.id) {
-      card.setAttribute('aria-describedby', stat.chart.id);
-    }
-
-    const parts = String(stat.value ?? '')
-      .split(' ')
-      .map((piece) => piece.trim())
-      .filter(Boolean);
-    const [valuePrimary = '', ...valueRest] = parts;
-    const valueSecondary = valueRest.join(' ');
-
-    card.innerHTML = `
-      <div class="flex h-full flex-col items-center justify-between gap-4 text-center">
-        <div class="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-sky-400/90 to-indigo-500 text-white shadow-soft" aria-hidden="true">
-          ${renderIcon(stat.icon)}
-        </div>
-        <div>
-          <div class="text-4xl font-semibold tracking-tight text-ink-900">${valuePrimary}</div>
-          ${
-            valueSecondary
-              ? `<div class="mt-1 text-sm font-medium uppercase tracking-[.3em] text-ink-500">${valueSecondary}</div>`
-              : ''
-          }
-        </div>
-        ${
-          stat.detail
-            ? `<div class="text-sm leading-relaxed text-ink-700">${stat.detail}</div>`
-            : ''
-        }
-        <div class="text-[11px] font-semibold uppercase tracking-[.4em] text-ink-500/80">${stat.label}</div>
-        ${stat.chart?.markup ? `<div class="w-full">${stat.chart.markup}</div>` : ''}
+  const steps = COURSE_STEPS;
+  root.className = 'hero-highlight';
+  root.innerHTML = `
+    <article class="rounded-3xl border border-black/10 bg-white/85 p-5 shadow-soft backdrop-blur-sm" role="group" aria-labelledby="courseHighlightTitle">
+      <div class="text-xs font-semibold uppercase tracking-[.32em] text-ink-500">Практикум</div>
+      <h3 id="courseHighlightTitle" class="mt-3 text-2xl font-semibold tracking-tight text-ink-950">
+        Практический интенсив на базе РГСУ
+      </h3>
+      <p class="mt-2 text-sm leading-relaxed text-ink-700">
+        3D-сканирование → реверс в CAD → печать оснастки и мастер-моделей. От кейсов к результату.
+      </p>
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        ${steps
+          .map(
+            (step) => `
+              <span class="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/80 px-3 py-1 text-xs font-medium text-ink-800">
+                <span class="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-sky-400/80 to-indigo-500/80 text-white shadow-sm" aria-hidden="true">
+                  ${renderIcon(step.icon)}
+                </span>
+                ${step.title}
+              </span>
+            `,
+          )
+          .join('')}
       </div>
-    `;
-    root.appendChild(card);
-  });
+    </article>
+  `;
+}
+
+function renderHeroAnimation() {
+  const root = $('#carousel');
+  if (!root) return;
+  const stepsMarkup = COURSE_STEPS.map(
+    (step, index) => `
+      <div class="hero-animation__step" style="--step-index: ${index}">
+        <div class="hero-animation__step-icon">${renderIcon(step.icon)}</div>
+        <div class="hero-animation__step-title">${step.title}</div>
+      </div>
+    `,
+  ).join('');
+  root.innerHTML = `
+    <div class="hero-animation" role="group" aria-labelledby="heroAnimationCaption">
+      <div class="hero-animation__content">
+        <div class="hero-animation__steps">
+          <span class="hero-animation__runner" aria-hidden="true"></span>
+          ${stepsMarkup}
+        </div>
+        <div class="hero-animation__caption">
+          <span class="hero-animation__caption-title">Практический интенсив</span>
+          <p id="heroAnimationCaption" class="hero-animation__caption-text">
+            3D-сканирование → реверс в CAD → печать оснастки и мастер-моделей. От кейсов к результату.
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
 }
 function renderInfoSection(title, items) {
   if (!items?.length) return '';
@@ -696,7 +684,37 @@ function renderTeam() {
   const detailRoot = document.getElementById('teamDetail');
   if (!cardsRoot || !detailRoot || !teamMembers.length) return;
   cardsRoot.innerHTML = '';
+  teamMembers.forEach((member) => {
+    const card = document.createElement('article');
+    card.className =
+      'flex h-full flex-col gap-4 rounded-2xl border border-black/10 bg-white/70 p-5 shadow-soft transition hover:-translate-y-1 hover:shadow-soft';
+    card.innerHTML = `
+      <div class="flex flex-col gap-4">
+        <div class="team-card__photo" aria-hidden="true"></div>
+        <div>
+          <div class="text-sm opacity-60">${member.title}</div>
+          <div class="mt-1 text-lg font-semibold leading-snug">${member.name}</div>
+          <p class="mt-3 text-sm text-ink-800">${member.summary}</p>
+          <ul class="mt-4 space-y-1 text-xs text-ink-700">
+            ${(member.cardPoints || [])
+              .map(
+                (point) =>
+                  `<li class="relative pl-3 leading-snug before:absolute before:left-0 before:top-1.5 before:h-1 before:w-1 before:rounded-full before:bg-black/30">${point}</li>`,
+              )
+              .join('')}
+          </ul>
+        </div>
+      </div>
+    `;
+    cardsRoot.appendChild(card);
+  });
   detailRoot.innerHTML = `
+    <div class="mt-6 flex justify-center">
+      <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-black/10 px-5 py-2 text-sm font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/20" data-team-open-all>
+        <span>Подробнее</span>
+        <span aria-hidden>→</span>
+      </button>
+    </div>
     <div data-team-overlay class="team-modal pointer-events-none fixed inset-0 z-[70] flex items-center justify-center px-4 py-8 opacity-0" aria-hidden="true">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-team-dismiss></div>
       <div class="team-modal__panel relative w-full max-w-4xl overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft-md transition duration-300" role="dialog" aria-modal="true" aria-labelledby="" tabindex="-1" data-team-dialog>
@@ -712,6 +730,7 @@ function renderTeam() {
   const modalContent = detailRoot.querySelector('[data-team-modal-content]');
   const panel = detailRoot.querySelector('[data-team-dialog]');
   const announcer = detailRoot.querySelector('[data-team-announcer]');
+  const openAllBtn = detailRoot.querySelector('[data-team-open-all]');
   if (panel) {
     panel.setAttribute('aria-hidden', 'true');
   }
@@ -719,7 +738,7 @@ function renderTeam() {
   let lastTrigger = null;
   let focusableElements = [];
   let focusTrapHandler = null;
-  function closeModal() {
+  const closeModal = () => {
     overlay?.setAttribute('aria-hidden', 'true');
     panel?.setAttribute('aria-hidden', 'true');
     panel?.removeAttribute('aria-labelledby');
@@ -738,24 +757,25 @@ function renderTeam() {
       lastTrigger.focus({ preventScroll: true });
       lastTrigger = null;
     }
-  }
-  function openModal(member, trigger) {
+  };
+  const openModal = ({ content, trigger, labelId, announceText }) => {
     if (!overlay || !modalContent) return;
-    modalContent.innerHTML = renderMemberDetail(member);
-    const headingId = getMemberHeadingId(member);
+    modalContent.innerHTML = content;
     if (panel) {
-      panel.setAttribute('aria-labelledby', headingId);
+      if (labelId) {
+        panel.setAttribute('aria-labelledby', labelId);
+      } else {
+        panel.removeAttribute('aria-labelledby');
+      }
       panel.setAttribute('aria-hidden', 'false');
     }
     overlay.setAttribute('aria-hidden', 'false');
     overlay.classList.remove('opacity-0', 'pointer-events-none');
     overlay.classList.add('opacity-100', 'pointer-events-auto');
     document.body.classList.add('overflow-hidden');
-    if (trigger instanceof HTMLElement) {
-      lastTrigger = trigger;
-    }
+    lastTrigger = trigger instanceof HTMLElement ? trigger : null;
     if (announcer) {
-      announcer.textContent = member?.name || '';
+      announcer.textContent = announceText || '';
     }
     if (panel) {
       focusableElements = Array.from(
@@ -791,7 +811,7 @@ function renderTeam() {
     } else if (panel) {
       panel.focus({ preventScroll: true });
     }
-  }
+  };
   closeButtons.forEach((btn) => btn.addEventListener('click', closeModal));
   overlay?.addEventListener('click', (event) => {
     if (event.target === overlay) closeModal();
@@ -806,28 +826,39 @@ function renderTeam() {
     document.body.dataset.teamModalEscape = 'bound';
     document.addEventListener('keydown', handleKeydown);
   }
-  teamMembers.forEach((member) => {
-    const card = document.createElement('article');
-    card.className =
-      'group flex h-full flex-col justify-between gap-5 rounded-2xl border border-black/10 bg-white/70 p-5 transition hover:-translate-y-1 hover:shadow-soft';
-    card.innerHTML = `
-      <div>
-        <div class="text-sm opacity-60">${member.title}</div>
-        <div class="mt-1 text-lg font-semibold leading-snug">${member.name}</div>
-        <p class="mt-3 text-sm text-ink-800">${member.summary}</p>
-        <ul class="mt-4 space-y-1 text-xs text-ink-700">
-          ${(member.cardPoints || []).map((point) => `<li class="relative pl-3 leading-snug before:absolute before:left-0 before:top-1.5 before:h-1 before:w-1 before:rounded-full before:bg-black/30">${point}</li>`).join('')}
-        </ul>
-      </div>
-      <button type="button" class="mt-5 inline-flex w-full items-center justify-between gap-2 rounded-xl border border-black/10 px-4 py-2 text-sm font-medium text-ink-800 transition hover:bg-black hover:text-white focus-visible:ring-2 focus-visible:ring-black/20" data-team-open>
-        <span>Подробнее</span>
-        <span aria-hidden class="transition group-hover:translate-x-0.5">→</span>
-      </button>
-    `;
-    card
-      .querySelector('[data-team-open]')
-      ?.addEventListener('click', (event) => openModal(member, event.currentTarget));
-    cardsRoot.appendChild(card);
+  const buildModalContent = () => {
+    const headingId = 'teamModalHeading';
+    const sections = teamMembers
+      .map((member) => {
+        const detail = renderMemberDetail(member);
+        return `
+          <section class="team-modal__section" aria-labelledby="${getMemberHeadingId(member)}">
+            <div class="team-modal__photo" aria-hidden="true"></div>
+            <div>${detail}</div>
+          </section>
+        `;
+      })
+      .join('<div class="team-modal__divider" aria-hidden="true"></div>');
+    return {
+      headingId,
+      markup: `
+        <div class="flex flex-col gap-8">
+          <header class="space-y-2 text-center sm:text-left">
+            <span class="text-xs font-semibold uppercase tracking-[.32em] text-ink-400">Команда курса</span>
+            <h3 id="${headingId}" class="text-2xl font-semibold tracking-tight text-ink-950 sm:text-3xl">
+              Знакомьтесь с преподавателями
+            </h3>
+          </header>
+          <div class="flex flex-col gap-8">
+            ${sections}
+          </div>
+        </div>
+      `,
+    };
+  };
+  openAllBtn?.addEventListener('click', () => {
+    const { markup, headingId } = buildModalContent();
+    openModal({ content: markup, trigger: openAllBtn, labelId: headingId, announceText: 'Команда курса' });
   });
 }
 function renderTeamShowcase() {
@@ -875,16 +906,8 @@ function renderTeamShowcase() {
 
   const updateStatus = (item, announce = true) => {
     if (!status || !announce) return;
-    const base = `Фото ${activeIndex + 1} из ${total}`;
-    const details = [];
-    if (item.title) details.push(item.title);
-    if (item.caption) details.push(item.caption);
-    let message = details.length ? `${base} — ${details.join('. ')}` : base;
-    if (!/[.!?]$/.test(message)) {
-      message += '.';
-    }
-    const hint = total > 1 ? ' Используйте стрелки на клавиатуре или кнопки рядом с галереей.' : '';
-    status.textContent = `${message}${hint}`;
+    const message = total ? `Фото ${activeIndex + 1} из ${total}` : '';
+    status.textContent = message;
   };
 
   const updateFigure = (options = {}) => {
@@ -1198,250 +1221,6 @@ function renderHelpfulLinks() {
     `;
     root.appendChild(card);
   });
-}
-async function loadGallery() {
-  try {
-    const response = await fetch(GALLERY_MANIFEST);
-    if (!response.ok) throw new Error(`Не удалось получить manifest: ${response.status}`);
-    const manifest = await response.json();
-    const items = Array.isArray(manifest?.items) ? manifest.items : [];
-    const normalized = items
-      .map((item, index) => ({
-        id: item?.id ?? index + 1,
-        alt: item?.alt ?? '',
-        src: `${GALLERY_FOLDER}/${item?.file ?? ''}`.replace(/\/$/, ''),
-      }))
-      .filter((item) => item.src && !item.src.endsWith('/'));
-    const declaredTotal = Number(manifest?.totalFiles);
-    if (Number.isFinite(declaredTotal) && declaredTotal !== normalized.length) {
-      console.warn(
-        'Количество записей в manifest не совпадает с totalFiles. Проверить папку с изображениями.',
-      );
-    }
-    const MAX_CONCURRENT_REQUESTS = 4;
-    const loadImage = (item) =>
-      new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve({ ok: true, item });
-        img.onerror = () => resolve({ ok: false, item });
-        img.src = item.src;
-      });
-    const validItems = [];
-    const failed = [];
-    for (let i = 0; i < normalized.length; i += MAX_CONCURRENT_REQUESTS) {
-      const batch = normalized.slice(i, i + MAX_CONCURRENT_REQUESTS);
-      // Загружаем изображения партиями, чтобы не открывать десятки соединений одновременно.
-      // eslint-disable-next-line no-await-in-loop
-      const results = await Promise.all(batch.map((item) => loadImage(item)));
-      results.forEach((result) => {
-        if (result.ok) {
-          validItems.push(result.item);
-        } else if (result.item?.src) {
-          failed.push(result.item.src);
-        }
-      });
-    }
-    if (failed.length) {
-      console.error('Не удалось загрузить изображения карусели:', failed);
-    }
-    if (Number.isFinite(declaredTotal) && declaredTotal !== validItems.length) {
-      console.warn('Количество загруженных изображений отличается от числа файлов в папке.');
-    }
-    return validItems;
-  } catch (err) {
-    console.error('Ошибка чтения галереи:', err);
-    return [];
-  }
-}
-function initCarousel(gallery) {
-  const root = $('#carousel');
-  if (!root) return;
-
-  const startCarousel = () => {
-    if (root.dataset.carouselInitialized === 'true') {
-      return;
-    }
-    root.dataset.carouselInitialized = 'true';
-    root.innerHTML = '';
-
-    const items = Array.isArray(gallery) ? gallery : [];
-    if (!items.length) {
-      const empty = document.createElement('div');
-      empty.className =
-        'flex h-full w-full items-center justify-center rounded-2xl bg-white/60 text-center text-sm text-ink-700';
-      empty.textContent = 'Галерея пока пуста. Добавьте изображения в папку images/gallery.';
-      root.appendChild(empty);
-      return;
-    }
-
-    let idx = 0;
-    let zoom = 1;
-    let origin = '50% 50%';
-    let touchStartX = null;
-    let currentSrc = null;
-    let pendingLoadHandler = null;
-
-    const img = document.createElement('img');
-    img.draggable = false;
-    img.className = 'absolute inset-0 h-full w-full object-cover transition-opacity duration-300';
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    img.style.opacity = '0';
-    root.appendChild(img);
-
-    if (!root.hasAttribute('tabindex')) {
-      root.setAttribute('tabindex', '0');
-    }
-    root.classList.add('focus-visible:ring-2', 'focus-visible:ring-black/20');
-
-    const prevBtn = document.createElement('button');
-    prevBtn.setAttribute('type', 'button');
-    prevBtn.setAttribute('aria-label', 'Предыдущее фото');
-    prevBtn.className =
-      'pointer-events-auto absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white focus-visible:ring-2 focus-visible:ring-black/20';
-    prevBtn.textContent = '‹';
-
-    const nextBtn = document.createElement('button');
-    nextBtn.setAttribute('type', 'button');
-    nextBtn.setAttribute('aria-label', 'Следующее фото');
-    nextBtn.className =
-      'pointer-events-auto absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white focus-visible:ring-2 focus-visible:ring-black/20';
-    nextBtn.textContent = '›';
-
-    root.appendChild(prevBtn);
-    root.appendChild(nextBtn);
-
-    const dots = document.createElement('div');
-    dots.className = 'absolute bottom-2 left-0 right-0 flex items-center justify-center gap-2';
-    root.appendChild(dots);
-
-    const DOT_ACTIVE_CLASS = 'pointer-events-auto dot h-2 w-6 rounded-full bg-black transition-all duration-200';
-    const DOT_INACTIVE_CLASS =
-      'pointer-events-auto dot h-2 w-3 rounded-full bg-black/40 transition-all duration-200';
-    const dotButtons = items.map((_, i) => {
-      const button = document.createElement('button');
-      button.setAttribute('type', 'button');
-      button.setAttribute('aria-label', `Слайд ${i + 1}`);
-      button.addEventListener('click', () => {
-        idx = i;
-        zoom = 1;
-        origin = '50% 50%';
-        render({ forceImage: true });
-      });
-      dots.appendChild(button);
-      return button;
-    });
-
-    const applyTransform = () => {
-      img.style.transform = `scale(${zoom})`;
-      img.style.transformOrigin = origin;
-    };
-
-    const updateDots = () => {
-      dotButtons.forEach((button, buttonIndex) => {
-        button.className = buttonIndex === idx ? DOT_ACTIVE_CLASS : DOT_INACTIVE_CLASS;
-      });
-    };
-
-    const updateImage = (forceImageUpdate = false) => {
-      const item = items[idx];
-      if (!item) return;
-      const nextSrc = item.src;
-      const finalize = () => {
-        currentSrc = nextSrc;
-        applyTransform();
-        img.style.opacity = '1';
-      };
-      if (!forceImageUpdate && currentSrc === nextSrc) {
-        finalize();
-        return;
-      }
-      img.style.opacity = '0';
-      img.alt = item.alt || '';
-      if (pendingLoadHandler) {
-        img.removeEventListener('load', pendingLoadHandler);
-        pendingLoadHandler = null;
-      }
-      const handleLoad = () => {
-        img.removeEventListener('load', handleLoad);
-        pendingLoadHandler = null;
-        finalize();
-      };
-      img.addEventListener('load', handleLoad);
-      pendingLoadHandler = handleLoad;
-      img.src = nextSrc;
-      if (img.complete) {
-        handleLoad();
-      }
-    };
-
-    const render = ({ forceImage = false } = {}) => {
-      updateImage(forceImage);
-      updateDots();
-    };
-
-    const go = (delta) => {
-      idx = (idx + delta + items.length) % items.length;
-      zoom = 1;
-      origin = '50% 50%';
-      render({ forceImage: true });
-    };
-
-    prevBtn.addEventListener('click', () => go(-1));
-    nextBtn.addEventListener('click', () => go(1));
-
-    const handleKeydown = (event) => {
-      const lightboxActive =
-        document.getElementById('showcaseLightbox')?.getAttribute('aria-hidden') === 'false';
-      if (!lightboxActive && !root.matches(':focus-within')) {
-        return;
-      }
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        go(-1);
-      }
-      if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        go(1);
-      }
-    };
-
-    root.addEventListener('keydown', handleKeydown);
-    root.addEventListener('dblclick', (event) => {
-      const rect = root.getBoundingClientRect();
-      const x = (((event.clientX ?? rect.width / 2) - rect.left) / rect.width) * 100;
-      const y = (((event.clientY ?? rect.height / 2) - rect.top) / rect.height) * 100;
-      origin = `${x}% ${y}%`;
-      zoom = zoom > 1 ? 1 : 1.6;
-      updateImage();
-    });
-    root.addEventListener('touchstart', (event) => {
-      touchStartX = event.touches[0].clientX;
-    });
-    root.addEventListener('touchend', (event) => {
-      if (touchStartX == null) return;
-      const dx = event.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 40) go(dx > 0 ? -1 : 1);
-      touchStartX = null;
-    });
-
-    render({ forceImage: true });
-  };
-
-  if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(
-      (entries, obs) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          obs.disconnect();
-          startCarousel();
-        }
-      },
-      { rootMargin: '200px 0px' },
-    );
-    observer.observe(root);
-  } else {
-    startCarousel();
-  }
 }
 function renderAudience() {
   const root = $('#audienceGrid');
@@ -2260,9 +2039,7 @@ if (!globalThis.__STEP3D_SKIP_AUTO_INIT__) {
   renderHeroStart();
   renderBenefits();
   renderStats();
-  loadGallery()
-    .then(initCarousel)
-    .catch(() => initCarousel([]));
+  renderHeroAnimation();
   renderAudience();
   renderStartCalendar();
   renderProgram();
