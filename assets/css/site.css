@@ -18,30 +18,17 @@
   --neutral-400: #455a71;
 }
 
-html,
-body {
-  scroll-behavior: smooth;
-}
-
 body {
   font-family: 'Inter', 'SF Pro Text', 'SF Pro Display', 'Segoe UI', sans-serif;
   background: linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
   -webkit-font-smoothing: antialiased;
 }
 
-body:focus-visible {
-  outline: none;
-}
-
-a:focus-visible,
-button:focus-visible,
-[role='button']:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
-  border-radius: 0.75rem;
+@media (prefers-reduced-motion: no-preference) {
+  html,
+  body {
+    scroll-behavior: smooth;
+  }
 }
 
 a.skip-link {
