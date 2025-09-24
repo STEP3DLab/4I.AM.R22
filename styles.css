@@ -315,21 +315,6 @@ button:disabled {
   background: rgba(75, 123, 255, 0.08);
 }
 
-.btn-share {
-  min-width: 0;
-  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
-}
-
-.btn-share[data-share-state='copied'] {
-  background: rgba(75, 123, 255, 0.08);
-  border-color: var(--brand);
-  color: var(--brand);
-}
-
-.btn-share[data-share-state='error'] {
-  background: rgba(217, 45, 32, 0.08);
-  border-color: var(--status-exam);
-  color: var(--status-exam);
 }
 
 /* STEP_3D: Feature cards */
@@ -350,6 +335,122 @@ button:disabled {
 
 .feature-card p {
   color: var(--muted);
+}
+
+/* STEP_3D: Program cards */
+.program-card-grid {
+  display: grid;
+  gap: var(--space-24);
+}
+
+.program-card {
+  background: var(--surface);
+  border-radius: var(--radius-24);
+  padding: var(--space-32);
+  box-shadow: var(--shadow-1);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.program-card--highlight {
+  border-color: rgba(75, 123, 255, 0.35);
+  background: linear-gradient(140deg, rgba(75, 123, 255, 0.08), rgba(75, 123, 255, 0.02));
+  box-shadow: var(--shadow-2);
+}
+
+.program-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.program-card__eyebrow {
+  font-size: var(--font-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+}
+
+.program-card__description {
+  margin: 0;
+  color: var(--muted);
+}
+
+.program-card__meta {
+  display: grid;
+  gap: var(--space-16);
+  margin: 0;
+}
+
+.program-card__meta-item {
+  display: grid;
+  gap: 4px;
+}
+
+.program-card__meta-item dt {
+  font-size: var(--font-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+
+.program-card__meta-item dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.program-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-16);
+}
+
+/* STEP_3D: Equipment */
+.equipment-grid {
+  display: grid;
+  gap: var(--space-24);
+}
+
+.equipment-card {
+  background: var(--surface);
+  border-radius: var(--radius-24);
+  padding: var(--space-24);
+  box-shadow: var(--shadow-1);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.equipment-card h3 {
+  margin: 0;
+}
+
+.equipment-list {
+  margin: 0;
+  padding-left: var(--space-24);
+  color: var(--muted);
+  display: grid;
+  gap: var(--space-8);
+}
+
+.equipment-list li {
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .program-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .equipment-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* STEP_3D: Carousel */
@@ -560,21 +661,7 @@ button:disabled {
   color: var(--muted);
 }
 
-.team-card--partner {
-  place-items: center;
-  padding: var(--space-32) var(--space-24);
-  gap: var(--space-16);
-}
 
-.team-card--partner p {
-  margin: 0;
-  color: var(--ink);
-  font-size: var(--font-md);
-  line-height: 1.4;
-}
-
-.team-card--partner strong {
-  color: var(--brand);
 }
 
 /* STEP_3D: Course lead info */
@@ -704,6 +791,31 @@ button:disabled {
   padding: var(--space-16);
   color: var(--status-practice);
   font-weight: 600;
+}
+
+.form--compact {
+  max-width: 560px;
+  padding: var(--space-24);
+}
+
+.rent-form {
+  width: min(100%, 560px);
+}
+
+.form__title {
+  margin: 0;
+  font-size: var(--font-lg);
+}
+
+.rent-form__note {
+  margin: 0;
+  color: var(--muted);
+}
+
+.rent-form__hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--font-xs);
 }
 
 /* STEP_3D: Accordion */
