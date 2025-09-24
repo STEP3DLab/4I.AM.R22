@@ -12,7 +12,10 @@
     <meta name="robots" content="index, follow" />
     <meta name="color-scheme" content="light" />
     <link rel="canonical" href="https://step3dlab.github.io/4I.AM.R22/reverse-engineering.html" />
-    <meta property="og:url" content="https://step3dlab.github.io/4I.AM.R22/reverse-engineering.html" />
+    <meta
+      property="og:url"
+      content="https://step3dlab.github.io/4I.AM.R22/reverse-engineering.html"
+    />
     <meta property="og:title" content="Реверсивный инжиниринг и АТ — интенсив" />
     <meta
       property="og:description"
@@ -20,7 +23,10 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ru_RU" />
-    <meta property="og:image" content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp" />
+    <meta
+      property="og:image"
+      content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp"
+    />
     <meta property="og:image:alt" content="Алексей Рекут контролирует 3D-печать детали" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Реверсивный инжиниринг и АТ — интенсив" />
@@ -28,7 +34,10 @@
       name="twitter:description"
       content="Практический образовательный интенсив на базе РГСУ: 3D-сканирование, реверсивный инжиниринг в CAD, 3D-печать."
     />
-    <meta name="twitter:image" content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp" />
+    <meta
+      name="twitter:image"
+      content="https://step3dlab.github.io/4I.AM.R22/images/gallery/printing.webp"
+    />
     <!-- STEP_3D: Inline critical styles for header and hero -->
     <style>
       :root {
@@ -52,7 +61,16 @@
       }
       body {
         margin: 0;
-        font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+        font-family:
+          ui-sans-serif,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          'Helvetica Neue',
+          Arial,
+          'Noto Sans',
+          'Liberation Sans',
+          sans-serif;
         background: var(--bg);
         color: var(--ink);
       }
@@ -236,45 +254,106 @@
         <div class="layout">
           <div class="hero__grid">
             <div class="hero__content">
-              <p class="eyebrow" data-course-tagline>Программа повышения квалификации РГСУ × STEP_3D</p>
-              <h1 id="section-hero" class="hero__title">Реверсивный инжиниринг и аддитивное производство</h1>
+              <p class="eyebrow" data-course-tagline>
+                Программа повышения квалификации РГСУ × STEP_3D
+              </p>
+              <h1 id="section-hero" class="hero__title">
+                Реверсивный инжиниринг и аддитивное производство
+              </h1>
               <p class="hero__lead" data-course-summary>
-                Интенсив на 72 часа: сканирование, обработка облаков точек, моделирование и 3D-печать с наставниками
-                производства.
+                Практическая программа на 48 академических часов: сканирование, реверс в CAD,
+                промышленная 3D-печать и защита проекта с наставниками технопарка РГСУ.
               </p>
               <div class="hero__chips" role="group" aria-label="Формат участия">
                 <button type="button" class="chip" data-feature aria-pressed="false">
-                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M12 2.5 3 7v2l9 4.5 9-4.5V7l-9-4.5Zm0 9.2L3 7v10l9 4.5 9-4.5V7l-9 4.7Z" fill="currentColor" />
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      d="M12 2.5 3 7v2l9 4.5 9-4.5V7l-9-4.5Zm0 9.2L3 7v10l9 4.5 9-4.5V7l-9 4.7Z"
+                      fill="currentColor"
+                    />
                   </svg>
                   Очные мастер-классы
                 </button>
                 <button type="button" class="chip" data-feature aria-pressed="false">
-                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
                     <path d="M5 5h14v2H5V5Zm0 6h14v2H5v-2Zm0 6h9v2H5v-2Z" fill="currentColor" />
                   </svg>
                   Учебные кейсы от партнёров
                 </button>
                 <button type="button" class="chip" data-feature aria-pressed="false">
-                  <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path d="M12 2a5 5 0 0 1 5 5v3.09a6 6 0 1 1-10 0V7a5 5 0 0 1 5-5Zm0 20a3 3 0 0 0 3-3H9a3 3 0 0 0 3 3Z" fill="currentColor" />
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      d="M12 2a5 5 0 0 1 5 5v3.09a6 6 0 1 1-10 0V7a5 5 0 0 1 5-5Zm0 20a3 3 0 0 0 3-3H9a3 3 0 0 0 3 3Z"
+                      fill="currentColor"
+                    />
                   </svg>
                   Наставники из индустрии
                 </button>
               </div>
               <div class="hero__countdown" aria-live="polite">
-                <div class="countdown" id="countdown" data-countdown data-start="2025-10-20T09:00:00+03:00">
-                  <span><span class="countdown__digit" data-days>00</span><span class="countdown__label">дней</span></span>
-                  <span><span class="countdown__digit" data-hours>00</span><span class="countdown__label">часов</span></span>
-                  <span><span class="countdown__digit" data-minutes>00</span><span class="countdown__label">минут</span></span>
+                <div
+                  class="countdown"
+                  id="countdown"
+                  data-countdown
+                  data-start="2025-10-20T09:00:00+03:00"
+                >
+                  <span
+                    ><span class="countdown__digit" data-days>00</span
+                    ><span class="countdown__label">дней</span></span
+                  >
+                  <span
+                    ><span class="countdown__digit" data-hours>00</span
+                    ><span class="countdown__label">часов</span></span
+                  >
+                  <span
+                    ><span class="countdown__digit" data-minutes>00</span
+                    ><span class="countdown__label">минут</span></span
+                  >
                 </div>
                 <p class="hero__meta">
                   Старт
-                  <time id="heroStartDate" datetime="2025-10-20" data-start="2025-10-20T09:00:00+03:00">20 октября 2025</time>
-                  · Москва, ул. Беговая, д. 12
+                  <time
+                    id="heroStartDate"
+                    datetime="2025-10-20"
+                    data-start="2025-10-20T09:00:00+03:00"
+                    >20 октября 2025</time
+                  >
+                  ·
+                  <a
+                    class="hero__meta-link"
+                    href="https://technopark-rgsu.ru/virtual-tour/begovaya/"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Москва, ул. Беговая, д. 12 — виртуальный тур</a
+                  >
                 </p>
                 <p class="hero__meta hero__meta--muted">
-                  Финальное занятие — Москва, ул. Вильгельма Пика, д. 4, к. 8 (технопарк РГСУ)
+                  Финальное занятие —
+                  <a
+                    class="hero__meta-link"
+                    href="https://technopark-rgsu.ru/virtual-tour/vilgelma-pika/"
+                    target="_blank"
+                    rel="noreferrer"
+                    >Москва, ул. Вильгельма Пика, д. 4, к. 8 — технопарк РГСУ (виртуальный тур)</a
+                  >
                 </p>
               </div>
               <div class="hero__actions">
@@ -306,7 +385,9 @@
                   decoding="async"
                 />
               </picture>
-              <figcaption class="hero__figure-caption">Практика на промышленных FDM-принтерах</figcaption>
+              <figcaption class="hero__figure-caption">
+                Практика на промышленных FDM-принтерах
+              </figcaption>
             </figure>
           </div>
         </div>
@@ -315,21 +396,76 @@
       <section id="about" class="section" aria-labelledby="section-about">
         <div class="layout stack">
           <div class="section__header">
-            <p class="eyebrow">Зачем участвовать</p>
-            <h2 id="section-about">Теория, практика и портфолио в одном интенсиве</h2>
+            <p class="eyebrow">О программе</p>
+            <h2 id="section-about">Решаем производственные задачи реверсивного инжиниринга</h2>
+            <p class="section__intro">
+              Интенсив STEP_3D на базе технопарка РГСУ помогает инженерам и преподавателям освоить
+              полный цикл реверса: оцифровка изделий, построение CAD-моделей, подготовка
+              производства и защита проекта в формате чемпионата.
+            </p>
           </div>
-          <div class="feature-grid" role="list">
-            <article class="feature-card" role="listitem">
-              <h3>Эксперты STEP_3D</h3>
-              <p>Работайте с инженерами, которые внедряют аддитивные технологии на производстве и делятся кейсами.</p>
+          <div class="course-intro surface">
+            <h3>Что вы научитесь делать</h3>
+            <ul class="course-intro__list">
+              <li>
+                создавать конструкторскую документацию и 3D-модели по существующим деталям и узлам;
+              </li>
+              <li>
+                самостоятельно изготавливать запчасти и проводить оперативный ремонт, включая
+                аддитивные технологии;
+              </li>
+              <li>
+                уменьшать издержки за счёт собственной производственной оснастки и инструмента.
+              </li>
+            </ul>
+            <h3>Практические задачи недели</h3>
+            <ul class="course-intro__list">
+              <li>3D-сканирование изделий на стационарном и ручном оборудовании;</li>
+              <li>реверсивный инжиниринг в Geomagic Design X по сложным формам;</li>
+              <li>
+                проектирование и печать производственной оснастки на FDM, DLP и SLA-принтерах;
+              </li>
+              <li>изготовление мастер-моделей для силиконовых форм и прототипирования.</li>
+            </ul>
+          </div>
+          <div class="course-highlights">
+            <article class="course-highlights__card surface">
+              <h3>Почему именно площадка РГСУ</h3>
+              <ul>
+                <li>Команда преподавателей — чемпионы и эксперты WorldSkills и BRICS.</li>
+                <li>
+                  Рекут Алексей Валерьевич — разработчик первого федерального стандарта по
+                  аддитивным технологиям и главный эксперт сборной России (2017–2022).
+                </li>
+                <li>
+                  Площадка готовит участников финальных этапов Hi-Tech для компаний ГК «Роскосмос» и
+                  ПАО «СИБУР».
+                </li>
+              </ul>
             </article>
-            <article class="feature-card" role="listitem">
-              <h3>Готовый проект</h3>
-              <p>Участники формируют собственный кейс: от сканирования деталей до подготовки модели к печати.</p>
+            <article class="course-highlights__card surface">
+              <h3>Для кого программа</h3>
+              <ul>
+                <li>инженеры-конструкторы и технологи;</li>
+                <li>операторы станков с ЧПУ и специалисты по 3D-печати;</li>
+                <li>студенты техвузов, молодые учёные и преподаватели;</li>
+                <li>промышленные дизайнеры и product-инженеры.</li>
+              </ul>
             </article>
-            <article class="feature-card" role="listitem">
-              <h3>Сертификат РГСУ</h3>
-              <p>По итогам программы выдаётся удостоверение о повышении квалификации установленного образца.</p>
+            <article class="course-highlights__card surface">
+              <h3>Организационные детали</h3>
+              <ul>
+                <li>Продолжительность — 48 академических часов (понедельник–суббота).</li>
+                <li>Оптимальный состав группы — 6–12 человек.</li>
+                <li>
+                  График: ежедневно с 9:00 до 18:00 с итоговым экзаменом в формате International
+                  High-Tech Competition.
+                </li>
+                <li>
+                  Стоимость участия — 68 000 ₽, площадка: Москва, ул. Беговая, д. 12 / ул.
+                  Вильгельма Пика, д. 4, к. 8.
+                </li>
+              </ul>
             </article>
           </div>
         </div>
@@ -343,7 +479,9 @@
           </div>
           <section aria-label="Фотогалерея">
             <div class="carousel" role="region" aria-roledescription="carousel">
-              <button type="button" class="carousel__control prev" aria-label="Предыдущее фото">‹</button>
+              <button type="button" class="carousel__control prev" aria-label="Предыдущее фото">
+                ‹
+              </button>
               <ul class="carousel__track" aria-live="polite">
                 <li class="carousel__slide" id="slide-1" role="tabpanel" aria-labelledby="dot-1">
                   <figure>
@@ -427,7 +565,9 @@
                   </figure>
                 </li>
               </ul>
-              <button type="button" class="carousel__control next" aria-label="Следующее фото">›</button>
+              <button type="button" class="carousel__control next" aria-label="Следующее фото">
+                ›
+              </button>
               <div class="carousel__dots" role="tablist" aria-label="Выбор слайда"></div>
             </div>
           </section>
@@ -437,66 +577,103 @@
       <section id="program" class="section" aria-labelledby="section-program">
         <div class="layout stack">
           <div class="section__header">
-            <p class="eyebrow">Учебный план</p>
-            <h2 id="section-program">Программа интенсива</h2>
+            <p class="eyebrow">Календарно-тематический план</p>
+            <h2 id="section-program">Неделя практики: от лекции до экзамена Hi-Tech</h2>
+            <p class="section__intro">
+              Каждый день посвящён отдельному этапу: от калибровки сканеров до подготовки моделей к
+              печати и защите итогового проекта в формате International High-Tech Competition 2023.
+            </p>
           </div>
-          <div class="segmented" role="group" aria-label="Режим отображения расписания">
-            <button type="button" class="segmented__btn is-active" data-view="compact" aria-pressed="true">Компактный</button>
-            <button type="button" class="segmented__btn" data-view="detailed" aria-pressed="false">Подробный</button>
-          </div>
-          <div class="schedule" data-view="compact">
-            <article class="schedule__item" data-type="lecture">
-              <header class="schedule__header">
-                <h3>День 1 · Основы реверсивного инжиниринга</h3>
-                <span class="status-chip" data-status="lecture" aria-label="Формат: Лекция">Лекция</span>
-              </header>
-              <div class="schedule__meta">
-                <p>История, оборудование, требования к цифровому двойнику.</p>
-                <p>09:30 – 13:00</p>
-              </div>
-              <div class="schedule__details">
-                <p>Разбор кейсов внедрения аддитивных технологий. Практическое знакомство с оборудованием, обзор ПО.</p>
-              </div>
-            </article>
-            <article class="schedule__item" data-type="practice">
-              <header class="schedule__header">
-                <h3>День 2 · Сканирование и подготовка данных</h3>
-                <span class="status-chip" data-status="practice" aria-label="Формат: Практика">Практика</span>
-              </header>
-              <div class="schedule__meta">
-                <p>Настройка сканера, построение облаков точек.</p>
-                <p>10:00 – 18:00</p>
-              </div>
-              <div class="schedule__details">
-                <p>Участники формируют сеточную модель, очищают и выравнивают данные. Разбор типовых ошибок и способов контроля качества.</p>
-              </div>
-            </article>
-            <article class="schedule__item" data-type="workshop">
-              <header class="schedule__header">
-                <h3>День 3 · Построение CAD-модели</h3>
-                <span class="status-chip" data-status="workshop" aria-label="Формат: Мастер-класс">Мастер-класс</span>
-              </header>
-              <div class="schedule__meta">
-                <p>Перенос сетки в CAD, параметрическое моделирование.</p>
-                <p>10:00 – 18:00</p>
-              </div>
-              <div class="schedule__details">
-                <p>Работа в малых группах с наставником. Подготовка моделей к печати, формирование отчёта для заказчика.</p>
-              </div>
-            </article>
-            <article class="schedule__item" data-type="exam">
-              <header class="schedule__header">
-                <h3>День 4 · Защита проектов</h3>
-                <span class="status-chip" data-status="exam" aria-label="Формат: Экзамен">Экзамен</span>
-              </header>
-              <div class="schedule__meta">
-                <p>Презентация проектов, обратная связь от экспертов.</p>
-                <p>11:00 – 16:00</p>
-              </div>
-              <div class="schedule__details">
-                <p>Сдача готовых моделей, защита результатов и планов по внедрению. Индивидуальные рекомендации от комиссии.</p>
-              </div>
-            </article>
+          <div class="program-table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">День</th>
+                  <th scope="col">Модуль / дисциплина</th>
+                  <th scope="col">Всего часов</th>
+                  <th scope="col">Форма контроля</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">01 (Пн)</th>
+                  <td>
+                    <strong>Лекция.</strong> Реверсивный инжиниринг и технологии аддитивного
+                    производства в обеспечении производственного процесса. ОТ и ТБ. Кейсы РГСУ и
+                    чемпионатов Hi-Tech.
+                    <br />
+                    <strong>Мастер-класс №1.</strong> CAD/CAM-моделирование мастер-моделей и
+                    метаформ.
+                    <br />
+                    <strong>Практические работы №1–2.</strong> Выбор средства оцифровки, калибровка
+                    RangeVision Spectrum и сканирование на стационарном оборудовании.
+                  </td>
+                  <td>2 + 2 + 4</td>
+                  <td>Устный опрос, зачёт</td>
+                </tr>
+                <tr>
+                  <th scope="row">02 (Вт)</th>
+                  <td>
+                    <strong>Практическая работа №3.</strong> Geomagic Design X — базовые функции.
+                    <br />
+                    <strong>Мастер-класс №2.</strong> Основы 3D-печати (FDM, PICASO 3D) от
+                    индустриального партнёра.
+                    <br />
+                    <strong>Практическая работа №4.</strong> Подготовка моделей к печати
+                    (FDM/DLP/SLA) и запуск печати.
+                  </td>
+                  <td>4 + 2 + 2</td>
+                  <td>Зачёт</td>
+                </tr>
+                <tr>
+                  <th scope="row">03 (Ср)</th>
+                  <td>
+                    <strong>Мастер-класс №3.</strong> 3D-сканирование ручным оптическим сканером
+                    (Artec Eva).
+                    <br />
+                    <strong>Практическая работа №5.</strong> Geomagic Design X — продвинутые функции
+                    и подготовка моделей.
+                  </td>
+                  <td>2 + 6</td>
+                  <td>Устный опрос, зачёт</td>
+                </tr>
+                <tr>
+                  <th scope="row">04 (Чт)</th>
+                  <td>
+                    <strong>Мастер-класс №4.</strong> Технологии DLP/SLA и особенности
+                    индустриальной печати.
+                    <br />
+                    <strong>Практическая работа №6.</strong> Подготовка к печати на FDM/DLP/SLA,
+                    запуск.
+                    <br />
+                    <strong>Свободный практикум.</strong> Отработка навыков сканирования, реверса и
+                    печати.
+                  </td>
+                  <td>2 + 2 + 4</td>
+                  <td>Устный опрос, зачёт</td>
+                </tr>
+                <tr>
+                  <th scope="row">05 (Пт)</th>
+                  <td>
+                    <strong>Экзамен (ДЭ).</strong> Выполнение задания компетенции «Реверсивный
+                    инжиниринг» в формате International High-Tech Competition 2023: оцифровка
+                    детали, построение CAD и подготовка к печати.
+                  </td>
+                  <td>16</td>
+                  <td>Итоговый экзамен</td>
+                </tr>
+                <tr>
+                  <th scope="row">06 (Сб)</th>
+                  <td>Резервный день и консультации по итогам экзамена.</td>
+                  <td>—</td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="program-note">
+              Итоговая аттестация завершается индивидуальной обратной связью и рекомендациями по
+              внедрению аддитивных технологий на производстве.
+            </p>
           </div>
         </div>
       </section>
@@ -505,45 +682,268 @@
         <div class="layout stack">
           <div class="section__header">
             <p class="eyebrow">Команда наставников</p>
-            <h2 id="section-team">Преподаватели STEP_3D</h2>
+            <h2 id="section-team">Нажмите на «+», чтобы раскрыть интеллект-карту эксперта</h2>
           </div>
-          <div class="team-grid">
-            <article class="team-card">
-              <img
-                src="images/gallery/photo_5242198539470230887_x.jpg"
-                width="320"
-                height="320"
-                alt="Алексей Рекут"
-                loading="lazy"
-                decoding="async"
-              />
-              <h3>Алексей Рекут</h3>
-              <p>Руководитель STEP_3D. Эксперт по внедрению аддитивного производства на машиностроительных предприятиях.</p>
-            </article>
-            <article class="team-card">
-              <img
-                src="images/gallery/photo_5244789671765071608_y.jpg"
-                width="320"
-                height="320"
-                alt="Анастасия Колесникова"
-                loading="lazy"
-                decoding="async"
-              />
-              <h3>Анастасия Колесникова</h3>
-              <p>Инженер-технолог, наставник по подготовке цифровых двойников и управлению качеством печати.</p>
-            </article>
-            <article class="team-card">
-              <img
-                src="images/gallery/photo_5312057896231621906_y.jpg"
-                width="320"
-                height="320"
-                alt="Иван Мальцев"
-                loading="lazy"
-                decoding="async"
-              />
-              <h3>Иван Мальцев</h3>
-              <p>Инженер-конструктор. Специализируется на реверс-инжиниринге сложных деталей и оптимизации конструкции.</p>
-            </article>
+          <div class="team-accordion">
+            <details class="team-member">
+              <summary>
+                <span class="team-member__name">Рекут Алексей Валерьевич</span>
+                <span class="team-member__meta"
+                  >54 года · заместитель руководителя технопарка РГСУ</span
+                >
+              </summary>
+              <div class="team-member__body">
+                <p class="team-member__summary">
+                  Создатель компетенций WorldSkills Russia по реверсивному инжинирингу и аддитивному
+                  производству. Более девяти лет обучает инженеров и педагогов внедрению цифрового
+                  производства.
+                </p>
+                <div class="team-member__grid">
+                  <section>
+                    <h3>Образование</h3>
+                    <ul>
+                      <li>ГАУ им. Серго Орджоникидзе, экономическая кибернетика (1994).</li>
+                      <li>АНХ при Правительстве РФ, управление в маркетинге (ПК, 2004).</li>
+                      <li>СКФУ, преподаватель высшей школы (ПК, 2017).</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Опыт</h3>
+                    <ul>
+                      <li>Заместитель руководителя технопарка РГСУ (2022 — н.в.).</li>
+                      <li>Колледж предпринимательства №11 — мастер и методист (2009–2020).</li>
+                      <li>Разработчик программ ДПО по спортивно-боевому роботостроению.</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Компетенции</h3>
+                    <ul>
+                      <li>Аддитивное производство (FDM, DLP, SLA).</li>
+                      <li>Реверсивный инжиниринг и контроль качества.</li>
+                      <li>Промышленный дизайн и прототипирование на станках с ЧПУ.</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Инструменты</h3>
+                    <ul>
+                      <li>Rhino 3D, Geomagic Design X, GOM Inspect.</li>
+                      <li>Ultimaker Cura, CHITUBOX, Polygon X, Creality Slicer.</li>
+                      <li>Artec Studio 15, RV 3D Studio; язык программирования C++.</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Достижения</h3>
+                    <ul>
+                      <li>Инициатор первого ФГОС СПО «Аддитивные технологии» (2010–2013).</li>
+                      <li>
+                        Создал компетенции WorldSkills по реверсивному инжинирингу и Additive
+                        Manufacturing.
+                      </li>
+                      <li>
+                        Менеджер компетенции «Реверсивный инжиниринг» (WorldSkills/АРПН, 2014 —
+                        н.в.).
+                      </li>
+                      <li>Капитан команды «Дезинтегратор» на Битве роботов (ТОП‑16, 2023).</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Материалы</h3>
+                    <ul>
+                      <li>Учебные пособия «Rhinoceros 3D» (базовый курс и продвинутый).</li>
+                      <li>
+                        Интервью: Россия 24 «Лучший по профессии», «Аддитивная кухня», 4 канал.
+                      </li>
+                    </ul>
+                  </section>
+                </div>
+                <p class="team-member__note">
+                  Увлекается механикой, кинетической скульптурой и спортивно-боевыми роботами.
+                </p>
+              </div>
+            </details>
+            <details class="team-member">
+              <summary>
+                <span class="team-member__name">Ганьшин Владимир Константинович</span>
+                <span class="team-member__meta">34 года · руководитель технопарка РГСУ</span>
+              </summary>
+              <div class="team-member__body">
+                <p class="team-member__summary">
+                  Тренер сборной России по компетенции «Реверсивный инжиниринг», руководитель
+                  технопарка РГСУ. Готовит призёров чемпионатов WorldSkills, BRICS и
+                  «Профессионалы».
+                </p>
+                <div class="team-member__grid">
+                  <section>
+                    <h3>Образование</h3>
+                    <ul>
+                      <li>МГТУ «Станкин», бакалавр «Технология машиностроения» (2008–2012).</li>
+                      <li>
+                        Магистр «Конструкторско-технологическое обеспечение машиностроительных
+                        производств» (2012–2014).
+                      </li>
+                      <li>
+                        Аспирантура 05.02.07, квалификация преподаватель-исследователь (2014–2018).
+                      </li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Опыт</h3>
+                    <ul>
+                      <li>
+                        Руководитель технопарка РГСУ (2019 — н.в.), преподаватель РГСУ и МГТУ
+                        «Станкин».
+                      </li>
+                      <li>
+                        Политехнический колледж №42 — мастер производственного обучения (2014).
+                      </li>
+                      <li>
+                        Западный комплекс непрерывного образования — преподаватель спецдисциплин
+                        (2015–2018).
+                      </li>
+                      <li>
+                        Школьные программы «Промышленный дизайн» и «Прототипирование» (2017–2022).
+                      </li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Компетенции</h3>
+                    <ul>
+                      <li>Инженерный и промышленный дизайн, внедрение ИИ в производстве.</li>
+                      <li>Организация проектной и соревновательной подготовки.</li>
+                      <li>Наставничество корпоративных и школьных команд.</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Инструменты</h3>
+                    <ul>
+                      <li>
+                        Autodesk Inventor, Fusion 360, T-FLEX CAD, КОМПАС-3D, Geomagic Design X, GOM
+                        Inspect.
+                      </li>
+                      <li>
+                        3D-сканеры RangeVision, Artec Eva, Leica; FDM/DLP/SLA-принтеры; станки с
+                        ЧПУ.
+                      </li>
+                      <li>Языки программирования: C++, Python.</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Достижения</h3>
+                    <ul>
+                      <li>
+                        Тренер сборной России: бронза WorldSkills Kazan 2019, золото BRICS Shanghai
+                        2020.
+                      </li>
+                      <li>Подготовил четырёх чемпионов России по WorldSkills (2018–2021).</li>
+                      <li>Призёры движения «Профессионалы» и «Абилимпикс» (2023–2025).</li>
+                      <li>Команда «Дезинтегратор» — ¼ финала Битвы роботов (2023, 2024).</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Материалы и контакты</h3>
+                    <ul>
+                      <li>
+                        Видео-лекции «Методология проведения курсов ДПО по техническим дисциплинам»
+                        —
+                        <a href="https://surl.lu/xcfxzz" target="_blank" rel="noreferrer"
+                          >плейлист из 6 занятий</a
+                        >.
+                      </li>
+                      <li>
+                        Telegram:
+                        <a href="https://t.me/step_3d_mngr" target="_blank" rel="noreferrer"
+                          >@step_3d_mngr</a
+                        >.
+                      </li>
+                      <li>
+                        E-mail:
+                        <a href="mailto:projects.step3d@gmail.com">projects.step3d@gmail.com</a>.
+                      </li>
+                    </ul>
+                  </section>
+                </div>
+                <p class="team-member__note">
+                  Увлекается шахматами, футболом и искусственным интеллектом.
+                </p>
+              </div>
+            </details>
+            <details class="team-member">
+              <summary>
+                <span class="team-member__name">Понкратова Христина Анатольевна</span>
+                <span class="team-member__meta">23 года · учебный мастер технопарка РГСУ</span>
+              </summary>
+              <div class="team-member__body">
+                <p class="team-member__summary">
+                  Чемпионка WorldSkills и BRICS по реверсивному инжинирингу, наставник корпоративных
+                  и школьных команд. Ведёт практикумы по 3D-сканированию и аддитивному производству.
+                </p>
+                <div class="team-member__grid">
+                  <section>
+                    <h3>Образование</h3>
+                    <ul>
+                      <li>РУДН, бакалавр «Прикладная математика и информатика» (2020–2024).</li>
+                      <li>
+                        Университет «Синергия», магистратура «Дизайн и продвижение цифрового
+                        продукта» (2024 — н.в.).
+                      </li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Опыт</h3>
+                    <ul>
+                      <li>Учебный мастер технопарка РГСУ (2024 — н.в.).</li>
+                      <li>
+                        Первый Московский образовательный комплекс — мастер производственного
+                        обучения (2023–2025).
+                      </li>
+                      <li>
+                        Западный комплекс непрерывного образования — лаборатория широкополосных
+                        систем (2019–2020).
+                      </li>
+                      <li>
+                        Школы №1287 и «Марьина Роща» — допобразование по 3D-моделированию
+                        (2021–2024).
+                      </li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Компетенции</h3>
+                    <ul>
+                      <li>Реверсивный инжиниринг и биопротезирование.</li>
+                      <li>Аддитивное производство и подготовка печати.</li>
+                      <li>Инженерный дизайн САПР, наставничество команд.</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Инструменты</h3>
+                    <ul>
+                      <li>
+                        КОМПАС-3D, Autodesk Inventor, Fusion 360, Geomagic Design X/Control X, GOM
+                        Inspect.
+                      </li>
+                      <li>Materialise 3-matic, Blender; Artec Studio 15, RV 3D Studio.</li>
+                      <li>Ultimaker Cura, Polygon X, Creality Slicer; языки C++ и Python.</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Достижения</h3>
+                    <ul>
+                      <li>Чемпион WorldSkills Russia 2019 (реверсивный инжиниринг, Казань).</li>
+                      <li>Чемпион BRICS Skills Challenge 2019 (Китай, Фошань).</li>
+                      <li>Призёр WorldSkills Hi-Tech 2018 и 2019 (Екатеринбург).</li>
+                      <li>Лауреат гранта Правительства Москвы в сфере образования (2024).</li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Материалы</h3>
+                    <ul>
+                      <li>Наставник корпоративных команд Ростех, Сибур, Роскосмос, Северсталь.</li>
+                    </ul>
+                  </section>
+                </div>
+                <p class="team-member__note">Увлекается музыкой, программированием и спортом.</p>
+              </div>
+            </details>
           </div>
         </div>
       </section>
@@ -551,47 +951,93 @@
       <section id="apply" class="section" aria-labelledby="section-apply">
         <div class="layout stack">
           <div class="section__header">
-            <p class="eyebrow">Подать заявку</p>
-            <h2 id="section-apply">Оставьте контакты — мы свяжемся в течение дня</h2>
+            <p class="eyebrow">Контакты</p>
+            <h2 id="section-apply">Свяжитесь с нами — ответим в течение рабочего дня</h2>
+            <p class="section__intro">
+              Уточним программу, подготовим договор и организуем посещение технопарка. После блока
+              «Контакты» оставьте заявку — форма всегда видна и доступна.
+            </p>
           </div>
           <div class="apply-layout">
-            <aside class="apply-lead" aria-labelledby="apply-lead-title">
-              <h3 id="apply-lead-title">Детали программы</h3>
-              <dl class="apply-lead__facts">
-                <div class="apply-lead__fact">
-                  <dt class="apply-lead__label">Старт</dt>
-                  <dd class="apply-lead__value" id="leadStart" data-start="2025-10-20T09:00:00+03:00">Старт: 20 октября 2025</dd>
+            <aside class="contact-panel surface" aria-labelledby="contact-panel-title">
+              <h3 id="contact-panel-title">Контактная информация</h3>
+              <dl class="contact-panel__list">
+                <div>
+                  <dt>Основная площадка</dt>
+                  <dd>
+                    <a
+                      href="https://technopark-rgsu.ru/virtual-tour/begovaya/"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Москва, ул. Беговая, д. 12 — виртуальный тур</a
+                    >
+                  </dd>
                 </div>
-                <div class="apply-lead__fact">
-                  <dt class="apply-lead__label">Длительность</dt>
-                  <dd class="apply-lead__value" id="leadDuration">48 часов · 1 неделя</dd>
+                <div>
+                  <dt>Экзамен и финал</dt>
+                  <dd>
+                    <a
+                      href="https://technopark-rgsu.ru/virtual-tour/vilgelma-pika/"
+                      target="_blank"
+                      rel="noreferrer"
+                      >Москва, ул. Вильгельма Пика, д. 4, к. 8 — технопарк РГСУ</a
+                    >
+                  </dd>
                 </div>
-                <div class="apply-lead__fact">
-                  <dt class="apply-lead__label">Формат группы</dt>
-                  <dd class="apply-lead__value" id="leadSeats">6–12 человек в группе</dd>
+                <div>
+                  <dt>Продолжительность</dt>
+                  <dd>48 академических часов · группа 6–12 человек · 9:00–18:00</dd>
                 </div>
-                <div class="apply-lead__fact">
-                  <dt class="apply-lead__label">Стоимость</dt>
-                  <dd class="apply-lead__value" id="leadPrice">68 000 ₽</dd>
+                <div>
+                  <dt>Стоимость</dt>
+                  <dd>68 000 ₽ за полный цикл обучения</dd>
+                </div>
+                <div>
+                  <dt>E-mail</dt>
+                  <dd><a href="mailto:projects.step3d@gmail.com">projects.step3d@gmail.com</a></dd>
+                </div>
+                <div>
+                  <dt>Telegram</dt>
+                  <dd>
+                    <a href="https://t.me/step_3d_mngr" target="_blank" rel="noreferrer"
+                      >@step_3d_mngr</a
+                    >
+                  </dd>
                 </div>
               </dl>
-              <p class="apply-lead__note">
-                Стоимость участия — <span id="leadPriceInline">68 000 ₽</span>. Поможем оформить договор и закрывающие документы.
-              </p>
-              <p class="apply-lead__note apply-lead__note--mobile">
-                <span id="leadPriceMobile">68 000 ₽</span> за неделю практики с наставниками STEP_3D.
+              <p class="contact-panel__note">
+                Также доступны корпоративные программы и проектные школы — расскажем о форматах на
+                личной консультации.
               </p>
             </aside>
             <form id="applyForm" class="form" novalidate>
               <div class="form__row">
                 <label for="name">ФИО*</label>
-                <input id="name" name="name" type="text" required autocomplete="name" aria-describedby="name-error" />
-                <p class="form__error is-hidden" id="name-error" role="alert">Пожалуйста, укажите ФИО.</p>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  autocomplete="name"
+                  aria-describedby="name-error"
+                />
+                <p class="form__error is-hidden" id="name-error" role="alert">
+                  Пожалуйста, укажите ФИО.
+                </p>
               </div>
               <div class="form__row">
                 <label for="email">Электронная почта*</label>
-                <input id="email" name="email" type="email" required autocomplete="email" aria-describedby="email-error" />
-                <p class="form__error is-hidden" id="email-error" role="alert">Проверьте формат e-mail.</p>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autocomplete="email"
+                  aria-describedby="email-error"
+                />
+                <p class="form__error is-hidden" id="email-error" role="alert">
+                  Проверьте формат e-mail.
+                </p>
               </div>
               <div class="form__row">
                 <label for="company">Компания</label>
@@ -602,10 +1048,18 @@
                 <textarea id="comment" name="comment" rows="4"></textarea>
               </div>
               <div class="form__consent">
-                <input id="agree" name="agree" type="checkbox" required aria-describedby="consent-desc" />
+                <input
+                  id="agree"
+                  name="agree"
+                  type="checkbox"
+                  required
+                  aria-describedby="consent-desc"
+                />
                 <label for="agree">Согласен(на) на обработку персональных данных</label>
               </div>
-              <p id="consent-desc" class="form__hint">Мы используем данные только для связи по программе.</p>
+              <p id="consent-desc" class="form__hint">
+                Мы используем данные только для связи по программе.
+              </p>
               <button type="submit" class="btn-primary" disabled>Отправить</button>
               <p class="form__success" role="status" hidden>
                 Спасибо! Заявка отправлена, мы свяжемся с вами в ближайшее время.
@@ -623,50 +1077,54 @@
           </div>
           <div class="accordion" role="presentation">
             <div class="accordion__item">
-              <button type="button" aria-expanded="true" aria-controls="faq-panel-1" id="faq-trigger-1">Где проходят занятия?</button>
+              <button
+                type="button"
+                aria-expanded="true"
+                aria-controls="faq-panel-1"
+                id="faq-trigger-1"
+              >
+                Где проходят занятия?
+              </button>
               <div id="faq-panel-1" role="region" aria-labelledby="faq-trigger-1">
-                <p>Очные занятия проходят в технопарке РГСУ (ул. Вильгельма Пика, 4). Онлайн-сессии доступны для дистанционных участников.</p>
+                <p>
+                  Очные занятия проходят в технопарке РГСУ (ул. Вильгельма Пика, 4). Онлайн-сессии
+                  доступны для дистанционных участников.
+                </p>
               </div>
             </div>
             <div class="accordion__item">
-              <button type="button" aria-expanded="false" aria-controls="faq-panel-2" id="faq-trigger-2">Можно ли совмещать с работой?</button>
+              <button
+                type="button"
+                aria-expanded="false"
+                aria-controls="faq-panel-2"
+                id="faq-trigger-2"
+              >
+                Можно ли совмещать с работой?
+              </button>
               <div id="faq-panel-2" role="region" aria-labelledby="faq-trigger-2" hidden>
-                <p>Сессии проходят блоками по два дня в неделю. Практические задания можно выполнять в удобное время с поддержкой наставника.</p>
+                <p>
+                  Сессии проходят блоками по два дня в неделю. Практические задания можно выполнять
+                  в удобное время с поддержкой наставника.
+                </p>
               </div>
             </div>
             <div class="accordion__item">
-              <button type="button" aria-expanded="false" aria-controls="faq-panel-3" id="faq-trigger-3">Нужен ли опыт в CAD?</button>
+              <button
+                type="button"
+                aria-expanded="false"
+                aria-controls="faq-panel-3"
+                id="faq-trigger-3"
+              >
+                Нужен ли опыт в CAD?
+              </button>
               <div id="faq-panel-3" role="region" aria-labelledby="faq-trigger-3" hidden>
-                <p>Будет полезен базовый опыт моделирования, но мы начинаем с фундаментальных инструментов и закрепляем их практикой.</p>
+                <p>
+                  Будет полезен базовый опыт моделирования, но мы начинаем с фундаментальных
+                  инструментов и закрепляем их практикой.
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      <!-- STEP_3D: Orbit Invaders interactive -->
-      <section class="section" aria-labelledby="section-invaders">
-        <div class="layout stack">
-          <div class="section__header">
-            <p class="eyebrow">Технологии в действии</p>
-            <h2 id="section-invaders">Orbit Invaders</h2>
-          </div>
-          <p>
-            Небольшой космический перерыв: пиксельные «захватчики» кружат вокруг куба, демонстрируя работу с анимацией и SVG.
-          </p>
-          <!-- === ORBIT INVADERS (drop-in) =================================== -->
-          <div
-            class="orbit-invaders"
-            id="orbitInvaders"
-            data-count="12"
-            data-speed="0.6"
-            data-radius="42"
-          >
-            <div class="center-cube" aria-hidden="true"></div>
-            <div class="orbit-ring" aria-hidden="true"></div>
-            <div class="orbit-layer" aria-hidden="true"></div>
-            <p class="sr-only">Анимация: пиксельные «космические захватчики» движутся по круговой орбите вокруг белого куба в центре.</p>
-          </div>
-          <!-- === /ORBIT INVADERS ============================================ -->
         </div>
       </section>
     </main>
