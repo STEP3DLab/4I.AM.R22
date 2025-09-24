@@ -1185,21 +1185,25 @@ function initCarousel(gallery) {
   img.loading = 'eager';
   img.decoding = 'async';
   root.appendChild(img);
+  if (!root.hasAttribute('tabindex')) {
+    root.setAttribute('tabindex', '0');
+  }
+  root.classList.add('focus:outline-none');
+  root.classList.add('focus-visible:ring-2', 'focus-visible:ring-black/20');
   const prevBtn = document.createElement('button');
   prevBtn.setAttribute('aria-label', 'Предыдущее фото');
   prevBtn.className =
-    'pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white absolute left-2 top-1/2 -translate-y-1/2';
+    'pointer-events-auto absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
   prevBtn.textContent = '‹';
   const nextBtn = document.createElement('button');
   nextBtn.setAttribute('aria-label', 'Следующее фото');
   nextBtn.className =
-    'pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white absolute right-2 top-1/2 -translate-y-1/2';
+    'pointer-events-auto absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white/70 text-ink-950 shadow transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20';
   nextBtn.textContent = '›';
   root.appendChild(prevBtn);
   root.appendChild(nextBtn);
   const dots = document.createElement('div');
-  dots.className =
-    'pointer-events-none absolute bottom-2 left-0 right-0 flex items-center justify-center gap-2';
+  dots.className = 'absolute bottom-2 left-0 right-0 flex items-center justify-center gap-2';
   root.appendChild(dots);
   function render() {
     const item = gallery[idx];
