@@ -37,7 +37,7 @@ jobs:
         run: npx lhci autorun
 
       - name: Upload Lighthouse artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lhci-reports
           path: lhci_reports
